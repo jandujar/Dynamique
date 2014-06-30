@@ -7,10 +7,16 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float maxVelocity = 1f;
 	[SerializeField] float lifetime = 8f;
 	[SerializeField] float respawnWait = 0.5f;
+	GameController gameController;
 	Spawner spawner;
 
 	void Start()
 	{
+		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
+	
+		if (gameControllerObject != null)
+			gameController = gameControllerObject.GetComponent<GameController>();
+
 		var spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
 
 		if (spawnerObject != null)
@@ -35,7 +41,12 @@ public class SpawnedObject : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)
 	{
-		if (collision.transform.tag != "Deflector")
+		if (collision.transform.tag == "Finish")
+		{
+			gameController.LevelComplete = true;
+			Destroy(transform.gameObject);
+		}
+		else if (collision.transform.tag != "Deflector")
 		{
 			spawner.TriggerSpawn(respawnWait);
 			Destroy(transform.gameObject);

@@ -4,13 +4,7 @@ using System.Collections;
 public class Spawner : MonoBehaviour
 {
 	[SerializeField] GameObject objectPrefab;
-	[SerializeField] float spawnWait = 0f;
 	int spawnNumber = 1;
-
-	void Start()
-	{
-		StartCoroutine(Spawn(spawnWait));
-	}
 
 	public void TriggerSpawn(float spawnWaitTime)
 	{
