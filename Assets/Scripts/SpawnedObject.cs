@@ -6,11 +6,18 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float initialForce = 1f;
 	[SerializeField] float maxVelocity = 1f;
 	[SerializeField] float lifetime = 8f;
+	[SerializeField] float respawnWait = 0.5f;
+	Spawner spawner;
 
 	void Start()
 	{
+		var spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
+
+		if (spawnerObject != null)
+			spawner = spawnerObject.GetComponent<Spawner>();
+
 		transform.rigidbody.AddRelativeForce(Vector3.forward * initialForce, ForceMode.Impulse);
-		Destroy(transform.gameObject, lifetime);
+		StartCoroutine(SelfDestruct(lifetime));
 	}
 
 	void Update()
@@ -29,6 +36,16 @@ public class SpawnedObject : MonoBehaviour
 	void OnCollisionEnter(Collision collision)
 	{
 		if (collision.transform.tag != "Deflector")
+		{
+			spawner.TriggerSpawn(respawnWait);
 			Destroy(transform.gameObject);
+		}
+	}
+
+	IEnumerator SelfDestruct(float objectLifetime)
+	{
+		yield return new WaitForSeconds(objectLifetime);
+		spawner.TriggerSpawn(respawnWait);
+		Destroy(transform.gameObject);
 	}
 }
