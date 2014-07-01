@@ -7,6 +7,8 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float maxVelocity = 1f;
 	[SerializeField] float lifetime = 8f;
 	[SerializeField] float respawnWait = 0.5f;
+	[SerializeField] GameObject[] livingEffects;
+	[SerializeField] GameObject deathEffect;
 	GameController gameController;
 	Spawner spawner;
 
@@ -44,12 +46,12 @@ public class SpawnedObject : MonoBehaviour
 		if (collision.transform.tag == "Finish")
 		{
 			gameController.LevelComplete = true;
-			Destroy(transform.gameObject);
+			Death();
 		}
 		else if (collision.transform.tag != "Deflector")
 		{
 			spawner.TriggerSpawn(respawnWait);
-			Destroy(transform.gameObject);
+			Death();
 		}
 	}
 
@@ -57,6 +59,12 @@ public class SpawnedObject : MonoBehaviour
 	{
 		yield return new WaitForSeconds(objectLifetime);
 		spawner.TriggerSpawn(respawnWait);
+		Death();
+	}
+
+	void Death()
+	{
+		Instantiate(deathEffect, transform.position, transform.rotation);
 		Destroy(transform.gameObject);
 	}
 }
