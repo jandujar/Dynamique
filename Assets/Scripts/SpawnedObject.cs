@@ -11,9 +11,11 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] GameObject deathEffect;
 	GameController gameController;
 	Spawner spawner;
+	GameObject tools;
 
 	void Start()
 	{
+		tools = GameObject.FindGameObjectWithTag("Tools");
 		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 	
 		if (gameControllerObject != null)
@@ -64,6 +66,7 @@ public class SpawnedObject : MonoBehaviour
 
 	void Death()
 	{
+		tools.BroadcastMessage("ResetTools");
 		Instantiate(deathEffect, transform.position, transform.rotation);
 		Destroy(transform.gameObject);
 	}
