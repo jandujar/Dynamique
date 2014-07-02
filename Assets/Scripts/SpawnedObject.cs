@@ -8,10 +8,36 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float lifetime = 8f;
 	[SerializeField] float respawnWait = 0.5f;
 	[SerializeField] GameObject[] livingEffects;
+	[SerializeField] GameObject[] trailRenderers;
 	[SerializeField] GameObject deathEffect;
 	GameController gameController;
 	Spawner spawner;
 	GameObject tools;
+	bool levelComplete = false;
+	
+	void OnEnable()
+	{
+		EasyTouch.On_TouchStart += On_TouchStart;
+	}
+
+	void OnDisable()
+	{
+		EasyTouch.On_TouchStart -= On_TouchStart;
+	}
+
+	void OnDestroy()
+	{
+		EasyTouch.On_TouchStart -= On_TouchStart;
+	}
+	
+	public void On_TouchStart(Gesture gesture)
+	{
+		if (gesture.pickObject == gameObject)
+		{
+			spawner.TriggerSpawn(respawnWait);
+			Death();
+		}
+	}
 
 	void Start()
 	{
@@ -47,8 +73,15 @@ public class SpawnedObject : MonoBehaviour
 	{
 		if (collision.transform.tag == "Finish")
 		{
+			gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
+
+			foreach(GameObject livingEffect in livingEffects)
+				livingEffect.gameObject.particleSystem.enableEmission = false;
+			foreach(GameObject trail in trailRenderers)
+				trail.SetActive(false);
+
+			levelComplete = true;
 			gameController.LevelComplete = true;
-			Death();
 		}
 		else if (collision.transform.tag != "Deflector")
 		{
@@ -60,8 +93,12 @@ public class SpawnedObject : MonoBehaviour
 	IEnumerator SelfDestruct(float objectLifetime)
 	{
 		yield return new WaitForSeconds(objectLifetime);
-		spawner.TriggerSpawn(respawnWait);
-		Death();
+
+		if (!levelComplete)
+		{
+			spawner.TriggerSpawn(respawnWait);
+			Death();
+		}
 	}
 
 	void Death()
