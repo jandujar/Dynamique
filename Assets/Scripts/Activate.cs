@@ -42,14 +42,8 @@ public class Activate : MonoBehaviour
 	void Update()
 	{
 		if (activated && !objectToActivate.activeSelf)
-		{
 			objectToActivate.SetActive(true);
-			gameObject.renderer.material.color = new Color(Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f));
-		}
 		else if (!activated && objectToActivate.activeSelf)
-		{
 			objectToActivate.SetActive(false);
-			gameObject.renderer.material.color = Color.white;
-		}
 	}
 }
