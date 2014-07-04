@@ -4,6 +4,7 @@ using System.Collections;
 public class Spawner : MonoBehaviour
 {
 	[SerializeField] GameObject objectPrefab;
+	[SerializeField] GameObject spawnEffect;
 	int spawnNumber = 1;
 	bool canSpawn = true;
 
@@ -17,6 +18,7 @@ public class Spawner : MonoBehaviour
 	{
 		canSpawn = false;
 		yield return new WaitForSeconds(spawnWaitTime);
+		Instantiate(spawnEffect, transform.position, transform.rotation);
 		var clone = (GameObject)Instantiate(objectPrefab, transform.position, transform.rotation);
 		clone.name = "Object " + spawnNumber.ToString();
 		spawnNumber++;
