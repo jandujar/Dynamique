@@ -1,0 +1,34 @@
+
+User License Agreement
+
+By downloading and/or installing VMF Fonts Fonts software you agree to
+the following user license terms:
+
+1. Each font is licensed for use on a single printer or output device in
+conjunction with a maximum of 2 CPUs.
+ 
+2. VMF Fonts Fonts software may not be copied or duplicated in any form
+except for backup purposes.
+VMF Fonts Fonts software may not be rented, leased, sublicensed,
+redistributed or lent to another person or entity.
+ 
+3. VMF Fonts Fonts software may not be returned or exchanged unless
+defective. Defective software shall be replaced by the same software if
+accompanied with purchase receipt and VMF Fonts Fonts is notified within
+one week of purchase.
+ 
+4. Any violation by you of this agreement shall cause this license to be
+terminated. In the event of termination, and without limiting any other remedies
+which may be available against you, you must immediately return the font
+software to VMF Fonts Fonts and certify that no copy remains in your or
+anyone else's possession.
+
+5. VMF Fonts Fonts makes no warranties express or implied as to
+merchantability, fitness for a particular purpose, or otherwise. Without limiting
+the forgoing, VMF Fonts Fonts shall in no event be liable for any direct, indirect,
+consequential, or incidental damages, including damages from loss of business
+profits, business interruption, loss of business information, arising out of the use
+or inability to use the product.
+
+-------------------------------------------------
+© 2010 VMF Fonts , All rights reserved 
