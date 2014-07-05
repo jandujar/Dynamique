@@ -7,13 +7,18 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float maxVelocity = 1f;
 	[SerializeField] float lifetime = 8f;
 	[SerializeField] float respawnWait = 0.5f;
+	[SerializeField] float collectibleRadius = 1f;
+	[SerializeField] float collectiblePower = 1f;
 	[SerializeField] GameObject[] livingEffects;
 	[SerializeField] GameObject[] trailRenderers;
+	[SerializeField] GameObject pointLight;
 	[SerializeField] GameObject deathEffect;
 	GameController gameController;
 	Spawner spawner;
 	GameObject tools;
 	bool levelComplete = false;
+	bool dead = false;
+	Vector3 direction;
 	
 	void OnEnable()
 	{
@@ -59,9 +64,12 @@ public class SpawnedObject : MonoBehaviour
 	void Update()
 	{
 		var velocity = rigidbody.velocity;
-		if (velocity == Vector3.zero) return;
+
+		if (velocity == Vector3.zero)
+			return;
 		
 		var magnitude = velocity.magnitude;
+
 		if (magnitude > maxVelocity)
 		{
 			velocity *= (maxVelocity / magnitude);
@@ -69,21 +77,32 @@ public class SpawnedObject : MonoBehaviour
 		}
 	}
 
+	void FixedUpdate()
+	{
+		if (!dead)
+		{
+			Collider[] hitColliders = Physics.OverlapSphere(transform.position, collectibleRadius);
+			
+			foreach (Collider objectInRange in hitColliders)
+			{
+				if (objectInRange.tag == "Collectible")
+				{
+					direction = objectInRange.transform.position - transform.position;
+					objectInRange.rigidbody.AddForceAtPosition(direction.normalized * -collectiblePower, transform.position);
+				}
+			}
+		}
+	}
+
 	void OnCollisionEnter(Collision collision)
 	{
 		if (collision.transform.tag == "Finish")
 		{
-			gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
-
-			foreach(GameObject livingEffect in livingEffects)
-				livingEffect.gameObject.particleSystem.enableEmission = false;
-			foreach(GameObject trail in trailRenderers)
-				trail.SetActive(false);
-
 			levelComplete = true;
 			gameController.LevelComplete = true;
+			Death();
 		}
-		else if (collision.transform.tag != "Deflector")
+		else if (collision.transform.tag == "Obstacle")
 		{
 			spawner.TriggerSpawn(respawnWait);
 			Death();
@@ -94,7 +113,7 @@ public class SpawnedObject : MonoBehaviour
 	{
 		yield return new WaitForSeconds(objectLifetime);
 
-		if (!levelComplete)
+		if (!dead && !levelComplete)
 		{
 			spawner.TriggerSpawn(respawnWait);
 			Death();
@@ -103,8 +122,28 @@ public class SpawnedObject : MonoBehaviour
 
 	void Death()
 	{
+		dead = true;
 		tools.BroadcastMessage("ResetTools");
-		Instantiate(deathEffect, transform.position, transform.rotation);
-		Destroy(transform.gameObject);
+		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
+		pointLight.SetActive(false);
+
+		if (!levelComplete)
+		{
+			Instantiate(deathEffect, transform.position, transform.rotation);
+			gameController.ResetCollectibles();
+		}
+
+		Collider[] colliders = gameObject.GetComponents<Collider>();
+
+		foreach(Collider objectCollider in colliders)
+			objectCollider.enabled = false;
+
+		foreach(GameObject livingEffect in livingEffects)
+			livingEffect.gameObject.particleSystem.enableEmission = false;
+
+		foreach(GameObject trail in trailRenderers)
+			trail.SetActive(false);
+
+		Destroy(transform.gameObject, 2f);
 	}
 }
