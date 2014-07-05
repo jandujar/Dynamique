@@ -11,7 +11,6 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float collectiblePower = 1f;
 	[SerializeField] GameObject[] livingEffects;
 	[SerializeField] GameObject[] trailRenderers;
-	[SerializeField] GameObject pointLight;
 	[SerializeField] GameObject deathEffect;
 	GameController gameController;
 	Spawner spawner;
@@ -125,7 +124,6 @@ public class SpawnedObject : MonoBehaviour
 		dead = true;
 		tools.BroadcastMessage("ResetTools");
 		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
-		pointLight.SetActive(false);
 
 		if (!levelComplete)
 		{
