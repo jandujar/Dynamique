@@ -3,13 +3,13 @@ using System.Collections;
 
 public class GameController : MonoBehaviour
 {
-	[SerializeField] float initialSpawnWait = 0f;
+	[SerializeField] float initialWait = 0f;
+	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
 	Spawner spawner;
 	float collectibleSpawnWait = 0.1f;
 	float elapsedTime = 0f;
 	bool startTimer = false;
-	string timeText;
 	int timeScore;
 	int starScore;
 	int totalScore;
@@ -21,13 +21,13 @@ public class GameController : MonoBehaviour
 
 	void Start()
 	{
-		StartCoroutine(SpawnCollectibles());
+		StartCoroutine(SpawnCollectibles(initialWait));
 		var spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
 
 		if (spawnerObject != null)
 		{
 			spawner = spawnerObject.GetComponent<Spawner>();
-			spawner.TriggerSpawn(initialSpawnWait);
+			spawner.TriggerSpawn(initialWait + additionalObjectSpawnWait);
 			StartCoroutine(StartTimer());
 		}
 		else
@@ -58,11 +58,13 @@ public class GameController : MonoBehaviour
 		foreach (GameObject collectible in collectibles)
 			Destroy(collectible);
 
-		StartCoroutine(SpawnCollectibles());
+		StartCoroutine(SpawnCollectibles(0f));
 	}
 
-	IEnumerator SpawnCollectibles()
+	IEnumerator SpawnCollectibles(float waitTime)
 	{
+		yield return new WaitForSeconds(waitTime);
+
 		foreach (CollectibleSpawner collectibleSpawner in collectibleSpawners)
 		{
 			yield return new WaitForSeconds(collectibleSpawnWait);
@@ -72,7 +74,7 @@ public class GameController : MonoBehaviour
 
 	IEnumerator StartTimer()
 	{
-		yield return new WaitForSeconds(initialSpawnWait);
+		yield return new WaitForSeconds(initialWait + additionalObjectSpawnWait);
 		startTimer = true;
 	}
 
