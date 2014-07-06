@@ -9,6 +9,10 @@ public class GameController : MonoBehaviour
 	float collectibleSpawnWait = 0.1f;
 	float elapsedTime = 0f;
 	bool startTimer = false;
+	string timeText;
+	int timeScore;
+	int starScore;
+	int totalScore;
 	bool summaryTriggered = false;
 	bool levelComplete = false;
 	int collectiblesCollected = 0;
@@ -66,15 +70,22 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	void LevelCompleted()
-	{
-		Debug.Log("Level Completed, Time: " + elapsedTime.ToString("F2"));
-		Debug.Log("Collected " + CollectiblesCollected + " Collectibles");
-	}
-
 	IEnumerator StartTimer()
 	{
 		yield return new WaitForSeconds(initialSpawnWait);
 		startTimer = true;
+	}
+
+	void LevelCompleted()
+	{
+		if (elapsedTime < 60f)
+			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));
+		else
+			timeScore = 0;
+
+		starScore = 1000 * CollectiblesCollected;
+
+		totalScore = timeScore + starScore;
+		Debug.Log("Score: " + totalScore.ToString("N0"));
 	}
 }
