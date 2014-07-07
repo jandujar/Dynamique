@@ -6,6 +6,9 @@ public class GameController : MonoBehaviour
 	[SerializeField] float initialWait = 0f;
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
+	[SerializeField] GameObject summaryFade;
+	[SerializeField] GameObject summaryScreen;
+	[SerializeField] UILabel summaryLabel;
 	Spawner spawner;
 	float collectibleSpawnWait = 0.1f;
 	float elapsedTime = 0f;
@@ -80,6 +83,9 @@ public class GameController : MonoBehaviour
 
 	void LevelCompleted()
 	{
+		summaryFade.SetActive(true);
+		summaryScreen.SetActive(true);
+
 		if (elapsedTime < 60f)
 			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));
 		else
@@ -88,6 +94,7 @@ public class GameController : MonoBehaviour
 		starScore = 1000 * CollectiblesCollected;
 
 		totalScore = timeScore + starScore;
-		Debug.Log("Score: " + totalScore.ToString("N0"));
+		summaryLabel.text = "Stars Collected: " + CollectiblesCollected +
+			"\nScore: " + totalScore.ToString("N0");
 	}
 }

@@ -97,6 +97,10 @@ public class SpawnedObject : MonoBehaviour
 	{
 		if (collision.transform.tag == "Finish")
 		{
+			var endPointObject = GameObject.FindGameObjectWithTag("Finish");
+			EndPoint endPointScript = endPointObject.GetComponent<EndPoint>();
+			endPointScript.StopEffects();
+
 			levelComplete = true;
 			gameController.LevelComplete = true;
 			Death();
