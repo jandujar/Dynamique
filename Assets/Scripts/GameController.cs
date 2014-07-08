@@ -6,9 +6,9 @@ public class GameController : MonoBehaviour
 	[SerializeField] float initialWait = 0f;
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
-	[SerializeField] GameObject summaryFade;
-	[SerializeField] GameObject summaryScreen;
-	[SerializeField] UILabel summaryLabel;
+	GameObject summaryFade;
+	GameObject summaryScreen;
+	UILabel summaryStats;
 	Spawner spawner;
 	float collectibleSpawnWait = 0.1f;
 	float elapsedTime = 0f;
@@ -21,6 +21,14 @@ public class GameController : MonoBehaviour
 	int collectiblesCollected = 0;
 	public bool LevelComplete { get { return levelComplete;} set { levelComplete = value; }}
 	public int CollectiblesCollected { get { return collectiblesCollected;} set { collectiblesCollected = value; }}
+
+	void Awake()
+	{
+		summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
+		summaryScreen = GameObject.FindGameObjectWithTag("SummaryScreen");
+		summaryFade.SetActive(false);
+		summaryScreen.SetActive(false);
+	}
 
 	void Start()
 	{
@@ -86,6 +94,9 @@ public class GameController : MonoBehaviour
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
 
+		GameObject summaryStatsObject = GameObject.FindGameObjectWithTag("SummaryStats");
+		summaryStats = summaryStatsObject.GetComponent<UILabel>();
+
 		if (elapsedTime < 60f)
 			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));
 		else
@@ -94,7 +105,7 @@ public class GameController : MonoBehaviour
 		starScore = 1000 * CollectiblesCollected;
 
 		totalScore = timeScore + starScore;
-		summaryLabel.text = "Stars Collected: " + CollectiblesCollected +
+		summaryStats.text = "Stars Collected: " + CollectiblesCollected +
 			"\nScore: " + totalScore.ToString("N0");
 	}
 }
