@@ -3,10 +3,10 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
-	[SerializeField] GameObject tempLevel;
+	[SerializeField] GameObject[] levels;
 
 	void Awake()
 	{
-		Instantiate(tempLevel, transform.position, transform.rotation);
+		Instantiate(levels[0], transform.position, transform.rotation);
 	}
 }

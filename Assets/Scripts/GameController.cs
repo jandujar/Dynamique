@@ -105,7 +105,15 @@ public class GameController : MonoBehaviour
 		starScore = 1000 * CollectiblesCollected;
 
 		totalScore = timeScore + starScore;
-		summaryStats.text = "Stars Collected: " + CollectiblesCollected +
+
+		if (collectibleSpawners.Length > 0)
+		{
+			summaryStats.text = "Stars Collected: " + CollectiblesCollected +
 			"\nScore: " + totalScore.ToString("N0");
+		}
+		else
+		{
+			summaryStats.text = "Score: " + totalScore.ToString("N0");
+		}
 	}
 }

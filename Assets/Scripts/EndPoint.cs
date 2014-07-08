@@ -15,7 +15,7 @@ public class EndPoint : MonoBehaviour
 
 	IEnumerator Restart()
 	{
-		yield return new WaitForSeconds(8.0f);
+		yield return new WaitForSeconds(7.0f);
 		Application.LoadLevel(0);
 	}
 }

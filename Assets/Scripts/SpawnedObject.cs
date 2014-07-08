@@ -18,30 +18,6 @@ public class SpawnedObject : MonoBehaviour
 	bool levelComplete = false;
 	bool dead = false;
 	Vector3 direction;
-	
-	void OnEnable()
-	{
-		EasyTouch.On_TouchStart += On_TouchStart;
-	}
-
-	void OnDisable()
-	{
-		EasyTouch.On_TouchStart -= On_TouchStart;
-	}
-
-	void OnDestroy()
-	{
-		EasyTouch.On_TouchStart -= On_TouchStart;
-	}
-	
-	public void On_TouchStart(Gesture gesture)
-	{
-		if (gesture.pickObject == gameObject)
-		{
-			spawner.TriggerSpawn(respawnWait);
-			Death();
-		}
-	}
 
 	void Start()
 	{
