@@ -7,6 +7,12 @@ public class LevelManager : MonoBehaviour
 
 	void Awake()
 	{
-		Instantiate(levels[0], transform.position, transform.rotation);
+		Instantiate(levels[PlayerPrefs.GetInt("Level Number", 0)], transform.position, transform.rotation);
+	}
+
+	public void LoadLevel(int levelNumber)
+	{
+		PlayerPrefs.SetInt("Level Number", levelNumber);
+		Application.LoadLevel(0);
 	}
 }

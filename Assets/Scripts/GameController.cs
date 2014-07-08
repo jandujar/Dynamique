@@ -3,9 +3,11 @@ using System.Collections;
 
 public class GameController : MonoBehaviour
 {
+	[SerializeField] int nextLevel = 0;
 	[SerializeField] float initialWait = 0f;
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
+	LevelManager levelManager;
 	GameObject summaryFade;
 	GameObject summaryScreen;
 	UILabel summaryStats;
@@ -24,6 +26,9 @@ public class GameController : MonoBehaviour
 
 	void Awake()
 	{
+		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
+		levelManager = levelManagerObject.GetComponent<LevelManager>();
+
 		summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
 		summaryScreen = GameObject.FindGameObjectWithTag("SummaryScreen");
 		summaryFade.SetActive(false);
@@ -115,5 +120,13 @@ public class GameController : MonoBehaviour
 		{
 			summaryStats.text = "Score: " + totalScore.ToString("N0");
 		}
+
+		StartCoroutine(NextLevel());
+	}
+
+	IEnumerator NextLevel()
+	{
+		yield return new WaitForSeconds(7.0f);
+		levelManager.LoadLevel(nextLevel);
 	}
 }
