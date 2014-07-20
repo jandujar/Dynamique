@@ -31,8 +31,12 @@ public class GameController : MonoBehaviour
 
 		summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
 		summaryScreen = GameObject.FindGameObjectWithTag("SummaryScreen");
-		summaryFade.SetActive(false);
-		summaryScreen.SetActive(false);
+
+		if (summaryFade != null)
+			summaryFade.SetActive(false);
+		
+		if (summaryScreen != null)
+			summaryScreen.SetActive(false);
 	}
 
 	void Start()

@@ -7,8 +7,9 @@ public class SplashController : MonoBehaviour
 
 	void Start()
 	{
-		PlayerPrefs.SetInt("Start Button Pressed", 0);
-		PlayerPrefs.SetInt("Level Number", 0);
+		PlayerPrefs.DeleteAll();
+		PlayerPrefs.SetInt("Load Main Menu", 1);
+		PlayerPrefs.Save();
 		StartCoroutine(WaitAndLoad());
 	}
 	
