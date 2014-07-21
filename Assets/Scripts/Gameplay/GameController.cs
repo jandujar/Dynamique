@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
 	LevelManager levelManager;
 	GameObject summaryFade;
 	GameObject summaryScreen;
+	GameObject inGameHUD;
 	UILabel summaryStats;
 	Spawner spawner;
 	float collectibleSpawnWait = 0.1f;
@@ -100,6 +101,18 @@ public class GameController : MonoBehaviour
 
 	void LevelCompleted()
 	{
+		inGameHUD = GameObject.FindGameObjectWithTag("InGameHUD");
+
+		if (inGameHUD != null)
+		{
+			Collider[] colliders = inGameHUD.GetComponentsInChildren<Collider>();
+
+			foreach (Collider collider in colliders)
+			{
+				collider.enabled = false;
+			}
+		}
+
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
 
