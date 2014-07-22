@@ -3,14 +3,12 @@ using System.Collections;
 
 public class GameController : MonoBehaviour
 {
-	[SerializeField] int nextLevel = 0;
 	[SerializeField] float initialWait = 0f;
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
-	LevelManager levelManager;
+	GameStateManager gameStateManager;
 	GameObject summaryFade;
 	GameObject summaryScreen;
-	GameObject inGameHUD;
 	UILabel summaryStats;
 	Spawner spawner;
 	float collectibleSpawnWait = 0.1f;
@@ -22,23 +20,8 @@ public class GameController : MonoBehaviour
 	bool summaryTriggered = false;
 	bool levelComplete = false;
 	int collectiblesCollected = 0;
-	public bool LevelComplete { get { return levelComplete;} set { levelComplete = value; }}
-	public int CollectiblesCollected { get { return collectiblesCollected;} set { collectiblesCollected = value; }}
-
-	void Awake()
-	{
-		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
-		levelManager = levelManagerObject.GetComponent<LevelManager>();
-
-		summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
-		summaryScreen = GameObject.FindGameObjectWithTag("SummaryScreen");
-
-		if (summaryFade != null)
-			summaryFade.SetActive(false);
-		
-		if (summaryScreen != null)
-			summaryScreen.SetActive(false);
-	}
+	public bool LevelComplete { get { return levelComplete; } set { levelComplete = value; }}
+	public int CollectiblesCollected { get { return collectiblesCollected; } set { collectiblesCollected = value; }}
 
 	void Start()
 	{
@@ -61,7 +44,7 @@ public class GameController : MonoBehaviour
 	{
 		if (startTimer)
 		{
-			if (!LevelComplete)
+			if (!levelComplete)
 				elapsedTime += Time.deltaTime;
 			else if (!summaryTriggered)
 			{
@@ -101,23 +84,12 @@ public class GameController : MonoBehaviour
 
 	void LevelCompleted()
 	{
-		inGameHUD = GameObject.FindGameObjectWithTag("InGameHUD");
+		GameObject gameStateManagerObject = GameObject.FindGameObjectWithTag("GameStateManager");
 
-		if (inGameHUD != null)
-		{
-			Collider[] colliders = inGameHUD.GetComponentsInChildren<Collider>();
-
-			foreach (Collider collider in colliders)
-			{
-				collider.enabled = false;
-			}
-		}
-
-		summaryFade.SetActive(true);
-		summaryScreen.SetActive(true);
-
-		GameObject summaryStatsObject = GameObject.FindGameObjectWithTag("SummaryStats");
-		summaryStats = summaryStatsObject.GetComponent<UILabel>();
+		if (gameStateManagerObject != null)
+			gameStateManager = gameStateManagerObject.GetComponent<GameStateManager>();
+		else
+			Debug.LogError("Couldn't Find Game State Manager");
 
 		if (elapsedTime < 60f)
 			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));
@@ -125,25 +97,12 @@ public class GameController : MonoBehaviour
 			timeScore = 0;
 
 		starScore = 1000 * CollectiblesCollected;
-
 		totalScore = timeScore + starScore;
 
-		if (collectibleSpawners.Length > 0)
-		{
-			summaryStats.text = "Stars Collected: " + CollectiblesCollected +
-			"\nScore: " + totalScore.ToString("N0");
-		}
-		else
-		{
-			summaryStats.text = "Score: " + totalScore.ToString("N0");
-		}
-
-		StartCoroutine(NextLevel());
-	}
-
-	IEnumerator NextLevel()
-	{
-		yield return new WaitForSeconds(7.0f);
-		levelManager.LoadLevel(nextLevel);
+		gameStateManager.CollectibleSpawners = collectibleSpawners.Length;
+		gameStateManager.CollectiblesCollected = CollectiblesCollected;
+		gameStateManager.TotalScore = totalScore;
+		gameStateManager.state = GameStateManager.GameState.Complete;
+		gameStateManager.SetState();
 	}
 }

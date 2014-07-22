@@ -35,8 +35,17 @@ public class LevelManager : MonoBehaviour
 
 	public void LoadLevel(int levelNumber)
 	{
-		PlayerPrefs.SetInt("Level Number", levelNumber);
-		PlayerPrefs.Save();
+		if (levelNumber < levels.Length)
+		{
+			PlayerPrefs.SetInt("Level Number", levelNumber);
+			PlayerPrefs.Save();
+		}
+		else
+		{
+			Debug.Log("Level Index Exceeded");
+			PlayerPrefs.SetInt("Load Main Menu", 1);
+		}
+
 		Application.LoadLevel(1);
 	}
 }

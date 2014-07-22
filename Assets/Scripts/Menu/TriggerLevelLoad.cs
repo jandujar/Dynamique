@@ -4,12 +4,13 @@ using System.Collections;
 public class TriggerLevelLoad : MonoBehaviour
 {
 	[SerializeField] LevelManager levelManager;
-	[SerializeField] GameObject mainMenu;
+	[SerializeField] TweenAlpha backgroundFade;
 	[SerializeField] int levelToLoad = 0;
 	[SerializeField] UILabel buttonText;
 
 	void Awake()
 	{
+		PlayerPrefs.Save();
 		buttonText.text = "Level " + levelToLoad.ToString();
 
 		var summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
@@ -24,9 +25,30 @@ public class TriggerLevelLoad : MonoBehaviour
 
 	void OnClick()
 	{
-		PlayerPrefs.SetInt("Load Main Menu", 0);
-		PlayerPrefs.Save();
-		levelManager.LoadLevel(levelToLoad - 1);
-		mainMenu.SetActive(false);
+		backgroundFade.from = 0f;
+		backgroundFade.to = 1f;
+		backgroundFade.duration = 1f;
+		backgroundFade.delay = 0f;
+		backgroundFade.ResetToBeginning();
+		backgroundFade.PlayForward();
+
+		StartCoroutine(WaitAndTrigger());
+	}
+
+	IEnumerator WaitAndTrigger()
+	{
+		yield return new WaitForSeconds(1.0f);
+
+		if (levelToLoad > 0)
+		{
+			PlayerPrefs.SetInt("Load Main Menu", 0);
+			levelManager.LoadLevel(levelToLoad - 1);
+		}
+		else
+		{
+			PlayerPrefs.SetInt("Load Main Menu", 1);
+			Debug.LogError("Loading Level 0 or less....");
+			levelManager.LoadLevel(0);
+		}
 	}
 }
