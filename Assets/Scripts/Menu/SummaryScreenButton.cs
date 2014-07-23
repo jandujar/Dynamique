@@ -17,7 +17,7 @@ public class SummaryScreenButton : MonoBehaviour
 
 	void OnClick()
 	{
-		summaryScreen.from = 1f;
+		summaryScreen.from = summaryScreen.value;
 		summaryScreen.to = 0f;
 		summaryScreen.duration = 1f;
 		summaryScreen.delay = 0f;

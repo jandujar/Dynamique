@@ -25,7 +25,7 @@ public class TriggerLevelLoad : MonoBehaviour
 
 	void OnClick()
 	{
-		backgroundFade.from = 0f;
+		backgroundFade.from = backgroundFade.value;
 		backgroundFade.to = 1f;
 		backgroundFade.duration = 1f;
 		backgroundFade.delay = 0f;
