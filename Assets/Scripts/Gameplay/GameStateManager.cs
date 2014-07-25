@@ -96,17 +96,17 @@ public class GameStateManager : MonoBehaviour
 
 	void Continue()
 	{
-		levelManager.LoadLevel(PlayerPrefs.GetInt("Level Number", 0) + 1);
+		levelManager.LoadLevel(EncryptedPlayerPrefs.GetInt("Level Number", 0) + 1);
 	}
 
 	void Replay()
 	{
-		levelManager.LoadLevel(PlayerPrefs.GetInt("Level Number", 0));
+		levelManager.LoadLevel(EncryptedPlayerPrefs.GetInt("Level Number", 0));
 	}
 
 	void LevelSelect()
 	{
-		PlayerPrefs.SetInt("Load Main Menu", 1);
+		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 		levelManager.LoadLevel(0);
 	}
 }

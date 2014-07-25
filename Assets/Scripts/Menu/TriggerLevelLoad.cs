@@ -41,12 +41,12 @@ public class TriggerLevelLoad : MonoBehaviour
 
 		if (levelToLoad > 0)
 		{
-			PlayerPrefs.SetInt("Load Main Menu", 0);
+			EncryptedPlayerPrefs.SetInt("Load Main Menu", 0);
 			levelManager.LoadLevel(levelToLoad - 1);
 		}
 		else
 		{
-			PlayerPrefs.SetInt("Load Main Menu", 1);
+			EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 			Debug.LogError("Loading Level 0 or less....");
 			levelManager.LoadLevel(0);
 		}

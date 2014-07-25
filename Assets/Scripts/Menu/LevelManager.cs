@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
 
 	void Start()
 	{
-		int loadMainMenu = PlayerPrefs.GetInt("Load Main Menu", 1);
+		int loadMainMenu = EncryptedPlayerPrefs.GetInt("Load Main Menu", 1);
 		specificLevelNumber -= 1;
 
 		if (loadMainMenu == 1)
@@ -27,7 +27,7 @@ public class LevelManager : MonoBehaviour
 			if (loadSpecificLevel)
 				Instantiate(levels[specificLevelNumber], transform.position, transform.rotation);
 			else
-				Instantiate(levels[PlayerPrefs.GetInt("Level Number", 0)], transform.position, transform.rotation);
+				Instantiate(levels[EncryptedPlayerPrefs.GetInt("Level Number", 0)], transform.position, transform.rotation);
 
 			inGameHUD.SetActive(true);
 		}
@@ -37,13 +37,14 @@ public class LevelManager : MonoBehaviour
 	{
 		if (levelNumber < levels.Length)
 		{
-			PlayerPrefs.SetInt("Level Number", levelNumber);
+			EncryptedPlayerPrefs.SetInt("Level Number", levelNumber);
 			PlayerPrefs.Save();
 		}
 		else
 		{
 			Debug.Log("Level Index Exceeded");
-			PlayerPrefs.SetInt("Load Main Menu", 1);
+			EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
+			PlayerPrefs.Save();
 		}
 
 		Application.LoadLevel(1);
