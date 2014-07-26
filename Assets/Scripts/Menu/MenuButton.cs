@@ -8,9 +8,9 @@ public class MenuButton : MonoBehaviour
 	public enum ButtonState
 	{
 		Idle,
-		Unfold,
-		LevelSelect,
 		Options,
+		StageSelect,
+		LevelSelect
 	}
 	
 	public ButtonState buttonState;
@@ -39,14 +39,14 @@ public class MenuButton : MonoBehaviour
 			case ButtonState.Idle:
 				menuStateManager.menuState = MenuStateManager.MenuState.Idle;
 				break;
-			case ButtonState.Unfold:
-				menuStateManager.menuState = MenuStateManager.MenuState.Unfold;
+			case ButtonState.Options:
+				menuStateManager.menuState = MenuStateManager.MenuState.Options;
+				break;
+			case ButtonState.StageSelect:
+				menuStateManager.menuState = MenuStateManager.MenuState.StageSelect;
 				break;
 			case ButtonState.LevelSelect:
 				menuStateManager.menuState = MenuStateManager.MenuState.LevelSelect;
-				break;
-			case ButtonState.Options:
-				menuStateManager.menuState = MenuStateManager.MenuState.Options;
 				break;
 			}
 

@@ -3,17 +3,18 @@ using System.Collections;
 
 public class MenuStateManager : MonoBehaviour
 {
+	[SerializeField] TweenAlpha titleTween;
 	[SerializeField] MenuObject[] idleMenuObjects;
-	[SerializeField] MenuObject[] unfoldMenuObjects;
+	[SerializeField] MenuObject[] stageSelectMenuObjects;
 	[SerializeField] MenuObject[] levelSelectMenuObjects;
 	[SerializeField] MenuObject[] optionsMenuObjects;
 
 	public enum MenuState
 	{
 		Idle,
-		Unfold,
-		LevelSelect,
-		Options
+		Options,
+		StageSelect,
+		LevelSelect
 	}
 	
 	public MenuState menuState;
@@ -25,14 +26,14 @@ public class MenuStateManager : MonoBehaviour
 		case MenuState.Idle:
 			Idle();
 			break;
-		case MenuState.Unfold:
-			Unfold();
+		case MenuState.Options:
+			Options();
+			break;
+		case MenuState.StageSelect:
+			StageSelect();
 			break;
 		case MenuState.LevelSelect:
 			LevelSelect();
-			break;
-		case MenuState.Options:
-			Options();
 			break;
 		}
 	}
@@ -45,6 +46,7 @@ public class MenuStateManager : MonoBehaviour
 	void Idle()
 	{
 		Debug.Log("Idle");
+		FadeInTitle();
 
 		foreach (MenuObject idleMenuObject in idleMenuObjects)
 		{
@@ -88,19 +90,26 @@ public class MenuStateManager : MonoBehaviour
 		}
 	}
 
-	void Unfold()
+	void Options()
 	{
-		Debug.Log("Unfold");
+		Debug.Log("Options");
+		FadeOutTitle();
+	}
 
-		foreach (MenuObject unfoldMenuObject in unfoldMenuObjects)
+	void StageSelect()
+	{
+		Debug.Log("Stage Select");
+		FadeOutTitle();
+
+		foreach (MenuObject stageSelectMenuObject in stageSelectMenuObjects)
 		{
-			if (!unfoldMenuObject.menuLabel)
+			if (!stageSelectMenuObject.menuLabel)
 			{
-				Collider objectCollider = unfoldMenuObject.menuObject.GetComponent<Collider>();
-				TrailRenderer[] trailRenderers = unfoldMenuObject.menuObject.GetComponentsInChildren<TrailRenderer>();
-				ParticleSystem[] particleSystems = unfoldMenuObject.menuObject.GetComponentsInChildren<ParticleSystem>();
+				Collider objectCollider = stageSelectMenuObject.menuObject.GetComponent<Collider>();
+				TrailRenderer[] trailRenderers = stageSelectMenuObject.menuObject.GetComponentsInChildren<TrailRenderer>();
+				ParticleSystem[] particleSystems = stageSelectMenuObject.menuObject.GetComponentsInChildren<ParticleSystem>();
 
-				if (unfoldMenuObject.activate)
+				if (stageSelectMenuObject.activate)
 				{
 					objectCollider.enabled = true;
 
@@ -121,15 +130,15 @@ public class MenuStateManager : MonoBehaviour
 						particleSystem.enableEmission = false;
 				}
 				
-				RepositionMenuObject repositionMenuObjectScript = unfoldMenuObject.menuObject.GetComponent<RepositionMenuObject>();
-				repositionMenuObjectScript.Reposition(unfoldMenuObject.position);
+				RepositionMenuObject repositionMenuObjectScript = stageSelectMenuObject.menuObject.GetComponent<RepositionMenuObject>();
+				repositionMenuObjectScript.Reposition(stageSelectMenuObject.position);
 			}
 			else
 			{
-				if (unfoldMenuObject.activate)
-					unfoldMenuObject.menuObject.SetActive(true);
+				if (stageSelectMenuObject.activate)
+					stageSelectMenuObject.menuObject.SetActive(true);
 				else
-					unfoldMenuObject.menuObject.SetActive(false);
+					stageSelectMenuObject.menuObject.SetActive(false);
 			}
 		}
 	}
@@ -137,27 +146,26 @@ public class MenuStateManager : MonoBehaviour
 	void LevelSelect()
 	{
 		Debug.Log("Level Select");
-
-		foreach (MenuObject levelSelectMenuObject in levelSelectMenuObjects)
-		{
-			if (levelSelectMenuObject.activate)
-				levelSelectMenuObject.menuObject.SetActive(true);
-			else
-				levelSelectMenuObject.menuObject.SetActive(false);
-		}
 	}
 
-	void Options()
+	void FadeInTitle()
 	{
-		Debug.Log("Options");
+		titleTween.from = titleTween.value;
+		titleTween.to = 1f;
+		titleTween.duration = 1f;
+		titleTween.delay = 0.5f;
+		titleTween.ResetToBeginning();
+		titleTween.PlayForward();
+	}
 
-		foreach (MenuObject optionsMenuObject in optionsMenuObjects)
-		{
-			if (optionsMenuObject.activate)
-				optionsMenuObject.menuObject.SetActive(true);
-			else
-				optionsMenuObject.menuObject.SetActive(false);
-		}
+	void FadeOutTitle()
+	{
+		titleTween.from = titleTween.value;
+		titleTween.to = 0f;
+		titleTween.duration = 0.25f;
+		titleTween.delay = 0f;
+		titleTween.ResetToBeginning();
+		titleTween.PlayForward();
 	}
 }
 
