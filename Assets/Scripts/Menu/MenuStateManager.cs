@@ -4,10 +4,13 @@ using System.Collections;
 public class MenuStateManager : MonoBehaviour
 {
 	[SerializeField] TweenAlpha titleTween;
+	[SerializeField] TweenAlpha optionsTween;
+	[SerializeField] TweenAlpha stageSelectTween;
+	[SerializeField] TweenAlpha levelSelectTween;
 	[SerializeField] MenuObject[] idleMenuObjects;
+	[SerializeField] MenuObject[] optionsMenuObjects;
 	[SerializeField] MenuObject[] stageSelectMenuObjects;
 	[SerializeField] MenuObject[] levelSelectMenuObjects;
-	[SerializeField] MenuObject[] optionsMenuObjects;
 
 	public enum MenuState
 	{
@@ -41,13 +44,19 @@ public class MenuStateManager : MonoBehaviour
 	void Awake()
 	{
 		menuState = MenuState.Idle;
+		FadeOutLabel(optionsTween, 0.01f);
+		FadeOutLabel(stageSelectTween, 0.01f);
+		//FadeOutLabel(levelSelectTween, 0.01f);
 		SetState();
 	}
 
 	void Idle()
 	{
 		Debug.Log("Idle");
-		FadeInTitle();
+		FadeInLabel(titleTween, 1f, 0.5f);
+		FadeOutLabel(optionsTween, 1f, 0f);
+		FadeOutLabel(stageSelectTween, 1f, 0f);
+		//FadeOutLabel(levelSelectTween, 1f, 0f);
 
 		foreach (MenuObject idleMenuObject in idleMenuObjects)
 		{
@@ -94,13 +103,56 @@ public class MenuStateManager : MonoBehaviour
 	void Options()
 	{
 		Debug.Log("Options");
-		FadeOutTitle();
+		FadeInLabel(optionsTween, 1f, 0.5f);
+		FadeOutLabel(titleTween, 0.25f, 0f);
+
+		foreach (MenuObject optionsMenuObject in optionsMenuObjects)
+		{
+			if (!optionsMenuObject.menuLabel)
+			{
+				Collider objectCollider = optionsMenuObject.menuObject.GetComponent<Collider>();
+				TrailRenderer[] trailRenderers = optionsMenuObject.menuObject.GetComponentsInChildren<TrailRenderer>();
+				ParticleSystem[] particleSystems = optionsMenuObject.menuObject.GetComponentsInChildren<ParticleSystem>();
+				
+				if (optionsMenuObject.activate)
+				{
+					objectCollider.enabled = true;
+					
+					foreach (TrailRenderer trailRenderer in trailRenderers)
+						trailRenderer.enabled = true;
+					
+					foreach (ParticleSystem particleSystem in particleSystems)
+						particleSystem.enableEmission = true;
+				}
+				else
+				{
+					objectCollider.enabled = false;
+					
+					foreach (TrailRenderer trailRenderer in trailRenderers)
+						trailRenderer.enabled = false;
+					
+					foreach (ParticleSystem particleSystem in particleSystems)
+						particleSystem.enableEmission = false;
+				}
+				
+				RepositionMenuObject repositionMenuObjectScript = optionsMenuObject.menuObject.GetComponent<RepositionMenuObject>();
+				repositionMenuObjectScript.Reposition(optionsMenuObject.position);
+			}
+			else
+			{
+				if (optionsMenuObject.activate)
+					optionsMenuObject.menuObject.SetActive(true);
+				else
+					optionsMenuObject.menuObject.SetActive(false);
+			}
+		}
 	}
 
 	void StageSelect()
 	{
 		Debug.Log("Stage Select");
-		FadeOutTitle();
+		FadeInLabel(stageSelectTween, 1f, 0.5f);
+		FadeOutLabel(titleTween, 0.25f, 0f);
 
 		foreach (MenuObject stageSelectMenuObject in stageSelectMenuObjects)
 		{
@@ -149,24 +201,24 @@ public class MenuStateManager : MonoBehaviour
 		Debug.Log("Level Select");
 	}
 
-	void FadeInTitle()
+	void FadeInLabel(TweenAlpha labelTween, float fadeTime = 1f, float fadeDelay = 0f)
 	{
-		titleTween.from = titleTween.value;
-		titleTween.to = 1f;
-		titleTween.duration = 1f;
-		titleTween.delay = 0.5f;
-		titleTween.ResetToBeginning();
-		titleTween.PlayForward();
+		labelTween.from = labelTween.value;
+		labelTween.to = 1f;
+		labelTween.duration = 1f;
+		labelTween.delay = 0.5f;
+		labelTween.ResetToBeginning();
+		labelTween.PlayForward();
 	}
 
-	void FadeOutTitle()
+	void FadeOutLabel(TweenAlpha labelTween, float fadeTime = 1f, float fadeDelay = 0f)
 	{
-		titleTween.from = titleTween.value;
-		titleTween.to = 0f;
-		titleTween.duration = 0.25f;
-		titleTween.delay = 0f;
-		titleTween.ResetToBeginning();
-		titleTween.PlayForward();
+		labelTween.from = labelTween.value;
+		labelTween.to = 0f;
+		labelTween.duration = 0.25f;
+		labelTween.delay = 0f;
+		labelTween.ResetToBeginning();
+		labelTween.PlayForward();
 	}
 }
 
