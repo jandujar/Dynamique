@@ -40,6 +40,7 @@ public class MenuStateManager : MonoBehaviour
 
 	void Awake()
 	{
+		menuState = MenuState.Idle;
 		SetState();
 	}
 

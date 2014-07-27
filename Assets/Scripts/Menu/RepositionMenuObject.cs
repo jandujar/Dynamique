@@ -4,6 +4,7 @@ using System.Collections;
 public class RepositionMenuObject : MonoBehaviour
 {
 	[SerializeField] float movementSpeed = 1f;
+	[SerializeField] bool backButton = false;
 	float distance;
 	Vector3 newPosition;
 	bool enableMovement = false;
@@ -12,7 +13,15 @@ public class RepositionMenuObject : MonoBehaviour
 
 	public void Reposition(Vector3 repositionVector3)
 	{
-		NewPosition = repositionVector3;
+		if (!backButton)
+			NewPosition = repositionVector3;
+		else
+		{
+			GameObject cameraObject = GameObject.FindGameObjectWithTag("BackgroundCamera");
+			Camera camera = cameraObject.GetComponent<Camera>();
+			NewPosition = new Vector3(-1750f * (camera.pixelWidth/camera.pixelHeight), 0f, -1600f);
+		}
+
 		EnableMovement = true;
 	}
 

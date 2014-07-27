@@ -4,6 +4,7 @@ using System.Collections;
 public class MenuButton : MonoBehaviour
 {
 	[SerializeField] MenuStateManager menuStateManager;
+	[SerializeField] TriggerLevelLoad triggerLevelLoad;
 
 	public enum ButtonState
 	{
@@ -33,6 +34,21 @@ public class MenuButton : MonoBehaviour
 	public void On_TouchStart(Gesture gesture)
 	{
 		if (gesture.pickObject == gameObject)
+			ButtonPress();
+	}
+
+	void OnClick()
+	{
+		ButtonPress();
+	}
+
+	void ButtonPress()
+	{
+		if (triggerLevelLoad != null)
+		{
+			triggerLevelLoad.LoadLevel();
+		}
+		else
 		{
 			switch(buttonState)
 			{
@@ -49,7 +65,7 @@ public class MenuButton : MonoBehaviour
 				menuStateManager.menuState = MenuStateManager.MenuState.LevelSelect;
 				break;
 			}
-
+			
 			menuStateManager.SetState();
 		}
 	}

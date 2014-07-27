@@ -6,12 +6,12 @@ public class TriggerLevelLoad : MonoBehaviour
 	[SerializeField] LevelManager levelManager;
 	[SerializeField] TweenAlpha backgroundFade;
 	[SerializeField] int levelToLoad = 0;
-	[SerializeField] UILabel buttonText;
+	//[SerializeField] UILabel buttonText;
 
 	void Awake()
 	{
 		PlayerPrefs.Save();
-		buttonText.text = "Level " + levelToLoad.ToString();
+		//buttonText.text = "Level " + levelToLoad.ToString();
 
 		var summaryFade = GameObject.FindGameObjectWithTag("SummaryFade");
 		var summaryScreen = GameObject.FindGameObjectWithTag("SummaryScreen");
@@ -23,7 +23,7 @@ public class TriggerLevelLoad : MonoBehaviour
 			summaryScreen.SetActive(false);
 	}
 
-	void OnClick()
+	public void LoadLevel()
 	{
 		backgroundFade.from = backgroundFade.value;
 		backgroundFade.to = 1f;
