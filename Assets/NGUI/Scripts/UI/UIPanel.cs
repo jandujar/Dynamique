@@ -18,7 +18,7 @@ public class UIPanel : UIRect
 	/// List of active panels.
 	/// </summary>
 
-	static public BetterList<UIPanel> list = new BetterList<UIPanel>();
+	static public List<UIPanel> list = new List<UIPanel>();
 
 	public enum RenderQueue
 	{
@@ -58,7 +58,7 @@ public class UIPanel : UIRect
 	/// Having this on improves performance, but turning it off will reduce garbage collection.
 	/// </summary>
 
-	public bool cullWhileDragging = false;
+	public bool cullWhileDragging = true;
 
 	/// <summary>
 	/// Optimization flag. Makes the assumption that the panel's geometry
@@ -93,14 +93,14 @@ public class UIPanel : UIRect
 	/// </summary>
 
 	[System.NonSerialized]
-	public BetterList<UIWidget> widgets = new BetterList<UIWidget>();
+	public List<UIWidget> widgets = new List<UIWidget>();
 
 	/// <summary>
 	/// List of draw calls created by this panel. Do not attempt to modify this list yourself.
 	/// </summary>
 
 	[System.NonSerialized]
-	public BetterList<UIDrawCall> drawCalls = new BetterList<UIDrawCall>();
+	public List<UIDrawCall> drawCalls = new List<UIDrawCall>();
 
 	/// <summary>
 	/// Matrix that will transform the specified world coordinates to relative-to-panel coordinates.
@@ -164,7 +164,7 @@ public class UIPanel : UIRect
 		get
 		{
 			int highest = int.MinValue;
-			for (int i = 0; i < list.size; ++i)
+			for (int i = 0, imax = list.Count; i < imax; ++i)
 				highest = Mathf.Max(highest, list[i].depth);
 			return (highest == int.MinValue) ? 0 : highest + 1;
 		}
@@ -409,7 +409,7 @@ public class UIPanel : UIRect
 		mMatrixFrame = -1;
 		mCullTime = (mCullTime == 0f) ? 0.001f : RealTime.time + 0.15f;
 
-		for (int i = 0; i < list.size; ++i)
+		for (int i = 0, imax = list.Count; i < imax; ++i)
 		{
 			UIPanel p = list[i];
 			if (p != this && p.parentPanel == this)
@@ -521,34 +521,10 @@ public class UIPanel : UIRect
 		{
 			if (mClipping == UIDrawCall.Clipping.None)
 			{
-				Vector2 size = GetViewSize();
-
-				float x0 = -0.5f * size.x;
-				float y0 = -0.5f * size.y;
-				float x1 = x0 + size.x;
-				float y1 = y0 + size.y;
-
-				Transform wt = (mCam != null) ? mCam.transform : null;
-
-				if (wt != null)
-				{
-					mCorners[0] = wt.TransformPoint(x0, y0, 0f);
-					mCorners[1] = wt.TransformPoint(x0, y1, 0f);
-					mCorners[2] = wt.TransformPoint(x1, y1, 0f);
-					mCorners[3] = wt.TransformPoint(x1, y0, 0f);
-
-					wt = cachedTransform;
-
-					for (int i = 0; i < 4; ++i)
-						mCorners[i] = wt.InverseTransformPoint(mCorners[i]);
-				}
-				else
-				{
-					mCorners[0] = new Vector3(x0, y0);
-					mCorners[1] = new Vector3(x0, y1);
-					mCorners[2] = new Vector3(x1, y1);
-					mCorners[3] = new Vector3(x1, y0);
-				}
+				Vector3[] corners = worldCorners;
+				Transform wt = cachedTransform;
+				for (int i = 0; i < 4; ++i) corners[i] = wt.InverseTransformPoint(corners[i]);
+				return corners;
 			}
 			else
 			{
@@ -574,34 +550,7 @@ public class UIPanel : UIRect
 	{
 		get
 		{
-			if (mClipping == UIDrawCall.Clipping.None)
-			{
-				if (mCam != null)
-				{
-					Vector3[] corners = NGUITools.GetWorldCorners(mCam);
-					UIRoot rt = root;
-
-					if (rt != null)
-					{
-						float adjustment = rt.pixelSizeAdjustment;
-						for (int i = 0; i < 4; ++i) corners[i] *= adjustment;
-					}
-					return corners;
-				}
-
-				Vector2 size = GetViewSize();
-
-				float x0 = -0.5f * size.x;
-				float y0 = -0.5f * size.y;
-				float x1 = x0 + size.x;
-				float y1 = y0 + size.y;
-
-				mCorners[0] = new Vector3(x0, y0, 0f);
-				mCorners[1] = new Vector3(x0, y1, 0f);
-				mCorners[2] = new Vector3(x1, y1, 0f);
-				mCorners[3] = new Vector3(x1, y0, 0f);
-			}
-			else
+			if (mClipping != UIDrawCall.Clipping.None)
 			{
 				float x0 = mClipOffset.x + mClipRange.x - 0.5f * mClipRange.z;
 				float y0 = mClipOffset.y + mClipRange.y - 0.5f * mClipRange.w;
@@ -615,6 +564,40 @@ public class UIPanel : UIRect
 				mCorners[2] = wt.TransformPoint(x1, y1, 0f);
 				mCorners[3] = wt.TransformPoint(x1, y0, 0f);
 			}
+			else
+			{
+				if (mCam != null)
+				{
+					Vector3[] corners = mCam.GetWorldCorners();
+
+					if (anchorOffset)
+					{
+						Vector3 off = cachedTransform.position;
+						for (int i = 0; i < 4; ++i)
+							corners[i] += off;
+					}
+					return corners;
+				}
+
+				Vector2 size = GetViewSize();
+
+				float x0 = -0.5f * size.x;
+				float y0 = -0.5f * size.y;
+				float x1 = x0 + size.x;
+				float y1 = y0 + size.y;
+
+				mCorners[0] = new Vector3(x0, y0);
+				mCorners[1] = new Vector3(x0, y1);
+				mCorners[2] = new Vector3(x1, y1);
+				mCorners[3] = new Vector3(x1, y0);
+
+				if (anchorOffset)
+				{
+					Vector3 off = cachedTransform.position;
+					for (int i = 0; i < 4; ++i)
+						mCorners[i] += off;
+				}
+			}
 			return mCorners;
 		}
 	}
@@ -626,31 +609,42 @@ public class UIPanel : UIRect
 
 	public override Vector3[] GetSides (Transform relativeTo)
 	{
-		if (mClipping != UIDrawCall.Clipping.None || anchorOffset)
+		if (mClipping != UIDrawCall.Clipping.None)
 		{
-			Vector2 size = GetViewSize();
-			Vector2 cr = (mClipping != UIDrawCall.Clipping.None) ? (Vector2)mClipRange + mClipOffset : Vector2.zero;
+			float x0 = mClipOffset.x + mClipRange.x - 0.5f * mClipRange.z;
+			float y0 = mClipOffset.y + mClipRange.y - 0.5f * mClipRange.w;
+			float x1 = x0 + mClipRange.z;
+			float y1 = y0 + mClipRange.w;
+			float hx = (x0 + x1) * 0.5f;
+			float hy = (y0 + y1) * 0.5f;
 
-			float x0 = cr.x - 0.5f * size.x;
-			float y0 = cr.y - 0.5f * size.y;
-			float x1 = x0 + size.x;
-			float y1 = y0 + size.y;
-			float cx = (x0 + x1) * 0.5f;
-			float cy = (y0 + y1) * 0.5f;
+			Transform wt = cachedTransform;
 
-			Matrix4x4 mat = cachedTransform.localToWorldMatrix;
-
-			mCorners[0] = mat.MultiplyPoint3x4(new Vector3(x0, cy));
-			mCorners[1] = mat.MultiplyPoint3x4(new Vector3(cx, y1));
-			mCorners[2] = mat.MultiplyPoint3x4(new Vector3(x1, cy));
-			mCorners[3] = mat.MultiplyPoint3x4(new Vector3(cx, y0));
+			mSides[0] = wt.TransformPoint(x0, hy, 0f);
+			mSides[1] = wt.TransformPoint(hx, y1, 0f);
+			mSides[2] = wt.TransformPoint(x1, hy, 0f);
+			mSides[3] = wt.TransformPoint(hx, y0, 0f);
 
 			if (relativeTo != null)
 			{
 				for (int i = 0; i < 4; ++i)
-					mCorners[i] = relativeTo.InverseTransformPoint(mCorners[i]);
+					mSides[i] = relativeTo.InverseTransformPoint(mSides[i]);
 			}
-			return mCorners;
+			return mSides;
+		}
+		else if (anchorOffset)
+		{
+			Vector3[] sides = mCam.GetSides();
+			Vector3 off = cachedTransform.position;
+			for (int i = 0; i < 4; ++i)
+				sides[i] += off;
+
+			if (relativeTo != null)
+			{
+				for (int i = 0; i < 4; ++i)
+					sides[i] = relativeTo.InverseTransformPoint(sides[i]);
+			}
+			return sides;
 		}
 		return base.GetSides(relativeTo);
 	}
@@ -838,8 +832,8 @@ public class UIPanel : UIRect
 
 	public void SetDirty ()
 	{
-		for (int i = 0; i < drawCalls.size; ++i)
-			drawCalls.buffer[i].isDirty = true;
+		for (int i = 0, imax = drawCalls.Count; i < imax; ++i)
+			drawCalls[i].isDirty = true;
 		Invalidate(true);
 	}
 
@@ -901,6 +895,7 @@ public class UIPanel : UIRect
 		mRebuild = true;
 		mAlphaFrameID = -1;
 		mMatrixFrame = -1;
+		OnStart();
 		base.OnEnable();
 		mMatrixFrame = -1;
 	}
@@ -951,9 +946,9 @@ public class UIPanel : UIRect
 
 	protected override void OnDisable ()
 	{
-		for (int i = 0; i < drawCalls.size; ++i)
+		for (int i = 0, imax = drawCalls.Count; i < imax; ++i)
 		{
-			UIDrawCall dc = drawCalls.buffer[i];
+			UIDrawCall dc = drawCalls[i];
 			if (dc != null) UIDrawCall.Destroy(dc);
 		}
 		
@@ -963,7 +958,7 @@ public class UIPanel : UIRect
 		mAlphaFrameID = -1;
 		mMatrixFrame = -1;
 		
-		if (list.size == 0)
+		if (list.Count == 0)
 		{
 			UIDrawCall.ReleaseAll();
 			mUpdateFrame = -1;
@@ -1143,32 +1138,32 @@ public class UIPanel : UIRect
 			mUpdateFrame = Time.frameCount;
 
 			// Update each panel in order
-			for (int i = 0; i < list.size; ++i)
+			for (int i = 0, imax = list.Count; i < imax; ++i)
 				list[i].UpdateSelf();
 
 			int rq = 3000;
 
 			// Update all draw calls, making them draw in the right order
-			for (int i = 0; i < list.size; ++i)
+			for (int i = 0, imax = list.Count; i < imax; ++i)
 			{
-				UIPanel p = list.buffer[i];
+				UIPanel p = list[i];
 
 				if (p.renderQueue == RenderQueue.Automatic)
 				{
 					p.startingRenderQueue = rq;
 					p.UpdateDrawCalls();
-					rq += p.drawCalls.size;
+					rq += p.drawCalls.Count;
 				}
 				else if (p.renderQueue == RenderQueue.StartAt)
 				{
 					p.UpdateDrawCalls();
-					if (p.drawCalls.size != 0)
-						rq = Mathf.Max(rq, p.startingRenderQueue + p.drawCalls.size);
+					if (p.drawCalls.Count != 0)
+						rq = Mathf.Max(rq, p.startingRenderQueue + p.drawCalls.Count);
 				}
 				else // Explicit
 				{
 					p.UpdateDrawCalls();
-					if (p.drawCalls.size != 0)
+					if (p.drawCalls.Count != 0)
 						rq = Mathf.Max(rq, p.startingRenderQueue + 1);
 				}
 			}
@@ -1194,9 +1189,9 @@ public class UIPanel : UIRect
 		}
 		else
 		{
-			for (int i = 0; i < drawCalls.size; )
+			for (int i = 0; i < drawCalls.Count; )
 			{
-				UIDrawCall dc = drawCalls.buffer[i];
+				UIDrawCall dc = drawCalls[i];
 
 				if (dc.isDirty && !FillDrawCall(dc))
 				{
@@ -1232,8 +1227,8 @@ public class UIPanel : UIRect
 
 	void FillAllDrawCalls ()
 	{
-		for (int i = 0; i < drawCalls.size; ++i)
-			UIDrawCall.Destroy(drawCalls.buffer[i]);
+		for (int i = 0; i < drawCalls.Count; ++i)
+			UIDrawCall.Destroy(drawCalls[i]);
 		drawCalls.Clear();
 
 		Material mat = null;
@@ -1243,9 +1238,9 @@ public class UIPanel : UIRect
 
 		if (mSortWidgets) SortWidgets();
 
-		for (int i = 0; i < widgets.size; ++i)
+		for (int i = 0; i < widgets.Count; ++i)
 		{
-			UIWidget w = widgets.buffer[i];
+			UIWidget w = widgets[i];
 
 			if (w.isVisible && w.hasVertices)
 			{
@@ -1309,7 +1304,7 @@ public class UIPanel : UIRect
 		{
 			dc.isDirty = false;
 
-			for (int i = 0; i < widgets.size; )
+			for (int i = 0; i < widgets.Count; )
 			{
 				UIWidget w = widgets[i];
 
@@ -1399,9 +1394,9 @@ public class UIPanel : UIRect
 		Quaternion rot = trans.rotation;
 		Vector3 scale = trans.lossyScale;
 
-		for (int i = 0; i < drawCalls.size; ++i)
+		for (int i = 0; i < drawCalls.Count; ++i)
 		{
-			UIDrawCall dc = drawCalls.buffer[i];
+			UIDrawCall dc = drawCalls[i];
 
 			Transform t = dc.cachedTransform;
 			t.position = pos;
@@ -1429,8 +1424,8 @@ public class UIPanel : UIRect
 			mCam = (uic != null) ? uic.cachedCamera : NGUITools.FindCameraForLayer(mLayer);
 			NGUITools.SetChildLayer(cachedTransform, mLayer);
 
-			for (int i = 0; i < drawCalls.size; ++i)
-				drawCalls.buffer[i].gameObject.layer = mLayer;
+			for (int i = 0; i < drawCalls.Count; ++i)
+				drawCalls[i].gameObject.layer = mLayer;
 		}
 	}
 
@@ -1458,9 +1453,9 @@ public class UIPanel : UIRect
 		bool clipped = hasCumulativeClipping;
 
 		// Update all widgets
-		for (int i = 0, imax = widgets.size; i < imax; ++i)
+		for (int i = 0, imax = widgets.Count; i < imax; ++i)
 		{
-			UIWidget w = widgets.buffer[i];
+			UIWidget w = widgets[i];
 
 			// If the widget is visible, update it
 			if (w.panel == this && w.enabled)
@@ -1548,11 +1543,11 @@ public class UIPanel : UIRect
 		Texture tex = w.mainTexture;
 		int depth = w.depth;
 
-		for (int i = 0; i < drawCalls.size; ++i)
+		for (int i = 0; i < drawCalls.Count; ++i)
 		{
-			UIDrawCall dc = drawCalls.buffer[i];
-			int dcStart = (i == 0) ? int.MinValue : drawCalls.buffer[i - 1].depthEnd + 1;
-			int dcEnd = (i + 1 == drawCalls.size) ? int.MaxValue : drawCalls.buffer[i + 1].depthStart - 1;
+			UIDrawCall dc = drawCalls[i];
+			int dcStart = (i == 0) ? int.MinValue : drawCalls[i - 1].depthEnd + 1;
+			int dcEnd = (i + 1 == drawCalls.Count) ? int.MaxValue : drawCalls[i + 1].depthStart - 1;
 
 			if (dcStart <= depth && dcEnd >= depth)
 			{
@@ -1581,7 +1576,7 @@ public class UIPanel : UIRect
 	{
 		mUpdateScroll = true;
 
-		if (widgets.size == 0)
+		if (widgets.Count == 0)
 		{
 			widgets.Add(w);
 		}
@@ -1596,7 +1591,7 @@ public class UIPanel : UIRect
 		}
 		else
 		{
-			for (int i = widgets.size; i > 0; )
+			for (int i = widgets.Count; i > 0; )
 			{
 				if (UIWidget.PanelCompareFunc(w, widgets[--i]) == -1) continue;
 				widgets.Insert(i+1, w);
@@ -1630,7 +1625,7 @@ public class UIPanel : UIRect
 	public void Refresh ()
 	{
 		mRebuild = true;
-		if (list.size > 0) list[0].LateUpdate();
+		if (list.Count > 0) list[0].LateUpdate();
 	}
 
 	/// <summary>
@@ -1749,8 +1744,8 @@ public class UIPanel : UIRect
 			return new Vector2(mClipRange.z, mClipRange.w);
 		
 		Vector2 size = NGUITools.screenSize;
-		UIRoot rt = root;
-		if (rt != null) size *= rt.pixelSizeAdjustment;
+		//UIRoot rt = root;
+		//if (rt != null) size *= rt.pixelSizeAdjustment;
 		return size;
 	}
 
