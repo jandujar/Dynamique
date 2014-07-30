@@ -16,11 +16,7 @@ public class SetTimescale : MonoBehaviour
 			gameStateManager.SetState();
 		}
 		else if (newTimescale == 1)
-		{
 			CustomTimeManager.Play(lerpTime);
-			gameStateManager.state = GameStateManager.GameState.Play;
-			gameStateManager.SetState();
-		}
 		else
 			CustomTimeManager.FadeTo(lerpTime, newTimescale);
 	}

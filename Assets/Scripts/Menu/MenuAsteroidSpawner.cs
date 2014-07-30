@@ -11,7 +11,7 @@ public class MenuAsteroidSpawner : MonoBehaviour
 
 	void Start()
 	{
-		InvokeRepeating("SpawnAstroid", 2f, Random.Range(20f, 30f));
+		InvokeRepeating("SpawnAstroid", 0f, Random.Range(10f, 20f));
 	}
 
 	void SpawnAstroid()
@@ -31,7 +31,7 @@ public class MenuAsteroidSpawner : MonoBehaviour
 			Vector3 modifiedPosition = new Vector3(spawnTransform.position.x * (camera.pixelWidth/camera.pixelHeight), spawnTransform.position.y, spawnTransform.position.z);
 
 			GameObject clone = (GameObject)Instantiate(spawnAstroid, modifiedPosition, spawnTransform.rotation);
-			clone.rigidbody.AddRelativeForce(Vector3.forward * Random.Range(initialForce * 0.9f, initialForce * 1.1f), ForceMode.Impulse);
+			clone.rigidbody.AddRelativeForce(Vector3.forward * Random.Range(initialForce * 0.8f, initialForce * 1.2f), ForceMode.Impulse);
 			Destroy(clone, 90f);
 		}
 		else

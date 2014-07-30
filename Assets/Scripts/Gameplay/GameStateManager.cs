@@ -12,6 +12,8 @@ public class GameStateManager : MonoBehaviour
 	int collectibleSpawners = 0;
 	int collectiblesCollected = 0;
 	int totalScore = 0;
+	public GameObject SummaryFade { get { return summaryFade; }}
+	public GameObject ResumeObjects { get { return resumeButton; }}
 	public int CollectibleSpawners { get { return collectibleSpawners; } set { collectibleSpawners = value; }}
 	public int CollectiblesCollected { get { return collectiblesCollected; } set { collectiblesCollected = value; }}
 	public int TotalScore { get { return totalScore; } set { totalScore = value; }}
@@ -23,7 +25,7 @@ public class GameStateManager : MonoBehaviour
 		Complete,
 		Continue,
 		Replay,
-		LevelSelect
+		MainMenu
 	}
 	
 	public GameState state;
@@ -47,8 +49,8 @@ public class GameStateManager : MonoBehaviour
 		case GameState.Replay:
 			Replay();
 			break;
-		case GameState.LevelSelect:
-			LevelSelect();
+		case GameState.MainMenu:
+			MainMenu();
 			break;
 		}
 	}
@@ -78,7 +80,10 @@ public class GameStateManager : MonoBehaviour
 	void Complete()
 	{
 		pauseButton.transform.collider.enabled = false;
-		resumeButton.transform.collider.enabled = false;
+		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
+		
+		foreach (Collider resumeCollider in resumeColliders)
+			resumeCollider.enabled = false;
 
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
@@ -101,12 +106,35 @@ public class GameStateManager : MonoBehaviour
 
 	void Replay()
 	{
+		pauseButton.transform.collider.enabled = false;
+		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
+
+		foreach (Collider resumeCollider in resumeColliders)
+			resumeCollider.enabled = false;
+
 		levelManager.LoadLevel(EncryptedPlayerPrefs.GetInt("Level Number", 0));
 	}
 
-	void LevelSelect()
+	void MainMenu()
 	{
+		pauseButton.transform.collider.enabled = false;
+		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
+		
+		foreach (Collider resumeCollider in resumeColliders)
+			resumeCollider.enabled = false;
+
 		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 		levelManager.LoadLevel(0);
+	}
+
+	public void DelaySetState(float waitTime)
+	{
+		StartCoroutine(WaitAndSetState(waitTime));
+	}
+
+	IEnumerator WaitAndSetState(float waitTime)
+	{
+		yield return new WaitForSeconds(waitTime);
+		SetState();
 	}
 }

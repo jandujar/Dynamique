@@ -10,7 +10,7 @@ public class SummaryScreenButton : MonoBehaviour
 	{
 		Continue,
 		Replay,
-		LevelSelect
+		MainMenu
 	}
 	
 	public ButtonType buttonType;
@@ -39,8 +39,8 @@ public class SummaryScreenButton : MonoBehaviour
 		case ButtonType.Replay:
 			gameStateManager.state = GameStateManager.GameState.Replay;
 			break;
-		case ButtonType.LevelSelect:
-			gameStateManager.state = GameStateManager.GameState.LevelSelect;
+		case ButtonType.MainMenu:
+			gameStateManager.state = GameStateManager.GameState.MainMenu;
 			break;
 		}
 		
