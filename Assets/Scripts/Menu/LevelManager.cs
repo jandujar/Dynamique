@@ -20,7 +20,7 @@ public class LevelManager : MonoBehaviour
 		int loadMainMenu = EncryptedPlayerPrefs.GetInt("Load Main Menu", 1);
 		specificLevelNumber -= 1;
 
-		if (loadMainMenu == 1)
+		if (!loadSpecificLevel && loadMainMenu == 1)
 			mainMenu.SetActive(true);
 		else
 		{
