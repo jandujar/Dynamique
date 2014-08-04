@@ -6,7 +6,7 @@ public class MenuStateManager : MonoBehaviour
 	[SerializeField] TweenAlpha titleTween;
 	[SerializeField] TweenAlpha optionsTween;
 	[SerializeField] TweenAlpha stageSelectTween;
-	[SerializeField] TweenAlpha levelSelectTween;
+	[SerializeField] TweenAlpha[] levelSelectTweens;
 	[SerializeField] MenuObject[] idleMenuObjects;
 	[SerializeField] MenuObject[] optionsMenuObjects;
 	[SerializeField] MenuObject[] stageSelectMenuObjects;
@@ -17,7 +17,10 @@ public class MenuStateManager : MonoBehaviour
 		Idle,
 		Options,
 		StageSelect,
-		LevelSelect
+		GravitySelect,
+		AntiGravitySelect,
+		WormHoleSelect,
+		ChaosTheorySelect
 	}
 	
 	public MenuState menuState;
@@ -35,8 +38,8 @@ public class MenuStateManager : MonoBehaviour
 		case MenuState.StageSelect:
 			StageSelect();
 			break;
-		case MenuState.LevelSelect:
-			LevelSelect();
+		case MenuState.GravitySelect:
+			LevelSelect(0);
 			break;
 		}
 	}
@@ -46,7 +49,10 @@ public class MenuStateManager : MonoBehaviour
 		menuState = MenuState.Idle;
 		FadeOutLabel(optionsTween, 0.01f);
 		FadeOutLabel(stageSelectTween, 0.01f);
-		//FadeOutLabel(levelSelectTween, 0.01f);
+
+		foreach (TweenAlpha levelTween in levelSelectTweens)
+			FadeOutLabel(levelTween, 0.01f);
+
 		SetState();
 	}
 
@@ -54,9 +60,8 @@ public class MenuStateManager : MonoBehaviour
 	{
 		Debug.Log("Idle");
 		FadeInLabel(titleTween, 1f, 0.5f);
-		FadeOutLabel(optionsTween, 1f, 0f);
-		FadeOutLabel(stageSelectTween, 1f, 0f);
-		//FadeOutLabel(levelSelectTween, 1f, 0f);
+		FadeOutLabel(optionsTween);
+		FadeOutLabel(stageSelectTween);
 
 		foreach (MenuObject idleMenuObject in idleMenuObjects)
 		{
@@ -104,7 +109,7 @@ public class MenuStateManager : MonoBehaviour
 	{
 		Debug.Log("Options");
 		FadeInLabel(optionsTween, 1f, 0.5f);
-		FadeOutLabel(titleTween, 0.25f, 0f);
+		FadeOutLabel(titleTween, 0.25f);
 
 		foreach (MenuObject optionsMenuObject in optionsMenuObjects)
 		{
@@ -152,7 +157,10 @@ public class MenuStateManager : MonoBehaviour
 	{
 		Debug.Log("Stage Select");
 		FadeInLabel(stageSelectTween, 1f, 0.5f);
-		FadeOutLabel(titleTween, 0.25f, 0f);
+		FadeOutLabel(titleTween, 0.25f);
+
+		foreach (TweenAlpha levelTween in levelSelectTweens)
+			FadeOutLabel(levelTween);
 
 		foreach (MenuObject stageSelectMenuObject in stageSelectMenuObjects)
 		{
@@ -196,9 +204,52 @@ public class MenuStateManager : MonoBehaviour
 		}
 	}
 
-	void LevelSelect()
+	void LevelSelect(int stageValue)
 	{
 		Debug.Log("Level Select");
+		FadeInLabel(levelSelectTweens[stageValue], 1f, 0.5f);
+		FadeOutLabel(stageSelectTween, 0.25f);
+
+		foreach (MenuObject levelSelectMenuObject in levelSelectMenuObjects)
+		{
+			if (!levelSelectMenuObject.menuLabel)
+			{
+				Collider objectCollider = levelSelectMenuObject.menuObject.GetComponent<Collider>();
+				TrailRenderer[] trailRenderers = levelSelectMenuObject.menuObject.GetComponentsInChildren<TrailRenderer>();
+				ParticleSystem[] particleSystems = levelSelectMenuObject.menuObject.GetComponentsInChildren<ParticleSystem>();
+				
+				if (levelSelectMenuObject.activate)
+				{
+					objectCollider.enabled = true;
+					
+					foreach (TrailRenderer trailRenderer in trailRenderers)
+						trailRenderer.enabled = true;
+					
+					foreach (ParticleSystem particleSystem in particleSystems)
+						particleSystem.enableEmission = true;
+				}
+				else
+				{
+					objectCollider.enabled = false;
+					
+					foreach (TrailRenderer trailRenderer in trailRenderers)
+						trailRenderer.enabled = false;
+					
+					foreach (ParticleSystem particleSystem in particleSystems)
+						particleSystem.enableEmission = false;
+				}
+				
+				RepositionMenuObject repositionMenuObjectScript = levelSelectMenuObject.menuObject.GetComponent<RepositionMenuObject>();
+				repositionMenuObjectScript.Reposition(levelSelectMenuObject.position);
+			}
+			else
+			{
+				if (levelSelectMenuObject.activate)
+					levelSelectMenuObject.menuObject.SetActive(true);
+				else
+					levelSelectMenuObject.menuObject.SetActive(false);
+			}
+		}
 	}
 
 	void FadeInLabel(TweenAlpha labelTween, float fadeTime = 1f, float fadeDelay = 0f)

@@ -19,7 +19,7 @@ public class RepositionMenuObject : MonoBehaviour
 		{
 			GameObject cameraObject = GameObject.FindGameObjectWithTag("BackgroundCamera");
 			Camera camera = cameraObject.GetComponent<Camera>();
-			NewPosition = new Vector3(-1750f * (camera.pixelWidth/camera.pixelHeight), 0f, -1600f);
+			NewPosition = new Vector3(-1900f * (camera.pixelWidth/camera.pixelHeight), 0f, -1800f);
 		}
 
 		EnableMovement = true;

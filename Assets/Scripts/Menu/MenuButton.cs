@@ -11,7 +11,10 @@ public class MenuButton : MonoBehaviour
 		Idle,
 		Options,
 		StageSelect,
-		LevelSelect
+		GravitySelect,
+		AntiGravitySelect,
+		WormHoleSelect,
+		ChaosTheorySelect
 	}
 	
 	public ButtonState buttonState;
@@ -61,8 +64,8 @@ public class MenuButton : MonoBehaviour
 			case ButtonState.StageSelect:
 				menuStateManager.menuState = MenuStateManager.MenuState.StageSelect;
 				break;
-			case ButtonState.LevelSelect:
-				menuStateManager.menuState = MenuStateManager.MenuState.LevelSelect;
+			case ButtonState.GravitySelect:
+				menuStateManager.menuState = MenuStateManager.MenuState.GravitySelect;
 				break;
 			}
 			
