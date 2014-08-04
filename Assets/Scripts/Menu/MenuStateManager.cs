@@ -58,7 +58,6 @@ public class MenuStateManager : MonoBehaviour
 
 	void Idle()
 	{
-		Debug.Log("Idle");
 		FadeInLabel(titleTween, 1f, 0.5f);
 		FadeOutLabel(optionsTween);
 		FadeOutLabel(stageSelectTween);
@@ -107,7 +106,6 @@ public class MenuStateManager : MonoBehaviour
 
 	void Options()
 	{
-		Debug.Log("Options");
 		FadeInLabel(optionsTween, 1f, 0.5f);
 		FadeOutLabel(titleTween, 0.25f);
 
@@ -155,7 +153,6 @@ public class MenuStateManager : MonoBehaviour
 
 	void StageSelect()
 	{
-		Debug.Log("Stage Select");
 		FadeInLabel(stageSelectTween, 1f, 0.5f);
 		FadeOutLabel(titleTween, 0.25f);
 
@@ -206,7 +203,6 @@ public class MenuStateManager : MonoBehaviour
 
 	void LevelSelect(int stageValue)
 	{
-		Debug.Log("Level Select");
 		FadeInLabel(levelSelectTweens[stageValue], 1f, 0.5f);
 		FadeOutLabel(stageSelectTween, 0.25f);
 

@@ -24,12 +24,13 @@ public class SummaryScreenButton : MonoBehaviour
 		summaryScreen.ResetToBeginning();
 		summaryScreen.PlayForward();
 
+		gameStateManager.DisableStars();
 		StartCoroutine(WaitAndTrigger());
 	}
 
 	IEnumerator WaitAndTrigger()
 	{
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds(2f);
 
 		switch(buttonType)
 		{

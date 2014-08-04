@@ -8,6 +8,10 @@ public class GameStateManager : MonoBehaviour
 	[SerializeField] GameObject summaryFade;
 	[SerializeField] GameObject summaryScreen;
 	[SerializeField] UILabel summaryLabel;
+	[SerializeField] GameObject highScoreLabel;
+	[SerializeField] GameObject starsCamera;
+	[SerializeField] GameObject[] activeStars;
+	[SerializeField] GameObject[] inactiveStars;
 	LevelManager levelManager;
 	int collectibleSpawners = 0;
 	int collectiblesCollected = 0;
@@ -58,6 +62,9 @@ public class GameStateManager : MonoBehaviour
 	void Awake()
 	{
 		SetState();
+		starsCamera.SetActive(false);
+		highScoreLabel.SetActive(false);
+		Debug.Log("Total Stars: " + EncryptedPlayerPrefs.GetInt("Total Stars", 0));
 
 		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
 		levelManager = levelManagerObject.GetComponent<LevelManager>();
@@ -79,6 +86,37 @@ public class GameStateManager : MonoBehaviour
 
 	void Complete()
 	{
+		int levelNumber = EncryptedPlayerPrefs.GetInt("Level Number", 0);
+		EncryptedPlayerPrefs.SetInt("Level " + (levelNumber + 1) + " Status", 1);
+		int highScore = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Score", 0);
+		
+		if (totalScore > highScore)
+		{
+			Debug.Log("NEW HIGH SCORE!!!");
+			highScoreLabel.SetActive(true);
+			EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+		}
+		else
+		{
+			Vector3 tempPosition = summaryLabel.transform.localPosition;
+			tempPosition.y = -45f;
+			summaryLabel.transform.localPosition = tempPosition;
+		}
+
+		int previousEarnedStars = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Stars", 0);
+
+		if (levelNumber == 0)
+			CollectiblesCollected = 3;
+
+		if (CollectiblesCollected > previousEarnedStars)
+		{
+			EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Stars", CollectiblesCollected);
+			int currentTotalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
+			EncryptedPlayerPrefs.SetInt("Total Stars", currentTotalStars + (CollectiblesCollected - previousEarnedStars));
+		}
+
+		PlayerPrefs.Save();
+
 		pauseButton.transform.collider.enabled = false;
 		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
 		
@@ -87,16 +125,8 @@ public class GameStateManager : MonoBehaviour
 
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
-
-		if (CollectibleSpawners > 0)
-		{
-			summaryLabel.text = "Stars Collected: " + CollectiblesCollected +
-				"\nScore: " + totalScore.ToString("N0");
-		}
-		else
-		{
-			summaryLabel.text = "Score: " + totalScore.ToString("N0");
-		}
+		summaryLabel.text = "Score: " + totalScore.ToString("N0");
+		StartCoroutine(EnableStars());
 	}
 
 	void Continue()
@@ -136,5 +166,63 @@ public class GameStateManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(waitTime);
 		SetState();
+	}
+
+	IEnumerator EnableStars()
+	{
+		float nextStepTime = 0.25f;
+		starsCamera.SetActive(true);
+		yield return new WaitForSeconds(1.0f);
+		
+		switch(CollectiblesCollected)
+		{
+		case 0:
+			inactiveStars[0].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			inactiveStars[1].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			inactiveStars[2].SetActive(true);
+			break;
+		case 1:
+			activeStars[0].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			inactiveStars[1].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			inactiveStars[2].SetActive(true);
+			break;
+		case 2:
+			activeStars[0].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			activeStars[1].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			inactiveStars[2].SetActive(true);
+			break;
+		case 3:
+			activeStars[0].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			activeStars[1].SetActive(true);
+			yield return new WaitForSeconds(nextStepTime);
+			activeStars[2].SetActive(true);
+			break;
+		}
+	}
+
+	public void DisableStars()
+	{
+		foreach (GameObject activeStar in activeStars)
+		{
+			ParticleSystem[] activeStarParticles = activeStar.GetComponentsInChildren<ParticleSystem>();
+
+			foreach (ParticleSystem activeStarParticle in activeStarParticles)
+				activeStarParticle.enableEmission = false;
+		}
+
+		foreach (GameObject inactiveStar in inactiveStars)
+		{
+			ParticleSystem[] inactiveStarParticles = inactiveStar.GetComponentsInChildren<ParticleSystem>();
+			
+			foreach (ParticleSystem inactiveStarParticle in inactiveStarParticles)
+				inactiveStarParticle.enableEmission = false;
+		}
 	}
 }
