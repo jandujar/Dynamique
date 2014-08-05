@@ -11,6 +11,15 @@ public class MenuStateManager : MonoBehaviour
 	[SerializeField] MenuObject[] optionsMenuObjects;
 	[SerializeField] MenuObject[] stageSelectMenuObjects;
 	[SerializeField] MenuObject[] levelSelectMenuObjects;
+	[SerializeField] GameObject[] lockBanners;
+	[SerializeField] Collider[] stageSelectBackButtons;
+	[SerializeField] Collider[] stage1Buttons;
+	[SerializeField] Collider[] stage2Buttons;
+	[SerializeField] GameObject[] stage2Particles;
+	[SerializeField] Collider[] stage3Buttons;
+	[SerializeField] GameObject[] stage3Particles;
+	[SerializeField] Collider[] stage4Buttons;
+	[SerializeField] GameObject[] stage4Particles;
 
 	public enum MenuState
 	{
@@ -53,6 +62,12 @@ public class MenuStateManager : MonoBehaviour
 		foreach (TweenAlpha levelTween in levelSelectTweens)
 			FadeOutLabel(levelTween, 0.01f);
 
+		foreach (GameObject lockBanner in lockBanners)
+			lockBanner.SetActive(false);
+
+		foreach(Collider backButton in stageSelectBackButtons)
+			backButton.enabled = false;
+
 		SetState();
 	}
 
@@ -61,6 +76,12 @@ public class MenuStateManager : MonoBehaviour
 		FadeInLabel(titleTween, 1f, 0.5f);
 		FadeOutLabel(optionsTween);
 		FadeOutLabel(stageSelectTween);
+
+		foreach (GameObject lockBanner in lockBanners)
+			lockBanner.SetActive(false);
+
+		foreach(Collider backButton in stageSelectBackButtons)
+			backButton.enabled = false;
 
 		foreach (MenuObject idleMenuObject in idleMenuObjects)
 		{
@@ -159,6 +180,111 @@ public class MenuStateManager : MonoBehaviour
 		foreach (TweenAlpha levelTween in levelSelectTweens)
 			FadeOutLabel(levelTween);
 
+		foreach(Collider backButton in stageSelectBackButtons)
+			backButton.enabled = true;
+
+		foreach(Collider stage1Button in stage1Buttons)
+			stage1Button.enabled = true;
+
+		int currentStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
+
+		if (currentStars < 21)
+		{
+			lockBanners[0].SetActive(true);
+			lockBanners[1].SetActive(true);
+			lockBanners[2].SetActive(true);
+
+			foreach(Collider stage2Button in stage2Buttons)
+				stage2Button.enabled = false;
+			
+			foreach(Collider stage3Button in stage3Buttons)
+				stage3Button.enabled = false;
+
+			foreach(Collider stage4Button in stage4Buttons)
+				stage4Button.enabled = false;
+
+			foreach(GameObject stage2Particle in stage2Particles)
+				stage2Particle.SetActive(false);
+
+			foreach(GameObject stage3Particle in stage3Particles)
+				stage3Particle.SetActive(false);
+
+			foreach(GameObject stage4Particle in stage4Particles)
+				stage4Particle.SetActive(false);
+		}
+		else if (currentStars >= 21)
+		{
+			lockBanners[0].SetActive(false);
+			lockBanners[1].SetActive(true);
+			lockBanners[2].SetActive(true);
+
+			foreach(Collider stage2Button in stage2Buttons)
+				stage2Button.enabled = true;
+			
+			foreach(Collider stage3Button in stage3Buttons)
+				stage3Button.enabled = false;
+			
+			foreach(Collider stage4Button in stage4Buttons)
+				stage4Button.enabled = false;
+			
+			foreach(GameObject stage2Particle in stage2Particles)
+				stage2Particle.SetActive(true);
+			
+			foreach(GameObject stage3Particle in stage3Particles)
+				stage3Particle.SetActive(false);
+			
+			foreach(GameObject stage4Particle in stage4Particles)
+				stage4Particle.SetActive(false);
+		}
+		else if (currentStars >= 46)
+		{
+			lockBanners[0].SetActive(false);
+			lockBanners[1].SetActive(false);
+			lockBanners[2].SetActive(true);
+
+			foreach(Collider stage2Button in stage2Buttons)
+				stage2Button.enabled = true;
+			
+			foreach(Collider stage3Button in stage3Buttons)
+				stage3Button.enabled = true;
+			
+			foreach(Collider stage4Button in stage4Buttons)
+				stage4Button.enabled = false;
+			
+			foreach(GameObject stage2Particle in stage2Particles)
+				stage2Particle.SetActive(true);
+			
+			foreach(GameObject stage3Particle in stage3Particles)
+				stage3Particle.SetActive(true);
+			
+			foreach(GameObject stage4Particle in stage4Particles)
+				stage4Particle.SetActive(false);
+		}
+		else if (currentStars >= 72)
+		{
+			lockBanners[0].SetActive(false);
+			lockBanners[1].SetActive(false);
+			lockBanners[2].SetActive(false);
+
+			foreach(Collider stage2Button in stage2Buttons)
+				stage2Button.enabled = true;
+			
+			foreach(Collider stage3Button in stage3Buttons)
+				stage3Button.enabled = true;
+			
+			foreach(Collider stage4Button in stage4Buttons)
+				stage4Button.enabled = true;
+			
+			foreach(GameObject stage2Particle in stage2Particles)
+				stage2Particle.SetActive(true);
+			
+			foreach(GameObject stage3Particle in stage3Particles)
+				stage3Particle.SetActive(true);
+			
+			foreach(GameObject stage4Particle in stage4Particles)
+				stage4Particle.SetActive(true);
+		}
+
 		foreach (MenuObject stageSelectMenuObject in stageSelectMenuObjects)
 		{
 			if (!stageSelectMenuObject.menuLabel)
@@ -169,7 +295,7 @@ public class MenuStateManager : MonoBehaviour
 
 				if (stageSelectMenuObject.activate)
 				{
-					objectCollider.enabled = true;
+					//objectCollider.enabled = true;
 
 					foreach (TrailRenderer trailRenderer in trailRenderers)
 						trailRenderer.enabled = true;
@@ -205,6 +331,12 @@ public class MenuStateManager : MonoBehaviour
 	{
 		FadeInLabel(levelSelectTweens[stageValue], 1f, 0.5f);
 		FadeOutLabel(stageSelectTween, 0.25f);
+
+		foreach (GameObject lockBanner in lockBanners)
+			lockBanner.SetActive(false);
+
+		foreach(Collider backButton in stageSelectBackButtons)
+			backButton.enabled = false;
 
 		foreach (MenuObject levelSelectMenuObject in levelSelectMenuObjects)
 		{

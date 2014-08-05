@@ -64,7 +64,6 @@ public class GameStateManager : MonoBehaviour
 		SetState();
 		starsCamera.SetActive(false);
 		highScoreLabel.SetActive(false);
-		Debug.Log("Total Stars: " + EncryptedPlayerPrefs.GetInt("Total Stars", 0));
 
 		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
 		levelManager = levelManagerObject.GetComponent<LevelManager>();
@@ -92,9 +91,18 @@ public class GameStateManager : MonoBehaviour
 		
 		if (totalScore > highScore)
 		{
-			Debug.Log("NEW HIGH SCORE!!!");
-			highScoreLabel.SetActive(true);
-			EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+			if (highScore == 0)
+			{
+				Vector3 tempPosition = summaryLabel.transform.localPosition;
+				tempPosition.y = -45f;
+				summaryLabel.transform.localPosition = tempPosition;
+				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+			}
+			else
+			{
+				highScoreLabel.SetActive(true);
+				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+			}
 		}
 		else
 		{
