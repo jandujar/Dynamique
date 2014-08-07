@@ -67,6 +67,15 @@ public class MenuButton : MonoBehaviour
 			case ButtonState.GravitySelect:
 				menuStateManager.menuState = MenuStateManager.MenuState.GravitySelect;
 				break;
+			case ButtonState.AntiGravitySelect:
+				menuStateManager.menuState = MenuStateManager.MenuState.AntiGravitySelect;
+				break;
+			case ButtonState.WormHoleSelect:
+				menuStateManager.menuState = MenuStateManager.MenuState.WormHoleSelect;
+				break;
+			case ButtonState.ChaosTheorySelect:
+				menuStateManager.menuState = MenuStateManager.MenuState.ChaosTheorySelect;
+				break;
 			}
 			
 			menuStateManager.SetState();

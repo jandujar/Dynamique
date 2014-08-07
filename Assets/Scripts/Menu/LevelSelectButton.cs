@@ -3,12 +3,14 @@ using System.Collections;
 
 public class LevelSelectButton : MonoBehaviour
 {
-	[SerializeField] int levelNumber = 0;
+	[SerializeField] TriggerLevelLoad triggerLevelLoad;
 	[SerializeField] UIPanel levelPanel;
 	[SerializeField] UISprite[] starSprites;
+	int levelNumber = 0;
 
 	void Awake()
 	{
+		levelNumber = triggerLevelLoad.LevelToLoad;
 		int levelStatus = EncryptedPlayerPrefs.GetInt("Level " + (levelNumber - 1) + " Status", 0);
 
 		if (levelStatus == 1)

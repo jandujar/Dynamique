@@ -7,6 +7,7 @@ public class TriggerLevelLoad : MonoBehaviour
 	[SerializeField] TweenAlpha backgroundFade;
 	[SerializeField] int levelToLoad = 0;
 	//[SerializeField] UILabel buttonText;
+	public int LevelToLoad { get { return levelToLoad; }}
 
 	void Awake()
 	{

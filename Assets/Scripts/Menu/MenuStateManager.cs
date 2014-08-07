@@ -50,6 +50,15 @@ public class MenuStateManager : MonoBehaviour
 		case MenuState.GravitySelect:
 			LevelSelect(0);
 			break;
+		case MenuState.AntiGravitySelect:
+			LevelSelect(1);
+			break;
+		case MenuState.WormHoleSelect:
+			LevelSelect(1);
+			break;
+		case MenuState.ChaosTheorySelect:
+			LevelSelect(1);
+			break;
 		}
 	}
 
