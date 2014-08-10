@@ -3,6 +3,7 @@ using System.Collections;
 
 public class MenuStateManager : MonoBehaviour
 {
+	[SerializeField] UITexture gameCenterIcon;
 	[SerializeField] TweenAlpha titleTween;
 	[SerializeField] TweenAlpha optionsTween;
 	[SerializeField] TweenAlpha stageSelectTween;
@@ -64,6 +65,7 @@ public class MenuStateManager : MonoBehaviour
 
 	void Awake()
 	{
+		gameCenterIcon.enabled = true;
 		menuState = MenuState.Idle;
 		FadeOutLabel(optionsTween, 0.01f);
 		FadeOutLabel(stageSelectTween, 0.01f);
@@ -82,6 +84,7 @@ public class MenuStateManager : MonoBehaviour
 
 	void Idle()
 	{
+		gameCenterIcon.enabled = true;
 		FadeInLabel(titleTween, 1f, 0.5f);
 		FadeOutLabel(optionsTween);
 		FadeOutLabel(stageSelectTween);
@@ -136,6 +139,7 @@ public class MenuStateManager : MonoBehaviour
 
 	void Options()
 	{
+		gameCenterIcon.enabled = false;
 		FadeInLabel(optionsTween, 1f, 0.5f);
 		FadeOutLabel(titleTween, 0.25f);
 
@@ -183,6 +187,7 @@ public class MenuStateManager : MonoBehaviour
 
 	void StageSelect()
 	{
+		gameCenterIcon.enabled = false;
 		FadeInLabel(stageSelectTween, 1f, 0.5f);
 		FadeOutLabel(titleTween, 0.25f);
 

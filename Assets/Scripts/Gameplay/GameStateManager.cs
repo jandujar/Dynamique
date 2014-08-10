@@ -12,6 +12,7 @@ public class GameStateManager : MonoBehaviour
 	[SerializeField] GameObject starsCamera;
 	[SerializeField] GameObject[] activeStars;
 	[SerializeField] GameObject[] inactiveStars;
+	GameCenterManager gameCenterManager;
 	LevelManager levelManager;
 	int collectibleSpawners = 0;
 	int collectiblesCollected = 0;
@@ -70,6 +71,12 @@ public class GameStateManager : MonoBehaviour
 		summaryFade.SetActive(false);
 		summaryScreen.SetActive(false);
 	}
+
+	void Start()
+	{
+		GameObject gameCenterManagerObject = GameObject.FindGameObjectWithTag("GameCenterManager");
+		gameCenterManager = gameCenterManagerObject.GetComponent<GameCenterManager>();
+	}
 	
 	void Play()
 	{
@@ -86,9 +93,19 @@ public class GameStateManager : MonoBehaviour
 	void Complete()
 	{
 		int levelNumber = EncryptedPlayerPrefs.GetInt("Level Number", 0);
-		EncryptedPlayerPrefs.SetInt("Level " + (levelNumber + 1) + " Status", 1);
 		int highScore = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Score", 0);
-		
+		EncryptedPlayerPrefs.SetInt("Level " + (levelNumber + 1) + " Status", 1);
+		int stageNumber = 0;
+
+		if (levelNumber <= 9)
+			stageNumber = 1;
+		else if (levelNumber > 9 && levelNumber <= 18)
+			stageNumber = 2;
+		else if (levelNumber > 18 && levelNumber <= 27)
+			stageNumber = 3;
+		else if (levelNumber > 27)
+			stageNumber = 4;
+
 		if (totalScore > highScore)
 		{
 			if (highScore == 0)
@@ -103,6 +120,16 @@ public class GameStateManager : MonoBehaviour
 				highScoreLabel.SetActive(true);
 				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
 			}
+
+			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Score", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0) + (totalScore - highScore));
+			int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
+			int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
+			int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
+			int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
+			int currentStageScore = EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0);
+			int overallTotalScore = stage1Score + stage2Score + stage3Score + stage4Score;
+
+			gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 		}
 		else
 		{
@@ -123,6 +150,25 @@ public class GameStateManager : MonoBehaviour
 			EncryptedPlayerPrefs.SetInt("Total Stars", currentTotalStars + (CollectiblesCollected - previousEarnedStars));
 		}
 
+		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
+
+		if (totalStars >= 21)
+		{
+			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
+		}
+		else if (totalStars >= 46)
+		{
+			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
+			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
+		}
+		else if (totalStars >= 72)
+		{
+			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
+			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
+			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+		}
+
+		gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
 		PlayerPrefs.Save();
 
 		pauseButton.transform.collider.enabled = false;
