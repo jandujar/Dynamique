@@ -42,6 +42,11 @@ public class GameCenterManager : MonoBehaviour
 //		GameCenterPlatform.ResetAllAchievements((resetResult) => {
 //			Debug.Log(resetResult ? "Achievements have been Reset" : "Achievement reset failure.");
 //		});
+
+		SubmitScore(1, 0, 0);
+		SubmitScore(2, 0, 0);
+		SubmitScore(3, 0, 0);
+		SubmitScore(4, 0, 0);
 	}
 
 	public void SubmitAchievement(string achievementID, double progress)

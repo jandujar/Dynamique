@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MenuStateManager : MonoBehaviour
 {
-	[SerializeField] UITexture gameCenterIcon;
+	[SerializeField] UISprite gameCenterIcon;
 	[SerializeField] TweenAlpha titleTween;
 	[SerializeField] TweenAlpha optionsTween;
 	[SerializeField] TweenAlpha stageSelectTween;

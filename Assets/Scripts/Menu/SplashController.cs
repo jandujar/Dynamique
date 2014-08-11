@@ -9,6 +9,7 @@ public class SplashController : MonoBehaviour
 	{
 		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 		EncryptedPlayerPrefs.SetInt("Level 0 Status", 1);
+
 		PlayerPrefs.Save();
 		StartCoroutine(WaitAndLoad());
 	}

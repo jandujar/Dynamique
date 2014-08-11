@@ -13,11 +13,6 @@ public class ResetSaveData : MonoBehaviour
 			//Reset game save data
 			PlayerPrefs.DeleteAll();
 
-			//Reset Achievements
-			GameCenterPlatform.ResetAllAchievements((resetResult) => {
-				Debug.Log(resetResult ? "Achievements have been Reset" : "Achievement reset failure.");
-			});
-
 			//Set first level active
 			EncryptedPlayerPrefs.SetInt("Level 0 Status", 1);
 
