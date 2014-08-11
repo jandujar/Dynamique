@@ -202,99 +202,61 @@ public class MenuStateManager : MonoBehaviour
 
 		int currentStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
-		if (currentStars < 21)
-		{
-			lockBanners[0].SetActive(true);
-			lockBanners[1].SetActive(true);
-			lockBanners[2].SetActive(true);
+		lockBanners[0].SetActive(true);
+		lockBanners[1].SetActive(true);
+		lockBanners[2].SetActive(true);
+		
+		foreach(Collider stage2Button in stage2Buttons)
+			stage2Button.enabled = false;
+		
+		foreach(Collider stage3Button in stage3Buttons)
+			stage3Button.enabled = false;
+		
+		foreach(Collider stage4Button in stage4Buttons)
+			stage4Button.enabled = false;
+		
+		foreach(GameObject stage2Particle in stage2Particles)
+			stage2Particle.SetActive(false);
+		
+		foreach(GameObject stage3Particle in stage3Particles)
+			stage3Particle.SetActive(false);
+		
+		foreach(GameObject stage4Particle in stage4Particles)
+			stage4Particle.SetActive(false);
 
-			foreach(Collider stage2Button in stage2Buttons)
-				stage2Button.enabled = false;
-			
-			foreach(Collider stage3Button in stage3Buttons)
-				stage3Button.enabled = false;
+		int stage2Status = EncryptedPlayerPrefs.GetInt("Stage 2 Unlocked", 0);
+		int stage3Status = EncryptedPlayerPrefs.GetInt("Stage 3 Unlocked", 0);
+		int stage4Status = EncryptedPlayerPrefs.GetInt("Stage 4 Unlocked", 0);
 
-			foreach(Collider stage4Button in stage4Buttons)
-				stage4Button.enabled = false;
-
-			foreach(GameObject stage2Particle in stage2Particles)
-				stage2Particle.SetActive(false);
-
-			foreach(GameObject stage3Particle in stage3Particles)
-				stage3Particle.SetActive(false);
-
-			foreach(GameObject stage4Particle in stage4Particles)
-				stage4Particle.SetActive(false);
-		}
-		else if (currentStars >= 21)
+		if (currentStars >= 21 || stage2Status == 1)
 		{
 			lockBanners[0].SetActive(false);
-			lockBanners[1].SetActive(true);
-			lockBanners[2].SetActive(true);
 
 			foreach(Collider stage2Button in stage2Buttons)
 				stage2Button.enabled = true;
-			
-			foreach(Collider stage3Button in stage3Buttons)
-				stage3Button.enabled = false;
-			
-			foreach(Collider stage4Button in stage4Buttons)
-				stage4Button.enabled = false;
 			
 			foreach(GameObject stage2Particle in stage2Particles)
 				stage2Particle.SetActive(true);
-			
-			foreach(GameObject stage3Particle in stage3Particles)
-				stage3Particle.SetActive(false);
-			
-			foreach(GameObject stage4Particle in stage4Particles)
-				stage4Particle.SetActive(false);
 		}
-		else if (currentStars >= 46)
-		{
-			lockBanners[0].SetActive(false);
-			lockBanners[1].SetActive(false);
-			lockBanners[2].SetActive(true);
 
-			foreach(Collider stage2Button in stage2Buttons)
-				stage2Button.enabled = true;
+		if (currentStars >= 46 || stage3Status == 1)
+		{
+			lockBanners[1].SetActive(false);
 			
 			foreach(Collider stage3Button in stage3Buttons)
 				stage3Button.enabled = true;
-			
-			foreach(Collider stage4Button in stage4Buttons)
-				stage4Button.enabled = false;
-			
-			foreach(GameObject stage2Particle in stage2Particles)
-				stage2Particle.SetActive(true);
 			
 			foreach(GameObject stage3Particle in stage3Particles)
 				stage3Particle.SetActive(true);
-			
-			foreach(GameObject stage4Particle in stage4Particles)
-				stage4Particle.SetActive(false);
 		}
-		else if (currentStars >= 72)
-		{
-			lockBanners[0].SetActive(false);
-			lockBanners[1].SetActive(false);
-			lockBanners[2].SetActive(false);
 
-			foreach(Collider stage2Button in stage2Buttons)
-				stage2Button.enabled = true;
-			
-			foreach(Collider stage3Button in stage3Buttons)
-				stage3Button.enabled = true;
+		if (currentStars >= 72 || stage4Status == 1)
+		{
+			lockBanners[2].SetActive(false);
 			
 			foreach(Collider stage4Button in stage4Buttons)
 				stage4Button.enabled = true;
-			
-			foreach(GameObject stage2Particle in stage2Particles)
-				stage2Particle.SetActive(true);
-			
-			foreach(GameObject stage3Particle in stage3Particles)
-				stage3Particle.SetActive(true);
-			
+
 			foreach(GameObject stage4Particle in stage4Particles)
 				stage4Particle.SetActive(true);
 		}

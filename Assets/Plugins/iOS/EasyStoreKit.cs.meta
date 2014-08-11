@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: f7a5f24b28a9944e19f632298aebde2b
+labels:
+- IOS
+- InAppPurchase
+- StoreKit
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
