@@ -211,6 +211,31 @@ public class IAPManager : MonoBehaviour
 	public void TransactionRestored(string productIdentifier)
 	{
 		restoredIdentifiers += productIdentifier + " ";
+
+		switch(productIdentifier)
+		{
+		case "anti_gravity":
+			EncryptedPlayerPrefs.SetInt("Stage 2 Unlocked", 1);
+			purchaseLabel.text = "Purchase Successful!\n''Anti-Gravity'' Levels Unlocked.";
+			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
+			break;
+		case "worm_hole":
+			EncryptedPlayerPrefs.SetInt("Stage 3 Unlocked", 1);
+			purchaseLabel.text = "Purchase Successful!\n''Worm Hole'' Levels Unlocked.";
+			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
+			break;
+		case "chaos_theory":
+			EncryptedPlayerPrefs.SetInt("Stage 4 Unlocked", 1);
+			purchaseLabel.text = "Purchase Successful!\n''Chaos Theory'' Levels Unlocked.";
+			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+			break;
+		default:
+			Debug.LogError("Not valid product identifier....");
+			purchaseLabel.text = "An error occured\nduring the transaction.\nPlease try again.";
+			iapState = IAPState.Error;
+			SetIAPLayout();
+			break;
+		}
 	}
 
 	public void TransactionCancelled(string productIdentifier)
@@ -223,8 +248,10 @@ public class IAPManager : MonoBehaviour
 	public void RestoreCompleted()
 	{
 		Debug.Log("Restore Complete: " + restoredIdentifiers);
+		PlayerPrefs.Save();
 		iapState = IAPState.Restored;
 		SetIAPLayout();
+		menuStateManager.SetState();
 	}
 
 	public void RestoreFailed(string errorMessage)
