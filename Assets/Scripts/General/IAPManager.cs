@@ -32,7 +32,9 @@ public class IAPManager : MonoBehaviour
 		gameCenterManager = gameCenterManagerObject.GetComponent<GameCenterManager>();
 
 		GameObject menuStateManagerObject = GameObject.FindGameObjectWithTag("MenuStateManager");
-		menuStateManager = menuStateManagerObject.GetComponent<MenuStateManager>();
+
+		if (menuStateManagerObject != null)
+			menuStateManager = menuStateManagerObject.GetComponent<MenuStateManager>();
 		
 		GameObject purchaseTweenObject = GameObject.FindGameObjectWithTag("PurchaseTween");
 		purchaseTween = purchaseTweenObject.GetComponent<TweenAlpha>();
