@@ -55,10 +55,10 @@ public class MenuStateManager : MonoBehaviour
 			LevelSelect(1);
 			break;
 		case MenuState.WormHoleSelect:
-			LevelSelect(1);
+			LevelSelect(2);
 			break;
 		case MenuState.ChaosTheorySelect:
-			LevelSelect(1);
+			LevelSelect(3);
 			break;
 		}
 	}
