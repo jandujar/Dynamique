@@ -152,11 +152,11 @@ public class GameStateManager : MonoBehaviour
 
 		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
-		if (totalStars >= 21)
+		if (totalStars >= 21 && totalStars < 46)
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 		}
-		else if (totalStars >= 46)
+		else if (totalStars >= 46 && totalStars < 72)
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
