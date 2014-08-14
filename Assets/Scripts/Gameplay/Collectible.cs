@@ -12,7 +12,10 @@ public class Collectible : MonoBehaviour
 		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 
 		if (gameControllerObject != null)
+		{
 			gameController = gameControllerObject.GetComponent<GameController>();
+			gameController.CollectiblesCollected = 0;
+		}
 	}
 
 	void OnTriggerEnter(Collider other)

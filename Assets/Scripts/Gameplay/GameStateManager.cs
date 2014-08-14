@@ -227,7 +227,7 @@ public class GameStateManager : MonoBehaviour
 		float nextStepTime = 0.25f;
 		starsCamera.SetActive(true);
 		yield return new WaitForSeconds(1.0f);
-		
+
 		switch(CollectiblesCollected)
 		{
 		case 0:
@@ -257,6 +257,9 @@ public class GameStateManager : MonoBehaviour
 			activeStars[1].SetActive(true);
 			yield return new WaitForSeconds(nextStepTime);
 			activeStars[2].SetActive(true);
+			break;
+		default:
+			Debug.LogError("Unsupported star count");
 			break;
 		}
 	}
