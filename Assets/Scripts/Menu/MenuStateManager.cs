@@ -228,7 +228,7 @@ public class MenuStateManager : MonoBehaviour
 		int stage3Status = EncryptedPlayerPrefs.GetInt("Stage 3 Unlocked", 0);
 		int stage4Status = EncryptedPlayerPrefs.GetInt("Stage 4 Unlocked", 0);
 
-		if (currentStars >= 21 || stage2Status == 1)
+		if (currentStars >= 23 || stage2Status == 1)
 		{
 			lockBanners[0].SetActive(false);
 
@@ -239,7 +239,7 @@ public class MenuStateManager : MonoBehaviour
 				stage2Particle.SetActive(true);
 		}
 
-		if (currentStars >= 46 || stage3Status == 1)
+		if (currentStars >= 48 || stage3Status == 1)
 		{
 			lockBanners[1].SetActive(false);
 			
@@ -250,7 +250,7 @@ public class MenuStateManager : MonoBehaviour
 				stage3Particle.SetActive(true);
 		}
 
-		if (currentStars >= 72 || stage4Status == 1)
+		if (currentStars >= 76 || stage4Status == 1)
 		{
 			lockBanners[2].SetActive(false);
 			
