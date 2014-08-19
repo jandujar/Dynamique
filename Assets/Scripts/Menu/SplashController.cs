@@ -11,6 +11,7 @@ public class SplashController : MonoBehaviour
 		EncryptedPlayerPrefs.SetInt("Level 0 Status", 1);
 		EncryptedPlayerPrefs.SetInt("Level 9 Status", 1);
 		EncryptedPlayerPrefs.SetInt("Level 18 Status", 1);
+		EncryptedPlayerPrefs.SetInt("Level 27 Status", 1);
 
 		PlayerPrefs.Save();
 		StartCoroutine(WaitAndLoad());

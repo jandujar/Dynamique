@@ -96,6 +96,9 @@ public class GameController : MonoBehaviour
 		else
 			timeScore = 0;
 
+		if (EncryptedPlayerPrefs.GetInt("Level Number", 0) == 0)
+			CollectiblesCollected = 3;
+
 		starScore = 1000 * CollectiblesCollected;
 		totalScore = timeScore + starScore;
 

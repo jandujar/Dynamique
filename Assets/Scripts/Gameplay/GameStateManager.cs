@@ -106,22 +106,22 @@ public class GameStateManager : MonoBehaviour
 		else if (levelNumber > 27)
 			stageNumber = 4;
 
-		if (totalScore > highScore)
+		if (TotalScore > highScore)
 		{
 			if (highScore == 0)
 			{
 				Vector3 tempPosition = summaryLabel.transform.localPosition;
 				tempPosition.y = -45f;
 				summaryLabel.transform.localPosition = tempPosition;
-				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", TotalScore);
 			}
 			else
 			{
 				highScoreLabel.SetActive(true);
-				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", totalScore);
+				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", TotalScore);
 			}
 
-			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Score", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0) + (totalScore - highScore));
+			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Score", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0) + (TotalScore - highScore));
 			int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
 			int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
 			int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
@@ -139,9 +139,6 @@ public class GameStateManager : MonoBehaviour
 		}
 
 		int previousEarnedStars = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Stars", 0);
-
-		if (levelNumber == 0)
-			CollectiblesCollected = 3;
 
 		if (CollectiblesCollected > previousEarnedStars)
 		{
@@ -179,7 +176,7 @@ public class GameStateManager : MonoBehaviour
 
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
-		summaryLabel.text = "Score: " + totalScore.ToString("N0");
+		summaryLabel.text = "Score: " + TotalScore.ToString("N0");
 		StartCoroutine(EnableStars());
 	}
 
