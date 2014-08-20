@@ -93,6 +93,10 @@ public class GameStateManager : MonoBehaviour
 	void Complete()
 	{
 		int levelNumber = EncryptedPlayerPrefs.GetInt("Level Number", 0);
+
+		if (levelNumber != 0 && CollectiblesCollected == 3)
+			gameCenterManager.SubmitAchievement("collect_three_stars", 100f);
+
 		int highScore = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Score", 0);
 		EncryptedPlayerPrefs.SetInt("Level " + (levelNumber + 1) + " Status", 1);
 		int stageNumber = 0;
@@ -117,6 +121,7 @@ public class GameStateManager : MonoBehaviour
 			}
 			else
 			{
+				gameCenterManager.SubmitAchievement("new_high_score", 100f);
 				highScoreLabel.SetActive(true);
 				EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Score", TotalScore);
 			}
@@ -125,9 +130,9 @@ public class GameStateManager : MonoBehaviour
 			int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
 			int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
 			int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
-			int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
+			//int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
 			int currentStageScore = EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0);
-			int overallTotalScore = stage1Score + stage2Score + stage3Score + stage4Score;
+			int overallTotalScore = stage1Score + stage2Score + stage3Score; //+ stage4Score;
 
 			gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 		}
@@ -162,7 +167,7 @@ public class GameStateManager : MonoBehaviour
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
-			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+			//gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
 		}
 
 		gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
