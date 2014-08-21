@@ -706,6 +706,8 @@ public class UIScrollView : MonoBehaviour
 
 	public void Press (bool pressed)
 	{
+		if (UICamera.currentScheme == UICamera.ControlScheme.Controller) return;
+
 		if (smoothDragStart && pressed)
 		{
 			mDragStarted = false;
@@ -746,6 +748,13 @@ public class UIScrollView : MonoBehaviour
 				v.x = Mathf.Round(v.x);
 				v.y = Mathf.Round(v.y);
 				mTrans.localPosition = v;
+
+				if (!smoothDragStart)
+				{
+					mDragStarted = true;
+					mDragStartOffset = Vector2.zero;
+					if (onDragStarted != null) onDragStarted();
+				}
 			}
 			else
 			{
@@ -765,6 +774,8 @@ public class UIScrollView : MonoBehaviour
 
 	public void Drag ()
 	{
+		if (UICamera.currentScheme == UICamera.ControlScheme.Controller) return;
+
 		if (enabled && NGUITools.GetActive(gameObject) && mShouldMove)
 		{
 			if (mDragID == -10) mDragID = UICamera.currentTouchID;
@@ -850,6 +861,9 @@ public class UIScrollView : MonoBehaviour
 		}
 	}
 
+	[HideInInspector]
+	public UICenterOnChild centerOnChild = null;
+
 	/// <summary>
 	/// If the object should support the scroll wheel, do it.
 	/// </summary>
@@ -859,7 +873,7 @@ public class UIScrollView : MonoBehaviour
 		if (enabled && NGUITools.GetActive(gameObject) && scrollWheelFactor != 0f)
 		{
 			DisableSpring();
-			mShouldMove = shouldMove;
+			mShouldMove |= shouldMove;
 			if (Mathf.Sign(mScroll) != Mathf.Sign(delta)) mScroll = 0f;
 			mScroll += delta * scrollWheelFactor;
 		}
@@ -928,7 +942,6 @@ public class UIScrollView : MonoBehaviour
 						mScroll * customMovement.x * 0.05f,
 						mScroll * customMovement.y * 0.05f, 0f));
 				}
-
 				mScroll = NGUIMath.SpringLerp(mScroll, 0f, 20f, delta);
 
 				// Move the scroll view
@@ -937,7 +950,16 @@ public class UIScrollView : MonoBehaviour
 
 				// Restrict the contents to be within the scroll view's bounds
 				if (restrictWithinPanel && mPanel.clipping != UIDrawCall.Clipping.None)
-					RestrictWithinBounds(false, canMoveHorizontally, canMoveVertically);
+				{
+					if (NGUITools.GetActive(centerOnChild))
+					{
+						centerOnChild.Recenter();
+					}
+					else
+					{
+						RestrictWithinBounds(false, canMoveHorizontally, canMoveVertically);
+					}
+				}
 
 				if (onMomentumMove != null)
 					onMomentumMove();

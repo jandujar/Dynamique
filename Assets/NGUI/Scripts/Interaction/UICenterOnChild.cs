@@ -48,13 +48,9 @@ public class UICenterOnChild : MonoBehaviour
 
 	public GameObject centeredObject { get { return mCenteredObject; } }
 
-	void OnEnable ()
-	{
-		Recenter();
-		if (mScrollView) mScrollView.onDragFinished = OnDragFinished;
-	}
-	
-	void OnDisable () { if (mScrollView) mScrollView.onDragFinished -= OnDragFinished; }
+	void Start () { Recenter(); }
+	void OnEnable () { if (mScrollView) { mScrollView.centerOnChild = this; Recenter(); } }
+	void OnDisable () { if (mScrollView) mScrollView.centerOnChild = null; }
 	void OnDragFinished () { if (enabled) Recenter(); }
 
 	/// <summary>
@@ -82,7 +78,11 @@ public class UICenterOnChild : MonoBehaviour
 			}
 			else
 			{
-				mScrollView.onDragFinished = OnDragFinished;
+				if (mScrollView)
+				{
+					mScrollView.centerOnChild = this;
+					mScrollView.onDragFinished = OnDragFinished;
+				}
 
 				if (mScrollView.horizontalScrollBar != null)
 					mScrollView.horizontalScrollBar.onDragFinished = OnDragFinished;
@@ -103,8 +103,7 @@ public class UICenterOnChild : MonoBehaviour
 		// Offset this value by the momentum
 		Vector3 momentum = mScrollView.currentMomentum * mScrollView.momentumAmount;
 		Vector3 moveDelta = NGUIMath.SpringDampen(ref momentum, 9f, 2f);
-		Vector3 pickingPoint = panelCenter - moveDelta * 0.05f; // Magic number based on what "feels right"
-		mScrollView.currentMomentum = Vector3.zero;
+		Vector3 pickingPoint = panelCenter - moveDelta * 0.01f; // Magic number based on what "feels right"
 
 		float min = float.MaxValue;
 		Transform closest = null;
@@ -168,7 +167,6 @@ public class UICenterOnChild : MonoBehaviour
 				}
 			}
 		}
-
 		CenterOn(closest, panelCenter);
 	}
 

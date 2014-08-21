@@ -1,7 +1,7 @@
 ----------------------------------------------
             NGUI: Next-Gen UI kit
  Copyright © 2011-2014 Tasharen Entertainment
-            Version 3.6.8
+            Version 3.7.0
     http://www.tasharen.com/?page_id=197
             support@tasharen.com
 ----------------------------------------------
@@ -54,6 +54,48 @@ and it will not be included in the build of your game. It's only used in the edi
 -----------------
  Version History
 -----------------
+
+3.7.0
+- NEW: You can now set UIWidget.onRender to change material properties like in OnWillRenderObject.
+- NEW: Changing UITexture.mainTexture and shader is now super-quick if it's not batched.
+- NEW: UIRoot now has additional scaling constraints enabling new fill and fit modes.
+- NEW: Added the ability to ignore kerning information when making bitmap fonts.
+- NEW: NGUI's events sent via "3D" and "2D" event type UICameras will now go to the rigidbody instead of colliders.
+- NEW: UIKeyBinding now has a new setting "All" that will trigger both select and press/click logic.
+- NEW: UICamera.isOverUI, UICamera.currentTouch.isOverUI.
+- NEW: NGUI now uses the new rect transform tool instead of the move transform in Unity 4.6+.
+- NEW: UIPlaySound now has an OnEnable play option. For convenience.
+- NEW: UIEventListener now has OnTooltip.
+- NEW: TweenAlpha now works with renderers as well.
+- FIX: Removed code that was snapping draw call positions to pixels, allowing you animate panels smoothly.
+- FIX: Calling Reposition() on the grid and table now works even if its Start() hasn't executed.
+- FIX: Dynamic font baseline calculation work-around for some partial fonts.
+- FIX: Center On Child script got semi-broken in the last version.
+
+3.6.9
+- NEW: Added loop, play, pause and reset functionality to UI2DSpriteAnimation.
+- NEW: Added new automatic support for linear lighting.
+- NEW: Added a pivot point setting to UITable to match UIGrid.
+- NEW: Added warnings to UIAnchor and UIStretch components that inform the user about them being deprecated.
+- NEW: Property binding can now let you select properties that only have either get or set, depending on what's needed.
+- NEW: Added settable delegates to UICamera: GetKey, GetKeyDown, GetKeyUp, GetAxis.
+- NEW: UIRect has a new anchor update setting: OnStart. It will only update anchors once.
+- NEW: Panels have a new option to ignore soft border when constraining scroll view content.
+- FIX: Added alexkring's work-around for the rare "texture destroyed" issue in the Atlas Maker.
+- FIX: Dragging 2D UI elements into a scene with a 3D UI should no longer create many UI Roots.
+- FIX: Labels will now use the draw region, making them usable as the slider's foreground.
+- FIX: Localization with multi-line entries would skip the first word.
+- FIX: The layout system's anchors should now work even for 3D UIs.
+- FIX: UIWrapContent was not setting the restrict within panel flag correctly.
+- FIX: UILabel.GetWordAtPosition now works with line breaks properly.
+- FIX: Embedded URL retrieval code wasn't capping when it encountered a /url tag.
+- FIX: Embedded URL retrieval is now much more precise.
+- FIX: Mouse scroll wheel should again work with UICenterOnChild.
+- FIX: UILocalize will now change UIButton's normal sprite.
+- FIX: UIToggle transitions will now be instant if the value was changed while the toggle is disabled.
+- FIX: UIDragDropitem will now work with 2D colliders (thanks HanzaRu).
+- FIX: Bold can now be mixed with underline properly.
+- DEL: Removed the old "Shader Quality" script that was messing up the refractive atlas.
 
 3.6.8
 - NEW: UIWrapContent now has a range limit you can set for indices (such as -10 to 10).
