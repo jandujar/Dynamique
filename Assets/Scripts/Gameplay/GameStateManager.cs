@@ -173,7 +173,11 @@ public class GameStateManager : MonoBehaviour
 		gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
 		PlayerPrefs.Save();
 
-		pauseButton.transform.collider.enabled = false;
+		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
+
+		foreach (Collider pauseCollider in pauseColliders)
+			pauseCollider.enabled = false;
+
 		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
 		
 		foreach (Collider resumeCollider in resumeColliders)
@@ -192,7 +196,11 @@ public class GameStateManager : MonoBehaviour
 
 	void Replay()
 	{
-		pauseButton.transform.collider.enabled = false;
+		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
+		
+		foreach (Collider pauseCollider in pauseColliders)
+			pauseCollider.enabled = false;
+
 		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
 
 		foreach (Collider resumeCollider in resumeColliders)
@@ -203,7 +211,11 @@ public class GameStateManager : MonoBehaviour
 
 	void MainMenu()
 	{
-		pauseButton.transform.collider.enabled = false;
+		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
+		
+		foreach (Collider pauseCollider in pauseColliders)
+			pauseCollider.enabled = false;
+
 		Collider[] resumeColliders = resumeButton.GetComponentsInChildren<Collider>();
 		
 		foreach (Collider resumeCollider in resumeColliders)
