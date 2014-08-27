@@ -44,6 +44,9 @@ public class Activate : MonoBehaviour
 		if (activated && !objectToActivate.activeSelf)
 			objectToActivate.SetActive(true);
 		else if (!activated && objectToActivate.activeSelf)
+		{
 			objectToActivate.SetActive(false);
+			Fabric.EventManager.Instance.PostEvent("SFX_Deactivate", Fabric.EventAction.PlaySound);
+		}
 	}
 }

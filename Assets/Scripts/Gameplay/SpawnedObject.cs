@@ -107,6 +107,7 @@ public class SpawnedObject : MonoBehaviour
 
 		if (!levelComplete)
 		{
+			Fabric.EventManager.Instance.PostEvent("SFX_Death", Fabric.EventAction.PlaySound);
 			Instantiate(deathEffect, transform.position, transform.rotation);
 			gameController.ResetCollectibles();
 		}

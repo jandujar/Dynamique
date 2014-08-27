@@ -84,6 +84,7 @@ public class GameController : MonoBehaviour
 
 	void LevelCompleted()
 	{
+		Fabric.EventManager.Instance.PostEvent("SFX_Vortex", Fabric.EventAction.PlaySound);
 		GameObject gameStateManagerObject = GameObject.FindGameObjectWithTag("GameStateManager");
 
 		if (gameStateManagerObject != null)

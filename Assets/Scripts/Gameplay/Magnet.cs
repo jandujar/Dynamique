@@ -7,6 +7,16 @@ public class Magnet : MonoBehaviour
 	[SerializeField] float power = 1f;
 	Vector3 direction;
 
+	void OnEnable()
+	{
+		Debug.Log(transform.parent.name);
+
+		if (transform.parent.name == "Attract")
+			Fabric.EventManager.Instance.PostEvent("SFX_Attract", Fabric.EventAction.PlaySound);
+		else if (transform.parent.name == "Repel")
+			Fabric.EventManager.Instance.PostEvent("SFX_Repel", Fabric.EventAction.PlaySound);
+	}
+
 	void FixedUpdate()
 	{
 		Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);

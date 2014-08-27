@@ -18,6 +18,7 @@ public class Spawner : MonoBehaviour
 	{
 		canSpawn = false;
 		yield return new WaitForSeconds(spawnWaitTime);
+		Fabric.EventManager.Instance.PostEvent("SFX_Spawn", Fabric.EventAction.PlaySound);
 		Instantiate(spawnEffect, transform.position, transform.rotation);
 		var clone = (GameObject)Instantiate(objectPrefab, transform.position, transform.rotation);
 		clone.name = "Object " + spawnNumber.ToString();

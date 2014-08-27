@@ -47,7 +47,10 @@ public class Portal : MonoBehaviour
 	void OnTriggerEnter(Collider other)
 	{
 		if (portalEndObject != null)
+		{
+			Fabric.EventManager.Instance.PostEvent("SFX_Wormhole", Fabric.EventAction.PlaySound);
 			other.transform.position = portalEndObject.transform.position;
+		}
 		else
 			Debug.LogError("No End Portal Specified");
 	}
