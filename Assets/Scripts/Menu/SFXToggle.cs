@@ -11,9 +11,9 @@ public class SFXToggle : MonoBehaviour
 		SFXStatus = EncryptedPlayerPrefs.GetInt("SFX Enabled", 1);
 
 		if (SFXStatus == 1)
-			MusicOn();
+			SFXOn();
 		else
-			MusicOff();
+			SFXOff();
 	}
 
 	public void ButtonPress()
@@ -23,26 +23,26 @@ public class SFXToggle : MonoBehaviour
 		if (SFXStatus == 0)
 		{
 			EncryptedPlayerPrefs.SetInt("SFX Enabled", 1);
-			MusicOn();
+			SFXOn();
 		}
 		else
 		{
 			EncryptedPlayerPrefs.SetInt("SFX Enabled", 0);
-			MusicOff();
+			SFXOff();
 		}
 
 		PlayerPrefs.Save();
 	}
 
-	void MusicOn()
+	void SFXOn()
 	{
 		if (buttonText != null)
 			buttonText.text = "SFX: On";
 
-		Fabric.EventManager.Instance.PostEvent("SFX", Fabric.EventAction.SetVolume, 1.0f);
+		Fabric.EventManager.Instance.PostEvent("SFX", Fabric.EventAction.SetVolume, 0.2f);
 	}
 
-	void MusicOff()
+	void SFXOff()
 	{
 		if (buttonText != null)
 			buttonText.text = "SFX: Off";
