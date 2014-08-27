@@ -4,7 +4,18 @@ using System.Collections;
 public class Activate : MonoBehaviour
 {
 	[SerializeField] GameObject objectToActivate;
+	GameController gameController;
 	bool activated = false;
+
+	void Start()
+	{
+		GameObject gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
+
+		if (gameControllerObject != null)
+			gameController = gameControllerObject.GetComponent<GameController>();
+		else
+			Debug.LogError("Unable to find Game Controller");
+	}
 
 	// Subscribe to events 
 	void OnEnable()
@@ -27,11 +38,14 @@ public class Activate : MonoBehaviour
 	// At the touch beginning
 	public void On_TouchStart(Gesture gesture)
 	{
-		// Verification that the action is on the object 
-		if (!activated && gesture.pickObject == gameObject && objectToActivate != null)
-			activated = true;
-		else if (activated && gesture.pickObject == gameObject && objectToActivate != null)
-			activated = false;
+		if (!gameController.LevelComplete)
+		{
+			// Verification that the action is on the object 
+			if (!activated && gesture.pickObject == gameObject && objectToActivate != null)
+				activated = true;
+			else if (activated && gesture.pickObject == gameObject && objectToActivate != null)
+				activated = false;
+		}
 	}
 
 	void ResetTools()
