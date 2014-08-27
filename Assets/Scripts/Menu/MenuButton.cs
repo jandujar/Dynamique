@@ -5,6 +5,7 @@ public class MenuButton : MonoBehaviour
 {
 	[SerializeField] MenuStateManager menuStateManager;
 	[SerializeField] TriggerLevelLoad triggerLevelLoad;
+	[SerializeField] ButtonAudioTrigger buttonAudio;
 
 	public enum ButtonState
 	{
@@ -50,6 +51,7 @@ public class MenuButton : MonoBehaviour
 		if (triggerLevelLoad != null)
 		{
 			triggerLevelLoad.LoadLevel();
+			Fabric.EventManager.Instance.PostEvent("SFX_Button_3", Fabric.EventAction.PlaySound);
 		}
 		else
 		{
@@ -77,7 +79,10 @@ public class MenuButton : MonoBehaviour
 				menuStateManager.menuState = MenuStateManager.MenuState.ChaosTheorySelect;
 				break;
 			}
-			
+
+			if (buttonAudio != null)
+				buttonAudio.PlayAudio();
+
 			menuStateManager.SetState();
 		}
 	}
