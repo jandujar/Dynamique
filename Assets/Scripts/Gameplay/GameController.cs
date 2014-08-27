@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
 	GameStateManager gameStateManager;
+	bool gamePaused = false;
 	GameObject summaryFade;
 	GameObject summaryScreen;
 	UILabel summaryStats;
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
 	bool summaryTriggered = false;
 	bool levelComplete = false;
 	int collectiblesCollected = 0;
+	public bool GamePaused { get { return gamePaused; } set { gamePaused = value; }}
 	public bool LevelComplete { get { return levelComplete; } set { levelComplete = value; }}
 	public int CollectiblesCollected { get { return collectiblesCollected; } set { collectiblesCollected = value; }}
 

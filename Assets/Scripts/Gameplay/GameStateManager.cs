@@ -13,6 +13,9 @@ public class GameStateManager : MonoBehaviour
 	[SerializeField] GameObject[] activeStars;
 	[SerializeField] GameObject[] inactiveStars;
 	GameCenterManager gameCenterManager;
+	GameController gameController;
+	GameObject gameControllerObject;
+	bool gameControllerFound = false;
 	LevelManager levelManager;
 	int collectibleSpawners = 0;
 	int collectiblesCollected = 0;
@@ -60,32 +63,45 @@ public class GameStateManager : MonoBehaviour
 		}
 	}
 
-	void Awake()
+	void Update()
 	{
+		if (!gameControllerFound)
+		{
+			if (gameControllerObject == null)
+				gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
+			else
+				GameSetup();
+		}
+	}
+
+	void GameSetup()
+	{
+		gameControllerFound = true;
+		gameController = gameControllerObject.GetComponent<GameController>();
+		
 		SetState();
 		starsCamera.SetActive(false);
 		highScoreLabel.SetActive(false);
-
+		
 		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
 		levelManager = levelManagerObject.GetComponent<LevelManager>();
 		summaryFade.SetActive(false);
 		summaryScreen.SetActive(false);
-	}
 
-	void Start()
-	{
 		GameObject gameCenterManagerObject = GameObject.FindGameObjectWithTag("GameCenterManager");
 		gameCenterManager = gameCenterManagerObject.GetComponent<GameCenterManager>();
 	}
 	
 	void Play()
 	{
+		gameController.GamePaused = false;
 		pauseButton.SetActive(true);
 		resumeButton.SetActive(false);
 	}
 	
 	void Pause()
 	{
+		gameController.GamePaused = true;
 		pauseButton.SetActive(false);
 		resumeButton.SetActive(true);
 	}

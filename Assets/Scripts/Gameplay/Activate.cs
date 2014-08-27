@@ -38,7 +38,7 @@ public class Activate : MonoBehaviour
 	// At the touch beginning
 	public void On_TouchStart(Gesture gesture)
 	{
-		if (!gameController.LevelComplete)
+		if (!gameController.GamePaused)
 		{
 			// Verification that the action is on the object 
 			if (!activated && gesture.pickObject == gameObject && objectToActivate != null)
