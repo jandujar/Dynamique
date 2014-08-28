@@ -22,6 +22,7 @@ public class Collectible : MonoBehaviour
 	{
 		if (other.tag == "Object")
 		{
+			Fabric.EventManager.Instance.PostEvent("SFX_Star", Fabric.EventAction.PlaySound);
 			gameController.CollectiblesCollected += 1;
 			gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
 			Instantiate(collectExplosion, transform.position, transform.rotation);
