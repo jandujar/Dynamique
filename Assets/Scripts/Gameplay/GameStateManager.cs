@@ -272,6 +272,7 @@ public class GameStateManager : MonoBehaviour
 			break;
 		case 1:
 			activeStars[0].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			yield return new WaitForSeconds(nextStepTime);
 			inactiveStars[1].SetActive(true);
 			yield return new WaitForSeconds(nextStepTime);
@@ -279,17 +280,22 @@ public class GameStateManager : MonoBehaviour
 			break;
 		case 2:
 			activeStars[0].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			yield return new WaitForSeconds(nextStepTime);
 			activeStars[1].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			yield return new WaitForSeconds(nextStepTime);
 			inactiveStars[2].SetActive(true);
 			break;
 		case 3:
 			activeStars[0].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			yield return new WaitForSeconds(nextStepTime);
 			activeStars[1].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			yield return new WaitForSeconds(nextStepTime);
 			activeStars[2].SetActive(true);
+			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			break;
 		default:
 			Debug.LogError("Unsupported star count");

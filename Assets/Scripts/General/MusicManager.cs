@@ -13,7 +13,7 @@ public class MusicManager : MonoBehaviour
 			Instantiate(fabricPrefab);
 	}
 
-	void Start ()
+	void Start()
 	{
 		int loadMenu = EncryptedPlayerPrefs.GetInt("Load Main Menu", 1);
 		int menuMusicPlaying = EncryptedPlayerPrefs.GetInt("Menu Music Playing", 0);
