@@ -63,6 +63,16 @@ public class GameStateManager : MonoBehaviour
 		}
 	}
 
+	void Awake()
+	{
+		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
+		levelManager = levelManagerObject.GetComponent<LevelManager>();
+		summaryFade.SetActive(false);
+		summaryScreen.SetActive(false);
+		starsCamera.SetActive(false);
+		highScoreLabel.SetActive(false);
+	}
+
 	void Update()
 	{
 		if (!gameControllerFound)
@@ -78,18 +88,11 @@ public class GameStateManager : MonoBehaviour
 	{
 		gameControllerFound = true;
 		gameController = gameControllerObject.GetComponent<GameController>();
-		
-		SetState();
-		starsCamera.SetActive(false);
-		highScoreLabel.SetActive(false);
-		
-		GameObject levelManagerObject = GameObject.FindGameObjectWithTag("LevelManager");
-		levelManager = levelManagerObject.GetComponent<LevelManager>();
-		summaryFade.SetActive(false);
-		summaryScreen.SetActive(false);
 
 		GameObject gameCenterManagerObject = GameObject.FindGameObjectWithTag("GameCenterManager");
 		gameCenterManager = gameCenterManagerObject.GetComponent<GameCenterManager>();
+
+		SetState();
 	}
 	
 	void Play()
