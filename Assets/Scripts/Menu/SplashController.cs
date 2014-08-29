@@ -15,8 +15,6 @@ public class SplashController : MonoBehaviour
 
 		Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PlaySound);
 		Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.StopSound);
-		EncryptedPlayerPrefs.SetInt("Menu Music Playing", 1);
-		EncryptedPlayerPrefs.SetInt("Gameplay Music Playing", 0);
 
 		PlayerPrefs.Save();
 		StartCoroutine(WaitAndLoad());

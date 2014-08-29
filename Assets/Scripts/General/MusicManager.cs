@@ -4,36 +4,45 @@ using System.Collections;
 public class MusicManager : MonoBehaviour
 {
 	[SerializeField] GameObject fabricPrefab;
+	bool firstload = true;
+	bool menuMusicPlaying = false;
+	bool gameplayMusicPlaying = false;
 
-	void Awake()
+	void OnLevelWasLoaded()
 	{
 		GameObject fabricObject = GameObject.FindGameObjectWithTag("Fabric");
 
 		if (fabricObject == null)
 			Instantiate(fabricPrefab);
+
+		if (firstload)
+		{
+			firstload = false;
+			menuMusicPlaying = true;
+			gameplayMusicPlaying = false;
+			DontDestroyOnLoad(transform.gameObject);
+		}
+
+		ProcessMusic();
 	}
 
-	void Start()
+	void ProcessMusic()
 	{
 		int loadMenu = EncryptedPlayerPrefs.GetInt("Load Main Menu", 1);
-		int menuMusicPlaying = EncryptedPlayerPrefs.GetInt("Menu Music Playing", 0);
-		int gameplayMusicPlaying = EncryptedPlayerPrefs.GetInt("Gameplay Music Playing", 0);
 
-		if (Application.loadedLevel == 0 || (loadMenu == 1 && menuMusicPlaying == 0))
+		if (Application.loadedLevel == 0 || (loadMenu == 1 && !menuMusicPlaying))
 		{
 			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PlaySound);
 			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.StopSound);
-			EncryptedPlayerPrefs.SetInt("Menu Music Playing", 1);
-			EncryptedPlayerPrefs.SetInt("Gameplay Music Playing", 0);
+			menuMusicPlaying = true;
+			gameplayMusicPlaying = false;
 		}
-		else if (loadMenu == 0 && gameplayMusicPlaying == 0)
+		else if (loadMenu == 0 && !gameplayMusicPlaying)
 		{
 			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.StopSound);
 			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PlaySound);
-			EncryptedPlayerPrefs.SetInt("Menu Music Playing", 0);
-			EncryptedPlayerPrefs.SetInt("Gameplay Music Playing", 1);
+			menuMusicPlaying = false;
+			gameplayMusicPlaying = true;
 		}
-
-		PlayerPrefs.Save();
 	}
 }
