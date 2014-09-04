@@ -42,7 +42,6 @@ public class LevelManager : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("Level Index Exceeded");
 			EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 			PlayerPrefs.Save();
 		}

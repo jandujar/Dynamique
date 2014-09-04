@@ -202,6 +202,8 @@ public class GameStateManager : MonoBehaviour
 		foreach (Collider resumeCollider in resumeColliders)
 			resumeCollider.enabled = false;
 
+		PlayerPrefs.Save();
+
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
 		summaryLabel.text = "Score: " + TotalScore.ToString("N0");
@@ -240,8 +242,7 @@ public class GameStateManager : MonoBehaviour
 		foreach (Collider resumeCollider in resumeColliders)
 			resumeCollider.enabled = false;
 
-		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
-		levelManager.LoadLevel(0);
+		levelManager.LoadLevel(99);
 	}
 
 	public void DelaySetState(float waitTime)
