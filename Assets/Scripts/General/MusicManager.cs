@@ -8,7 +8,7 @@ public class MusicManager : MonoBehaviour
 	bool menuMusicPlaying = false;
 	bool gameplayMusicPlaying = false;
 
-	void OnLevelWasLoaded()
+	void Awake()
 	{
 		GameObject fabricObject = GameObject.FindGameObjectWithTag("Fabric");
 
@@ -22,7 +22,10 @@ public class MusicManager : MonoBehaviour
 			gameplayMusicPlaying = false;
 			DontDestroyOnLoad(transform.gameObject);
 		}
+	}
 
+	void OnLevelWasLoaded()
+	{
 		ProcessMusic();
 	}
 

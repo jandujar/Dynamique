@@ -51,5 +51,7 @@ public class TriggerLevelLoad : MonoBehaviour
 			Debug.LogError("Loading Level 0 or less....");
 			levelManager.LoadLevel(0);
 		}
+
+		PlayerPrefs.Save();
 	}
 }

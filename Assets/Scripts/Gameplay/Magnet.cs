@@ -9,8 +9,6 @@ public class Magnet : MonoBehaviour
 
 	void OnEnable()
 	{
-		Debug.Log(transform.parent.name);
-
 		if (transform.parent.name == "Attract")
 			Fabric.EventManager.Instance.PostEvent("SFX_Attract", Fabric.EventAction.PlaySound);
 		else if (transform.parent.name == "Repel")
