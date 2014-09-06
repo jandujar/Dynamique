@@ -13,9 +13,6 @@ public class SplashController : MonoBehaviour
 		EncryptedPlayerPrefs.SetInt("Level 18 Status", 1);
 		EncryptedPlayerPrefs.SetInt("Level 27 Status", 1);
 
-		Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PlaySound);
-		Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.StopSound);
-
 		PlayerPrefs.Save();
 		StartCoroutine(WaitAndLoad());
 	}
