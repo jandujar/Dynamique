@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript : MonoBehaviour
+public class SmoothFollow : MonoBehaviour
 {
 	[SerializeField] Transform target;
 	float distance = 10.0f;
