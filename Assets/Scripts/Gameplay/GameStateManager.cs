@@ -152,7 +152,6 @@ public class GameStateManager : MonoBehaviour
 			//int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
 			int currentStageScore = EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0);
 			int overallTotalScore = stage1Score + stage2Score + stage3Score; //+ stage4Score;
-
 			gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 		}
 		else
@@ -164,12 +163,20 @@ public class GameStateManager : MonoBehaviour
 
 		int previousEarnedStars = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Stars", 0);
 
-		if (CollectiblesCollected > previousEarnedStars)
+		if (CollectiblesCollected >= previousEarnedStars)
 		{
 			EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Stars", CollectiblesCollected);
+			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Stars", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Stars", 0) + (CollectiblesCollected - previousEarnedStars));
 			int currentTotalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 			EncryptedPlayerPrefs.SetInt("Total Stars", currentTotalStars + (CollectiblesCollected - previousEarnedStars));
 		}
+
+		if (stageNumber == 1)
+			gameCenterManager.SubmitAchievement("collect_gravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 1 Stars", 0)/27) * 100f);
+		else if (stageNumber == 2)
+			gameCenterManager.SubmitAchievement("collect_antigravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 2 Stars", 0)/27) * 100f);
+		else if (stageNumber == 3)
+			gameCenterManager.SubmitAchievement("collect_wormhole_stars", (EncryptedPlayerPrefs.GetInt("Stage 3 Stars", 0)/27) * 100f);
 
 		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
@@ -189,7 +196,7 @@ public class GameStateManager : MonoBehaviour
 			//gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
 		}
 
-		gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
+		//gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
 		PlayerPrefs.Save();
 
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
