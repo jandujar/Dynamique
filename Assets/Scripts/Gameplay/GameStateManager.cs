@@ -120,14 +120,16 @@ public class GameStateManager : MonoBehaviour
 		EncryptedPlayerPrefs.SetInt("Level " + (levelNumber + 1) + " Status", 1);
 		int stageNumber = 0;
 
-		if (levelNumber <= 9)
+		if (levelNumber <= 8)
 			stageNumber = 1;
-		else if (levelNumber > 9 && levelNumber <= 18)
+		else if (levelNumber > 8 && levelNumber <= 17)
 			stageNumber = 2;
-		else if (levelNumber > 18 && levelNumber <= 27)
+		else if (levelNumber > 17 && levelNumber <= 26)
 			stageNumber = 3;
-		else if (levelNumber > 27)
+		else if (levelNumber > 26)
 			stageNumber = 4;
+
+		Debug.Log("Level Number: " + levelNumber + " Stage Number: " + stageNumber);
 
 		if (TotalScore > highScore)
 		{
