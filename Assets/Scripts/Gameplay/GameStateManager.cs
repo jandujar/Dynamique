@@ -172,11 +172,11 @@ public class GameStateManager : MonoBehaviour
 		}
 
 		if (stageNumber == 1)
-			gameCenterManager.SubmitAchievement("collect_gravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 1 Stars", 0)/27) * 100f);
+			gameCenterManager.SubmitAchievement("collect_gravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 1 Stars", 0) * 100f) / 27f);
 		else if (stageNumber == 2)
-			gameCenterManager.SubmitAchievement("collect_antigravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 2 Stars", 0)/27) * 100f);
+			gameCenterManager.SubmitAchievement("collect_antigravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 2 Stars", 0) * 100f) / 27f);
 		else if (stageNumber == 3)
-			gameCenterManager.SubmitAchievement("collect_wormhole_stars", (EncryptedPlayerPrefs.GetInt("Stage 3 Stars", 0)/27) * 100f);
+			gameCenterManager.SubmitAchievement("collect_wormhole_stars", (EncryptedPlayerPrefs.GetInt("Stage 3 Stars", 0) * 100f) / 27f);
 
 		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
