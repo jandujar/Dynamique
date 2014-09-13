@@ -167,7 +167,6 @@ public class GameStateManager : MonoBehaviour
 		{
 			EncryptedPlayerPrefs.SetInt("Level " + levelNumber + " Stars", CollectiblesCollected);
 			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Stars", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Stars", 0) + (CollectiblesCollected - previousEarnedStars));
-			Debug.Log("Stage: " + stageNumber + " Total: " + EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Stars", 0));
 			int currentTotalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 			EncryptedPlayerPrefs.SetInt("Total Stars", currentTotalStars + (CollectiblesCollected - previousEarnedStars));
 		}
