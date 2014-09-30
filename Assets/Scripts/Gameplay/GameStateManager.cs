@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Advertisements;
 
 public class GameStateManager : MonoBehaviour
 {
@@ -244,6 +245,17 @@ public class GameStateManager : MonoBehaviour
 
 	void MainMenu()
 	{
+		if(Advertisement.isReady())
+		{
+			// Show with default zone, pause engine and print result to debug log
+			Advertisement.Show(null, new ShowOptions {
+				pause = false,
+				resultCallback = result => {
+					Debug.Log(result.ToString());
+				}
+			});
+		}
+
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
 		
 		foreach (Collider pauseCollider in pauseColliders)

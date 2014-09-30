@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Advertisements;
 
 public class SplashController : MonoBehaviour
 {
@@ -7,6 +8,16 @@ public class SplashController : MonoBehaviour
 
 	void Start()
 	{
+		if (Advertisement.isSupported)
+		{
+			Advertisement.allowPrecache = true;
+			Advertisement.Initialize ("17681");
+		}
+		else
+		{
+			Debug.Log("Platform not supported");
+		}
+
 		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 		EncryptedPlayerPrefs.SetInt("Level 0 Status", 1);
 		EncryptedPlayerPrefs.SetInt("Level 9 Status", 1);
