@@ -48,4 +48,18 @@ public class MusicManager : MonoBehaviour
 			gameplayMusicPlaying = true;
 		}
 	}
+
+	void OnApplicationPause(bool paused)
+	{
+		if (paused)
+		{
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PauseSound);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PauseSound);
+		}
+		else
+		{
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.UnpauseSound);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.UnpauseSound);
+		}
+	}
 }
