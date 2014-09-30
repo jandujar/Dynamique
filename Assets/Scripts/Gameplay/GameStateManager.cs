@@ -129,8 +129,6 @@ public class GameStateManager : MonoBehaviour
 		else if (levelNumber > 26)
 			stageNumber = 4;
 
-		Debug.Log("Level Number: " + levelNumber + " Stage Number: " + stageNumber);
-
 		if (TotalScore > highScore)
 		{
 			if (highScore == 0)
@@ -148,13 +146,6 @@ public class GameStateManager : MonoBehaviour
 			}
 
 			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Score", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0) + (TotalScore - highScore));
-			int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
-			int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
-			int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
-			//int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
-			int currentStageScore = EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0);
-			int overallTotalScore = stage1Score + stage2Score + stage3Score; //+ stage4Score;
-			gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 		}
 		else
 		{
@@ -162,6 +153,21 @@ public class GameStateManager : MonoBehaviour
 			tempPosition.y = -45f;
 			summaryLabel.transform.localPosition = tempPosition;
 		}
+
+		PlayerPrefs.Save();
+		int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
+		int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
+		int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
+		//int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
+		int currentStageScore = 0;
+
+		if (TotalScore > highScore)
+			currentStageScore = EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Score", 0);
+		else
+			currentStageScore = highScore;
+
+		int overallTotalScore = stage1Score + stage2Score + stage3Score; //+ stage4Score;
+		gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 
 		int previousEarnedStars = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Stars", 0);
 
@@ -171,6 +177,7 @@ public class GameStateManager : MonoBehaviour
 			EncryptedPlayerPrefs.SetInt("Stage " + stageNumber + " Stars", EncryptedPlayerPrefs.GetInt("Stage " + stageNumber + " Stars", 0) + (CollectiblesCollected - previousEarnedStars));
 			int currentTotalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 			EncryptedPlayerPrefs.SetInt("Total Stars", currentTotalStars + (CollectiblesCollected - previousEarnedStars));
+			PlayerPrefs.Save();
 		}
 
 		if (stageNumber == 1)
@@ -199,8 +206,6 @@ public class GameStateManager : MonoBehaviour
 		}
 
 		//gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
-		PlayerPrefs.Save();
-
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
 
 		foreach (Collider pauseCollider in pauseColliders)
@@ -210,8 +215,6 @@ public class GameStateManager : MonoBehaviour
 		
 		foreach (Collider resumeCollider in resumeColliders)
 			resumeCollider.enabled = false;
-
-		PlayerPrefs.Save();
 
 		summaryFade.SetActive(true);
 		summaryScreen.SetActive(true);
