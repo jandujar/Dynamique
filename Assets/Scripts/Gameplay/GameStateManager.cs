@@ -245,6 +245,7 @@ public class GameStateManager : MonoBehaviour
 
 	void MainMenu()
 	{
+#if !UNITY_EDITOR
 		if (Advertisement.isReady())
 		{
 			// Show with default zone, pause engine and print result to debug log
@@ -255,6 +256,7 @@ public class GameStateManager : MonoBehaviour
 				}
 			});
 		}
+#endif
 
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
 		
