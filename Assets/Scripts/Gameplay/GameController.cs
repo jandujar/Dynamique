@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
 	bool levelComplete = false;
 	int collectiblesCollected = 0;
 	bool dead = false;
+	bool canSpawn = true;
 	public int ShootingStarCount { get { return shootingStarCount; }}
 	public int ShootingStarsCollected { get { return shootingStarsCollected; } set { shootingStarsCollected = value; }}
 	public bool GamePaused { get { return gamePaused; } set { gamePaused = value; }}
@@ -34,7 +35,16 @@ public class GameController : MonoBehaviour
 	public bool Dead { get { return dead; } set { dead = value; }}
 
 	void Start()
-	{ 
+	{
+		GameObject gameStateManagerObject = GameObject.FindGameObjectWithTag("GameStateManager");
+		
+		if (gameStateManagerObject != null)
+			gameStateManager = gameStateManagerObject.GetComponent<GameStateManager>();
+		else
+			Debug.LogError("Couldn't Find Game State Manager");
+
+		CollectiblesCollected = 0;
+		gameStateManager.CollectiblesCollected = 0;
 		StartCoroutine(SpawnCollectibles(initialWait));
 		tools = GameObject.FindGameObjectWithTag("Tools");
 		spawnerObjects = GameObject.FindGameObjectsWithTag("Spawner");
@@ -80,15 +90,12 @@ public class GameController : MonoBehaviour
 				StartCoroutine(StartTimer());
 			}
 		}
-		else
-		{
-			Debug.LogError("No Spawners Found");
-		}
 	}
 
 	public void KillShootingStars()
 	{
 		Dead = true;
+		ResetCollectibles();
 		ShootingStarsCollected = 0;
 		tools.BroadcastMessage("ResetTools");
 		GameObject[] shootingStarObjects = GameObject.FindGameObjectsWithTag("Object");
@@ -99,23 +106,28 @@ public class GameController : MonoBehaviour
 			spawnedObject.Death();
 		}
 
-		ResetCollectibles();
 		Dead = false;
 	}
 
 	public void ResetCollectibles()
 	{
 		CollectiblesCollected = 0;
+		gameStateManager.CollectiblesCollected = 0;
 		GameObject[] collectibles = GameObject.FindGameObjectsWithTag("Collectible");
 
 		foreach (GameObject collectible in collectibles)
-			Destroy(collectible);
+		{
+			Collectible collectibleScript = collectible.GetComponent<Collectible>();
+			collectibleScript.DestroyStar();
+		}
 
-		StartCoroutine(SpawnCollectibles(0f));
+		if (canSpawn)
+			StartCoroutine(SpawnCollectibles(0f));
 	}
 
 	IEnumerator SpawnCollectibles(float waitTime)
 	{
+		canSpawn = false;
 		yield return new WaitForSeconds(waitTime);
 
 		foreach (CollectibleSpawner collectibleSpawner in collectibleSpawners)
@@ -123,6 +135,8 @@ public class GameController : MonoBehaviour
 			yield return new WaitForSeconds(collectibleSpawnWait);
 			collectibleSpawner.Spawn();
 		}
+
+		canSpawn = true;
 	}
 
 	IEnumerator StartTimer()
@@ -133,13 +147,9 @@ public class GameController : MonoBehaviour
 
 	void LevelCompleted()
 	{
-		Fabric.EventManager.Instance.PostEvent("SFX_Vortex", Fabric.EventAction.PlaySound);
-		GameObject gameStateManagerObject = GameObject.FindGameObjectWithTag("GameStateManager");
+		Debug.Log("Final: " + CollectiblesCollected);
 
-		if (gameStateManagerObject != null)
-			gameStateManager = gameStateManagerObject.GetComponent<GameStateManager>();
-		else
-			Debug.LogError("Couldn't Find Game State Manager");
+		Fabric.EventManager.Instance.PostEvent("SFX_Vortex", Fabric.EventAction.PlaySound);
 
 		if (elapsedTime < 60f)
 			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));

@@ -77,7 +77,7 @@ public class SpawnedObject : MonoBehaviour
 				gameController.LevelComplete = true;
 			}
 		}
-		else if (collision.transform.tag == "Obstacle")
+		else if (collision.transform.tag == "Obstacle" || collision.transform.tag == "Object")
 		{
 			gameController.SpawnShootingStars(respawnWait);
 			gameController.KillShootingStars();
@@ -116,6 +116,6 @@ public class SpawnedObject : MonoBehaviour
 		foreach(GameObject trail in trailRenderers)
 			trail.SetActive(false);
 
-		Destroy(transform.gameObject, 2f);
+		Destroy(gameObject);
 	}
 }

@@ -323,7 +323,7 @@ public class GameStateManager : MonoBehaviour
 			Fabric.EventManager.Instance.PostEvent("SFX_Collected", Fabric.EventAction.PlaySound);
 			break;
 		default:
-			Debug.LogError("Unsupported star count");
+			Debug.LogError("Unsupported star count: " + CollectiblesCollected);
 			break;
 		}
 	}
