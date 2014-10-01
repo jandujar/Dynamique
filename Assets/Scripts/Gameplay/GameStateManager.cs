@@ -59,7 +59,7 @@ public class GameStateManager : MonoBehaviour
 			Replay();
 			break;
 		case GameState.MainMenu:
-			MainMenu();
+			StartCoroutine(MainMenu());
 			break;
 		}
 	}
@@ -243,18 +243,20 @@ public class GameStateManager : MonoBehaviour
 		levelManager.LoadLevel(EncryptedPlayerPrefs.GetInt("Level Number", 0));
 	}
 
-	void MainMenu()
+	IEnumerator MainMenu()
 	{
-		if(Advertisement.isReady())
+		if (Advertisement.isReady())
 		{
 			// Show with default zone, pause engine and print result to debug log
 			Advertisement.Show(null, new ShowOptions {
-				pause = false,
+				pause = true,
 				resultCallback = result => {
 					Debug.Log(result.ToString());
 				}
 			});
 		}
+
+		yield return new WaitForSeconds(0.1f);
 
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
 		

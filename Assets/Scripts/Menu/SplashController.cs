@@ -6,18 +6,21 @@ public class SplashController : MonoBehaviour
 {
 	const float loadWaitTime = 7f;
 
-	void Start()
+	void Awake()
 	{
 		if (Advertisement.isSupported)
 		{
 			Advertisement.allowPrecache = true;
-			Advertisement.Initialize ("17681");
+			Advertisement.Initialize("17681");
 		}
 		else
 		{
 			Debug.Log("Platform not supported");
 		}
+	}
 
+	void Start()
+	{
 		EncryptedPlayerPrefs.SetInt("Load Main Menu", 1);
 		EncryptedPlayerPrefs.SetInt("Level 0 Status", 1);
 		EncryptedPlayerPrefs.SetInt("Level 9 Status", 1);
