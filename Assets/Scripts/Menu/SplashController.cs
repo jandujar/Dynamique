@@ -11,7 +11,7 @@ public class SplashController : MonoBehaviour
 		if (Advertisement.isSupported)
 		{
 			Advertisement.allowPrecache = true;
-			Advertisement.Initialize("17681");
+			Advertisement.Initialize("17687");
 		}
 		else
 		{
