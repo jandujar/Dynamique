@@ -6,31 +6,22 @@ public class SpawnedObject : MonoBehaviour
 	[SerializeField] float initialForce = 1f;
 	[SerializeField] float maxVelocity = 1f;
 	[SerializeField] float lifetime = 8f;
-	[SerializeField] float respawnWait = 0.5f;
+	[SerializeField] float respawnWait = 0.75f;
 	[SerializeField] float collectibleRadius = 1f;
 	[SerializeField] float collectiblePower = 1f;
 	[SerializeField] GameObject[] livingEffects;
 	[SerializeField] GameObject[] trailRenderers;
 	[SerializeField] GameObject deathEffect;
 	GameController gameController;
-	Spawner spawner;
-	GameObject tools;
 	bool levelComplete = false;
-	bool dead = false;
 	Vector3 direction;
 
 	void Start()
 	{
-		tools = GameObject.FindGameObjectWithTag("Tools");
 		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 	
 		if (gameControllerObject != null)
 			gameController = gameControllerObject.GetComponent<GameController>();
-
-		var spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
-
-		if (spawnerObject != null)
-			spawner = spawnerObject.GetComponent<Spawner>();
 
 		transform.rigidbody.AddRelativeForce(Vector3.forward * initialForce, ForceMode.Impulse);
 		StartCoroutine(SelfDestruct(lifetime));
@@ -54,7 +45,7 @@ public class SpawnedObject : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (!dead)
+		if (!gameController.Dead)
 		{
 			Collider[] hitColliders = Physics.OverlapSphere(transform.position, collectibleRadius);
 			
@@ -73,18 +64,23 @@ public class SpawnedObject : MonoBehaviour
 	{
 		if (collision.transform.tag == "Finish")
 		{
-			var endPointObject = GameObject.FindGameObjectWithTag("Finish");
-			EndPoint endPointScript = endPointObject.GetComponent<EndPoint>();
-			endPointScript.StopEffects();
-
-			levelComplete = true;
-			gameController.LevelComplete = true;
 			Death();
+			gameController.ShootingStarsCollected++;
+
+			if (gameController.ShootingStarsCollected >= gameController.ShootingStarCount)
+			{
+				var endPointObject = GameObject.FindGameObjectWithTag("Finish");
+				EndPoint endPointScript = endPointObject.GetComponent<EndPoint>();
+				endPointScript.StopEffects();
+
+				levelComplete = true;
+				gameController.LevelComplete = true;
+			}
 		}
 		else if (collision.transform.tag == "Obstacle")
 		{
-			spawner.TriggerSpawn(respawnWait);
-			Death();
+			gameController.SpawnShootingStars(respawnWait);
+			gameController.KillShootingStars();
 		}
 	}
 
@@ -92,24 +88,21 @@ public class SpawnedObject : MonoBehaviour
 	{
 		yield return new WaitForSeconds(objectLifetime);
 
-		if (!dead && !levelComplete)
+		if (!gameController.Dead && !levelComplete)
 		{
-			spawner.TriggerSpawn(respawnWait);
-			Death();
+			gameController.SpawnShootingStars(respawnWait);
+			gameController.KillShootingStars();
 		}
 	}
 
-	void Death()
+	public void Death()
 	{
-		dead = true;
-		tools.BroadcastMessage("ResetTools");
 		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
 
 		if (!levelComplete)
 		{
 			Fabric.EventManager.Instance.PostEvent("SFX_Death", Fabric.EventAction.PlaySound);
 			Instantiate(deathEffect, transform.position, transform.rotation);
-			gameController.ResetCollectibles();
 		}
 
 		Collider[] colliders = gameObject.GetComponents<Collider>();

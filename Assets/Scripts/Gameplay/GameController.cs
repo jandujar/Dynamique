@@ -6,12 +6,16 @@ public class GameController : MonoBehaviour
 	[SerializeField] float initialWait = 0f;
 	[SerializeField] float additionalObjectSpawnWait = 0.5f;
 	[SerializeField] CollectibleSpawner[] collectibleSpawners;
+	int shootingStarCount = 0;
+	int shootingStarsCollected = 0;
+	GameObject[] spawnerObjects;
 	GameStateManager gameStateManager;
 	bool gamePaused = false;
 	GameObject summaryFade;
 	GameObject summaryScreen;
 	UILabel summaryStats;
 	Spawner spawner;
+	GameObject tools;
 	float collectibleSpawnWait = 0.1f;
 	float elapsedTime = 0f;
 	bool startTimer = false;
@@ -21,24 +25,33 @@ public class GameController : MonoBehaviour
 	bool summaryTriggered = false;
 	bool levelComplete = false;
 	int collectiblesCollected = 0;
+	bool dead = false;
+	public int ShootingStarCount { get { return shootingStarCount; }}
+	public int ShootingStarsCollected { get { return shootingStarsCollected; } set { shootingStarsCollected = value; }}
 	public bool GamePaused { get { return gamePaused; } set { gamePaused = value; }}
 	public bool LevelComplete { get { return levelComplete; } set { levelComplete = value; }}
 	public int CollectiblesCollected { get { return collectiblesCollected; } set { collectiblesCollected = value; }}
+	public bool Dead { get { return dead; } set { dead = value; }}
 
 	void Start()
-	{
+	{ 
 		StartCoroutine(SpawnCollectibles(initialWait));
-		var spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
+		tools = GameObject.FindGameObjectWithTag("Tools");
+		spawnerObjects = GameObject.FindGameObjectsWithTag("Spawner");
+		shootingStarCount = spawnerObjects.Length;
 
-		if (spawnerObject != null)
-		{
-			spawner = spawnerObject.GetComponent<Spawner>();
-			spawner.TriggerSpawn(initialWait + additionalObjectSpawnWait);
-			StartCoroutine(StartTimer());
+		if (spawnerObjects.Length > 0)
+		{	
+			foreach (GameObject spawnerObject in spawnerObjects)
+			{
+				spawner = spawnerObject.GetComponent<Spawner>();
+				spawner.TriggerSpawn(initialWait + additionalObjectSpawnWait);
+				StartCoroutine(StartTimer());
+			}
 		}
 		else
 		{
-			Debug.LogError("No Spawner Found");
+			Debug.LogError("No Spawners Found");
 		}
 	}
 
@@ -54,6 +67,40 @@ public class GameController : MonoBehaviour
 				summaryTriggered = true;
 			}
 		}
+	}
+
+	public void SpawnShootingStars(float respawnWait)
+	{
+		if (spawnerObjects.Length > 0)
+		{	
+			foreach (GameObject spawnerObject in spawnerObjects)
+			{
+				spawner = spawnerObject.GetComponent<Spawner>();
+				spawner.TriggerSpawn(respawnWait);
+				StartCoroutine(StartTimer());
+			}
+		}
+		else
+		{
+			Debug.LogError("No Spawners Found");
+		}
+	}
+
+	public void KillShootingStars()
+	{
+		Dead = true;
+		ShootingStarsCollected = 0;
+		tools.BroadcastMessage("ResetTools");
+		GameObject[] shootingStarObjects = GameObject.FindGameObjectsWithTag("Object");
+
+		foreach (GameObject shootingStarObject in shootingStarObjects)
+		{
+			SpawnedObject spawnedObject = shootingStarObject.GetComponent<SpawnedObject>();
+			spawnedObject.Death();
+		}
+
+		ResetCollectibles();
+		Dead = false;
 	}
 
 	public void ResetCollectibles()
