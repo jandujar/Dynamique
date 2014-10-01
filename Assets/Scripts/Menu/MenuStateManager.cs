@@ -226,9 +226,7 @@ public class MenuStateManager : MonoBehaviour
 
 		int stage2Status = EncryptedPlayerPrefs.GetInt("Stage 2 Unlocked", 0);
 		int stage3Status = EncryptedPlayerPrefs.GetInt("Stage 3 Unlocked", 0);
-
-		//Disabled until levels can be made....
-		//int stage4Status = EncryptedPlayerPrefs.GetInt("Stage 4 Unlocked", 0);
+		int stage4Status = EncryptedPlayerPrefs.GetInt("Stage 4 Unlocked", 0);
 
 		if (currentStars >= 23 || stage2Status == 1)
 		{
@@ -241,7 +239,7 @@ public class MenuStateManager : MonoBehaviour
 				stage2Particle.SetActive(true);
 		}
 
-		if (currentStars >= 48 || stage3Status == 1)
+		if (currentStars >= 50 || stage3Status == 1)
 		{
 			lockBanners[1].SetActive(false);
 			
@@ -252,17 +250,16 @@ public class MenuStateManager : MonoBehaviour
 				stage3Particle.SetActive(true);
 		}
 
-		//Disabled until levels can be made....
-//		if (currentStars >= 76 || stage4Status == 1)
-//		{
-//			lockBanners[2].SetActive(false);
-//			
-//			foreach(Collider stage4Button in stage4Buttons)
-//				stage4Button.enabled = true;
-//
-//			foreach(GameObject stage4Particle in stage4Particles)
-//				stage4Particle.SetActive(true);
-//		}
+		if (currentStars >= 80 || stage4Status == 1)
+		{
+			lockBanners[2].SetActive(false);
+			
+			foreach(Collider stage4Button in stage4Buttons)
+				stage4Button.enabled = true;
+
+			foreach(GameObject stage4Particle in stage4Particles)
+				stage4Particle.SetActive(true);
+		}
 
 		foreach (MenuObject stageSelectMenuObject in stageSelectMenuObjects)
 		{

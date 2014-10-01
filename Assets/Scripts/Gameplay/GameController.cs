@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour
 		}
 
 		if (canSpawn)
-			StartCoroutine(SpawnCollectibles(0f));
+			StartCoroutine(SpawnCollectibles(additionalObjectSpawnWait));
 	}
 
 	IEnumerator SpawnCollectibles(float waitTime)

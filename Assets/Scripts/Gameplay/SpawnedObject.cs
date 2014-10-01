@@ -116,6 +116,6 @@ public class SpawnedObject : MonoBehaviour
 		foreach(GameObject trail in trailRenderers)
 			trail.SetActive(false);
 
-		Destroy(gameObject);
+		Destroy(gameObject, 1f);
 	}
 }

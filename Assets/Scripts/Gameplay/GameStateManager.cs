@@ -190,23 +190,23 @@ public class GameStateManager : MonoBehaviour
 
 		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
-		if (totalStars >= 21 && totalStars < 46)
+		if (totalStars >= 23 && totalStars < 50)
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 		}
-		else if (totalStars >= 46 && totalStars < 72)
+		else if (totalStars >= 50 && totalStars < 80)
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
 		}
-		else if (totalStars >= 72)
+		else if (totalStars >= 80)
 		{
 			gameCenterManager.SubmitAchievement("unlock_anti_gravity_levels", 100f);
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
-			//gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
 		}
 
-		//gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
+		gameCenterManager.SubmitAchievement("collect_all_stars", (totalStars/108) * 100f);
 		Collider[] pauseColliders = pauseButton.GetComponentsInChildren<Collider>();
 
 		foreach (Collider pauseCollider in pauseColliders)

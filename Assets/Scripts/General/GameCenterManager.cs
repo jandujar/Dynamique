@@ -17,8 +17,8 @@ public class GameCenterManager : MonoBehaviour
 	string leaderboard3ID = "anti_gravity_total_score";
 	string leaderboard4Name = "Worm Hole Total Score";
 	string leaderboard4ID = "worm_hole_total_score";
-	//string leaderboard5Name = "Chaos Theory Total Score";
-	//string leaderboard5ID = "chaos_theory_total_score";
+	string leaderboard5Name = "Chaos Theory Total Score";
+	string leaderboard5ID = "chaos_theory_total_score";
 
 	GameObject newRecordObject;
 	
@@ -46,7 +46,7 @@ public class GameCenterManager : MonoBehaviour
 		SubmitScore(1, 0, 0);
 		SubmitScore(2, 0, 0);
 		SubmitScore(3, 0, 0);
-		//SubmitScore(4, 0, 0);
+		SubmitScore(4, 0, 0);
 	}
 
 	public void SubmitAchievement(string achievementID, double progress)
@@ -69,9 +69,9 @@ public class GameCenterManager : MonoBehaviour
 		case 3:
 			stageLeaderboardID = leaderboard4ID;
 			break;
-//		case 4:
-//			stageLeaderboardID = leaderboard5ID;
-//			break;
+		case 4:
+			stageLeaderboardID = leaderboard5ID;
+			break;
 		default:
 			Debug.LogError("Invalid stage number sent");
 			break;
@@ -148,18 +148,18 @@ public class GameCenterManager : MonoBehaviour
 					Debug.Log ("No scores have been loaded.");
 			});
 
-//			Social.LoadScores(leaderboard5Name, scores => {
-//				if (scores.Length > 0) {
-//					// SHOW THE SCORES RECEIVED
-//					Debug.Log ("Received " + scores.Length + " scores");
-//					string myScores = "Leaderboard: \n";
-//					foreach (IScore score in scores)
-//						myScores += "\t" + score.userID + " " + score.formattedValue + " " + score.date + "\n";
-//					Debug.Log (myScores);
-//				}
-//				else
-//					Debug.Log ("No scores have been loaded.");
-//			});
+			Social.LoadScores(leaderboard5Name, scores => {
+				if (scores.Length > 0) {
+					// SHOW THE SCORES RECEIVED
+					Debug.Log ("Received " + scores.Length + " scores");
+					string myScores = "Leaderboard: \n";
+					foreach (IScore score in scores)
+						myScores += "\t" + score.userID + " " + score.formattedValue + " " + score.date + "\n";
+					Debug.Log (myScores);
+				}
+				else
+					Debug.Log ("No scores have been loaded.");
+			});
         }
         else
 		{

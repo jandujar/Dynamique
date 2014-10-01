@@ -21,6 +21,7 @@ public class Collectible : MonoBehaviour
 		if (other.tag == "Object" && !isTriggered)
 		{
 			isTriggered = true;
+			Fabric.EventManager.Instance.PostEvent("SFX_Star", Fabric.EventAction.PlaySound);
 			gameController.CollectiblesCollected++;
 			DestroyStar();
 		}
@@ -28,7 +29,6 @@ public class Collectible : MonoBehaviour
 
 	public void DestroyStar()
 	{
-		Fabric.EventManager.Instance.PostEvent("SFX_Star", Fabric.EventAction.PlaySound);
 		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
 		Instantiate(collectExplosion, transform.position, transform.rotation);
 		collider.enabled = false;
@@ -36,6 +36,6 @@ public class Collectible : MonoBehaviour
 		foreach(GameObject livingEffect in livingEffects)
 			Destroy(livingEffect);
 		
-		Destroy(gameObject);
+		Destroy(gameObject, 1f);
 	}
 }
