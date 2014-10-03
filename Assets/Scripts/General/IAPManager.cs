@@ -183,11 +183,11 @@ public class IAPManager : MonoBehaviour
 			purchaseLabel.text = "Purchase Successful!\n''Worm Hole'' Levels Unlocked.";
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
 			break;
-//		case "chaos_theory":
-//			EncryptedPlayerPrefs.SetInt("Stage 4 Unlocked", 1);
-//			purchaseLabel.text = "Purchase Successful!\n''Chaos Theory'' Levels Unlocked.";
-//			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
-//			break;
+		case "chaos_theory_purchase":
+			EncryptedPlayerPrefs.SetInt("Stage 4 Unlocked", 1);
+			purchaseLabel.text = "Purchase Successful!\n''Chaos Theory'' Levels Unlocked.";
+			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+			break;
 		default:
 			Debug.LogError("Not valid product identifier....");
 			purchaseLabel.text = "An error occured\nduring the transaction.\nPlease try again.";
@@ -226,11 +226,11 @@ public class IAPManager : MonoBehaviour
 			purchaseLabel.text = "Purchase Successful!\n''Worm Hole'' Levels Unlocked.";
 			gameCenterManager.SubmitAchievement("unlock_worm_hole_levels", 100f);
 			break;
-//		case "chaos_theory":
-//			EncryptedPlayerPrefs.SetInt("Stage 4 Unlocked", 1);
-//			purchaseLabel.text = "Purchase Successful!\n''Chaos Theory'' Levels Unlocked.";
-//			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
-//			break;
+		case "chaos_theory_purchase":
+			EncryptedPlayerPrefs.SetInt("Stage 4 Unlocked", 1);
+			purchaseLabel.text = "Purchase Successful!\n''Chaos Theory'' Levels Unlocked.";
+			gameCenterManager.SubmitAchievement("unlock_chaos_theory_levels", 100f);
+			break;
 		default:
 			Debug.LogError("Not valid product identifier....");
 			purchaseLabel.text = "An error occured\nduring the transaction.\nPlease try again.";

@@ -159,7 +159,7 @@ public class GameStateManager : MonoBehaviour
 		int stage1Score = EncryptedPlayerPrefs.GetInt("Stage 1 Score", 0);
 		int stage2Score = EncryptedPlayerPrefs.GetInt("Stage 2 Score", 0);
 		int stage3Score = EncryptedPlayerPrefs.GetInt("Stage 3 Score", 0);
-		//int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
+		int stage4Score = EncryptedPlayerPrefs.GetInt("Stage 4 Score", 0);
 		int currentStageScore = 0;
 
 		if (TotalScore > highScore)
@@ -167,7 +167,7 @@ public class GameStateManager : MonoBehaviour
 		else
 			currentStageScore = highScore;
 
-		int overallTotalScore = stage1Score + stage2Score + stage3Score; //+ stage4Score;
+		int overallTotalScore = stage1Score + stage2Score + stage3Score + stage4Score;
 		gameCenterManager.SubmitScore(stageNumber, currentStageScore, overallTotalScore);
 
 		int previousEarnedStars = EncryptedPlayerPrefs.GetInt("Level " + levelNumber + " Stars", 0);
@@ -187,6 +187,8 @@ public class GameStateManager : MonoBehaviour
 			gameCenterManager.SubmitAchievement("collect_antigravity_stars", (EncryptedPlayerPrefs.GetInt("Stage 2 Stars", 0) * 100f) / 27f);
 		else if (stageNumber == 3)
 			gameCenterManager.SubmitAchievement("collect_wormhole_stars", (EncryptedPlayerPrefs.GetInt("Stage 3 Stars", 0) * 100f) / 27f);
+		else if (stageNumber == 4)
+			gameCenterManager.SubmitAchievement("collect_chaos_theory_stars", (EncryptedPlayerPrefs.GetInt("Stage 4 Stars", 0) * 100f) / 27f);
 
 		int totalStars = EncryptedPlayerPrefs.GetInt("Total Stars", 0);
 
