@@ -1,9 +1,7 @@
-﻿using System.Runtime.InteropServices;
-
-#if UNITY_IPHONE
+﻿#if UNITY_IPHONE
 
 namespace UnityEngine.Advertisements {
-
+  using System.Runtime.InteropServices;
   using UnityEngine;
   using System.Collections;
 

@@ -1,6 +1,5 @@
-using System;
-
 namespace UnityEngine.Advertisements {
+  using System;
 
   public static class Advertisement {
 
@@ -11,8 +10,19 @@ namespace UnityEngine.Advertisements {
       INFO = 4,
       DEBUG = 8
     }
-
-    static public DebugLevel debugLevel = DebugLevel.ERROR | DebugLevel.WARNING;
+	
+    static private DebugLevel _debugLevel = Debug.isDebugBuild ? DebugLevel.ERROR | DebugLevel.WARNING | DebugLevel.INFO | DebugLevel.DEBUG : DebugLevel.ERROR | DebugLevel.WARNING | DebugLevel.INFO;
+	
+    static public DebugLevel debugLevel {
+      get {
+        return _debugLevel;
+      }
+	
+      set {
+        _debugLevel = value;
+        UnityEngine.Advertisements.UnityAds.setLogLevel(_debugLevel);
+      }
+    }
 
     static public bool isSupported {
       get {
@@ -54,6 +64,10 @@ namespace UnityEngine.Advertisements {
       get {
         return Engine.Instance.isShowing();
       }
+    }
+
+    static public bool UnityDeveloperInternalTestMode {
+		get; set;
     }
 
   }

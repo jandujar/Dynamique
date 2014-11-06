@@ -1,12 +1,11 @@
-using System;
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Advertisements;
-using UnityEngine.Advertisements.HTTPLayer;
-using UnityEngine.Advertisements.Event;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+  using UnityEngine.Advertisements;
+  using UnityEngine.Advertisements.HTTPLayer;
+  using UnityEngine.Advertisements.Event;
 
 	internal class PictureAdsRequest {
 		public delegate void jsonAvailable(string jsonData);
@@ -15,11 +14,16 @@ namespace UnityEngine.Advertisements {
 		jsonAvailable _jsonAvailable;
 		resourcesAvailable _resourcesAvailable;
 		operationCompleteDelegate _operationCompleteDelegate;
+		Dictionary <string, ImageType> imageTypes;
+		Dictionary <string, ImageOrientation> imageOrientations;
 		int downloadedResourcesCount = 0;
+	  int[] retryDelays = { 15, 30, 90, 240 };
 		string network = null;
 		public PictureAd ad;
 		public PictureAdsRequest(string network) {
 			this.network = network;
+			imageTypes = new Dictionary<string, ImageType>();
+			imageOrientations = new Dictionary<string, ImageOrientation>();
 		}
 		
 		public void setJsonAvailableDelegate(jsonAvailable action) {
@@ -49,13 +53,15 @@ namespace UnityEngine.Advertisements {
 			jsonRequest.addHeader ("Content-Type", "application/json");
 			string jsonInfo = jsonPayload();
 			jsonRequest.setPayload (jsonInfo);
-			jsonRequest.execute(response => {
-        if(response.dataLength == 0) return;
-        string jsonString = System.Text.Encoding.UTF8.GetString(response.data, 0, response.dataLength);
-				EventManager.sendAdplanEvent(Engine.Instance.AppId);
-				_jsonAvailable(jsonString);
-				_operationCompleteDelegate();
-			});
+			HTTPManager.sendRequest(jsonRequest, HTTPJsonCallback, retryDelays, 20 * 60);
+		}
+
+		private void HTTPJsonCallback(HTTPResponse response) {
+			if(response.dataLength == 0) return;
+			string jsonString = System.Text.Encoding.UTF8.GetString(response.data, 0, response.dataLength);
+			EventManager.sendAdplanEvent(Engine.Instance.AppId);
+			_jsonAvailable(jsonString);
+			_operationCompleteDelegate();
 		}
 		
 		string requestURL () {
@@ -75,16 +81,20 @@ namespace UnityEngine.Advertisements {
 			}
 			string url = ad.getRemoteImageURL(imageOrientation, imageType);
 			HTTPRequest pictureURLRequest = new HTTPRequest(url);
-			pictureURLRequest.execute(pictureURLRequestResponse => {
-				downloadedResourcesCount ++;
-				if(pictureURLRequestResponse.dataLength != 0)
-					System.IO.File.WriteAllBytes(ad.getLocalImageURL(imageOrientation, imageType), pictureURLRequestResponse.data);
-				
-				if(downloadedResourcesCount == PictureAd.expectedResourcesCount) {
-					_resourcesAvailable ();
-					_operationCompleteDelegate();
-				}
-			});
+			imageTypes[url] = imageType;
+			imageOrientations[url] = imageOrientation;
+			HTTPManager.sendFileRequest(pictureURLRequest, HTTPFileCallback, retryDelays, 20 * 60);
+		}
+
+		private void HTTPFileCallback(HTTPResponse pictureURLRequestResponse) {
+			downloadedResourcesCount ++;
+			if(pictureURLRequestResponse.dataLength != 0)
+				System.IO.File.WriteAllBytes(ad.getLocalImageURL(imageOrientations[pictureURLRequestResponse.url], imageTypes[pictureURLRequestResponse.url]), pictureURLRequestResponse.data);
+			
+			if(downloadedResourcesCount == PictureAd.expectedResourcesCount) {
+				_resourcesAvailable ();
+				_operationCompleteDelegate();
+			}
 		}
 		
 		string jsonPayload() {

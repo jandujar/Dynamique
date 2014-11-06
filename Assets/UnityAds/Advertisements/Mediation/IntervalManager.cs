@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
+  using UnityEngine;
 
   internal class IntervalManager {
 

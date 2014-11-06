@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
 
   public abstract class Adapter {
 
@@ -59,7 +58,7 @@ namespace UnityEngine.Advertisements {
 
     abstract public void StopPrecaching();
 
-    abstract public bool isReady();
+    abstract public bool isReady(string zoneId, string adapterId);
 
     abstract public void Show(string zoneId, string adapterId, ShowOptions options = null);
 

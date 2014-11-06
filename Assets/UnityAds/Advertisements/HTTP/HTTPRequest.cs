@@ -10,6 +10,9 @@
   internal class HTTPRequest {
     public string url;
 
+    // Switch to true to print network requests to debug log
+    private bool networkLogging = false;
+
     private enum HTTPMethod {
       GET,
       POST 
@@ -96,6 +99,10 @@
     }
 
     private IEnumerator executeGet(HTTPRequest req, System.Action<HTTPResponse> callback) {
+      if(networkLogging) {
+        printUp("GET", req.url);
+      }
+
       WWW www = new WWW(req.url);
 
       yield return www;
@@ -103,11 +110,19 @@
       HTTPResponse response = processWWW(www);
       response.url = req.url;
 
+      if(networkLogging) {
+        printDown(req.url, www.bytes);
+      }
+
       callback(response);
     }
 
     private IEnumerator executePost(HTTPRequest req, System.Action<HTTPResponse> callback) {
       WWW www = null;
+
+      if(networkLogging) {
+        printUp("POST", req.url);
+      }
 
       Type wwwType = typeof(UnityEngine.WWW);
       ConstructorInfo wwwConstructor = wwwType.GetConstructor(new Type[] {typeof(string), typeof(byte[]), typeof(Dictionary<string, string>)});
@@ -123,6 +138,10 @@
 
       HTTPResponse response = processWWW(www);
       response.url = req.url;
+
+      if(networkLogging) {
+        printDown(req.url, www.bytes);
+      }
 
       callback(response);
     }
@@ -153,6 +172,18 @@
       }
 
       return response;
+    }
+
+    private void printUp(string method, string url) {
+      Debug.Log(Time.realtimeSinceStartup + " -> " + method + " [" + url + "]");
+    }
+
+    private void printDown(string url, byte[] data) {
+      if(data.Length < 16384) {
+        Debug.Log(Time.realtimeSinceStartup + " <- [" + url + "]: " + Encoding.UTF8.GetString (data, 0, data.Length));
+      } else {
+        Debug.Log(Time.realtimeSinceStartup + " <- [" + url + "]: " + data.Length + " bytes");
+      }
     }
   }
 }

@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using MiniJSON;
-
 namespace UnityEngine.Advertisements {
-
+  using System;
+  using System.Collections.Generic;
+  using UnityEngine.Advertisements.MiniJSON;
   using HTTPLayer;
 
   internal class ConfigManager {
@@ -18,7 +16,11 @@ namespace UnityEngine.Advertisements {
 
     public IntervalManager globalIntervals { get; private set; }
 
+    public bool isInitialized { get; private set; }
+
     static private readonly ConfigManager _sharedInstance = new ConfigManager();
+
+		int[] retryDelays = { 15, 30, 90, 240 };
     
     static public ConfigManager Instance {
       get {
@@ -57,7 +59,7 @@ namespace UnityEngine.Advertisements {
       request.setPayload(DeviceInfo.getJson());
 
       Utils.LogDebug("Requesting new config from " + configRequestUrl);
-      request.execute(HandleConfigResponse);
+			HTTPManager.sendRequest(request, HandleConfigResponse, retryDelays, 20 * 60);
     }
 
     private void HandleConfigResponse(HTTPResponse response) {
@@ -80,13 +82,32 @@ namespace UnityEngine.Advertisements {
         configId = etag.Substring(3, etag.Length - 4);
       }
 
-      ZoneManager.Instance.ResetZones((List<object>)data["zones"]);
+      List<object> zones = (List<object>)data["zones"];
+      GatherNetworks(zones);
+      ZoneManager.Instance.ResetZones(zones);
       adSourceTtl = (long)data["adSourceTtl"];
       serverTimestamp = (long)data["serverTimestamp"];
 
       RequestAdSources();
 
       _requestingConfig = false;
+    }
+
+    private void GatherNetworks(List<object> zones) {
+      HashSet<string> networks = new HashSet<string>();
+      foreach(object zone in zones) {
+        List<object> adapters = (List<object>)((Dictionary<string, object>)zone)["adapters"];
+        foreach(object adapter in adapters) {
+          Dictionary<string, object> adapterJson = (Dictionary<string, object>)adapter;
+          string className = (string)adapterJson["className"];
+          if(className.Equals("VideoAdAdapter")) {
+            Dictionary<string, object> parameters = (Dictionary<string, object>)adapterJson["parameters"];
+            string network = (string)parameters["network"];
+            networks.Add(network);
+          }
+        }
+      }
+      UnityAds.setNetworks(networks);
     }
 
     private bool _requestingAdSources = false;
@@ -114,7 +135,7 @@ namespace UnityEngine.Advertisements {
 
       Utils.LogDebug("Requesting new ad sources from " + adSourcesRequestUrl + " with payload: " + payload);
       Event.EventManager.sendMediationAdSourcesEvent(Engine.Instance.AppId);
-      request.execute(HandleAdSourcesResponse);
+			HTTPManager.sendRequest(request, HandleAdSourcesResponse, retryDelays, 20 * 60);
     }
 
     private void HandleAdSourcesResponse(HTTPResponse response) {
@@ -142,6 +163,7 @@ namespace UnityEngine.Advertisements {
       ZoneManager.Instance.UpdateIntervals((Dictionary<string, object>)data["adSources"]);
 
       _requestingAdSources = false;
+      isInitialized = true;
     }
 
     private Dictionary<string, object> ParseResponse(HTTPResponse response) {

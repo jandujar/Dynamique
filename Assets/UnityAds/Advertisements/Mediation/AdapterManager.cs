@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
+  using System.Reflection;
 
   internal class AdapterManager {
 
@@ -13,6 +12,9 @@ namespace UnityEngine.Advertisements {
     private Dictionary<string, List<long>> _adapterConsumeTimes = new Dictionary<string, List<long>>();
 
     public AdapterManager(string zoneId, List<object> data) {
+      new VideoAdAdapter("VideoAdAdapter");
+      new PictureAdAdapter("PictureAdAdapter");
+
       _zoneId = zoneId;
       foreach(object temp in data) {
         if(temp != null) {
@@ -51,7 +53,7 @@ namespace UnityEngine.Advertisements {
           Event.EventManager.sendMediationCappedEvent(Engine.Instance.AppId, _zoneId, adapterId, _adapterIntervals[adapterId].NextAvailable());
         }
 
-        if(!adapter.isReady()) {
+        if(!adapter.isReady(_zoneId, adapterId)) {
           long lastRefreshTime = _adapterRefreshFreqs[adapterId].Key;
           long refreshFreq = _adapterRefreshFreqs[adapterId].Value;
           if((long)Math.Round(Time.realtimeSinceStartup) >= lastRefreshTime + refreshFreq) {
@@ -60,13 +62,15 @@ namespace UnityEngine.Advertisements {
           }
         }
 
-        if(nonCappedAdapters.Contains(adapterId) && adapter.isReady()) {
+        if(nonCappedAdapters.Contains(adapterId) && adapter.isReady(_zoneId, adapterId)) {
           _adapterIntervals[adapterId].Consume();
           _adapterConsumeTimes[adapterId].Add(ConfigManager.Instance.serverTimestamp + (long)Math.Round(Time.realtimeSinceStartup));
 
           if(AllAdaptersConsumed()) {
             ConfigManager.Instance.RequestAdSources();
           }
+
+          Utils.LogDebug ("Selecting adapter '" + adapterId + "' from zone '" + _zoneId + "'");
           return adapter;
         }
       }
@@ -121,7 +125,7 @@ namespace UnityEngine.Advertisements {
     public bool IsReady() {
       HashSet<string> nonCappedAdapters = NonCappedAdapters();
       foreach(KeyValuePair<string, Adapter> entry in _adapters) {
-        if(nonCappedAdapters.Contains(entry.Key) && entry.Value.isReady()) {
+        if(nonCappedAdapters.Contains(entry.Key) && entry.Value.isReady(_zoneId, entry.Key)) {
           return true;
         }
       }

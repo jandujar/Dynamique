@@ -1,14 +1,14 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
 
   internal class UnityAds : MonoBehaviour {
 
     private static UnityAds sharedInstance;
-    private static bool _campaignsAvailable = false;
     private static bool _adsShow = false;
+
+    private static HashSet<string> _campaignsAvailable = new HashSet<string>();
     
     private static string _rewardItemNameKey = "";
     private static string _rewardItemPictureKey = "";
@@ -40,7 +40,7 @@ namespace UnityEngine.Advertisements {
         if(!sharedInstance) {
           GameObject singleton = new GameObject() { hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector };
           sharedInstance = singleton.AddComponent<UnityAds>();
-          singleton.name = "UnityAds";
+          singleton.name = "UnityAdsPluginBridgeObject";
           DontDestroyOnLoad(singleton);
         }
 
@@ -48,9 +48,9 @@ namespace UnityEngine.Advertisements {
       }
     }
 
-    public void Init(string gameId, bool testModeEnabled, bool debugModeEnabled) {
+    public void Init(string gameId, bool testModeEnabled) {
       #if (UNITY_IPHONE || UNITY_ANDROID || UNITY_EDITOR)
-      UnityAdsExternal.init(gameId, testModeEnabled, debugModeEnabled && Debug.isDebugBuild, SharedInstance.gameObject.name);
+      UnityAdsExternal.init(gameId, testModeEnabled, SharedInstance.gameObject.name);
       #endif
     }
     
@@ -73,22 +73,20 @@ namespace UnityEngine.Advertisements {
       return UnityAdsExternal.getSDKVersion();
     }
     
-    public static bool canShowAds () {
-      if (_campaignsAvailable)
-        return UnityAdsExternal.canShowAds();
-      
-      return false;
+    public static bool canShowAds (string network) {
+      return _campaignsAvailable.Contains (network) && UnityAdsExternal.canShowAds (network);
     }
-    
+
+    public static void setLogLevel(Advertisement.DebugLevel logLevel) {
+      UnityAdsExternal.setLogLevel(logLevel);
+    }
+
     public static bool canShow () {
-      if (_campaignsAvailable)
-        return UnityAdsExternal.canShow();
-      
-      return false;
+      return _campaignsAvailable.Count > 0;
     }
     
     public static bool hasMultipleRewardItems () {
-      if (_campaignsAvailable)
+      if (_campaignsAvailable.Count > 0)
         return UnityAdsExternal.hasMultipleRewardItems();
       
       return false;
@@ -97,7 +95,7 @@ namespace UnityEngine.Advertisements {
     public static List<string> getRewardItemKeys () {
       List<string> retList = new List<string>();
       
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         string keys = UnityAdsExternal.getRewardItemKeys();
         retList = new List<string>(keys.Split(';'));
       }
@@ -106,7 +104,7 @@ namespace UnityEngine.Advertisements {
     }
     
     public static string getDefaultRewardItemKey () {
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         return UnityAdsExternal.getDefaultRewardItemKey();
       }
       
@@ -114,7 +112,7 @@ namespace UnityEngine.Advertisements {
     }
     
     public static string getCurrentRewardItemKey () {
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         return UnityAdsExternal.getCurrentRewardItemKey();
       }
       
@@ -122,7 +120,7 @@ namespace UnityEngine.Advertisements {
     }
     
     public static bool setRewardItemKey (string rewardItemKey) {
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         return UnityAdsExternal.setRewardItemKey(rewardItemKey);
       }
       
@@ -130,7 +128,7 @@ namespace UnityEngine.Advertisements {
     }
     
     public static void setDefaultRewardItemAsRewardItem () {
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         UnityAdsExternal.setDefaultRewardItemAsRewardItem();
       }
     }
@@ -155,7 +153,7 @@ namespace UnityEngine.Advertisements {
       Dictionary<string, string> retDict = new Dictionary<string, string>();
       string rewardItemDataString = "";
       
-      if (_campaignsAvailable) {
+      if (_campaignsAvailable.Count > 0) {
         rewardItemDataString = UnityAdsExternal.getRewardItemDetailsWithKey(rewardItemKey);
         
         if (rewardItemDataString != null) {
@@ -172,6 +170,10 @@ namespace UnityEngine.Advertisements {
       return retDict;
     }
 
+    public static void setNetworks(HashSet<string> networks) {
+      UnityAdsExternal.setNetworks(networks);
+    }
+
     public static void setNetwork(string network) {
       UnityAdsExternal.setNetwork(network);
     }
@@ -185,7 +187,7 @@ namespace UnityEngine.Advertisements {
     }
     
     public static bool show (string zoneId, string rewardItemKey, Dictionary<string, string> options) {
-      if (!_adsShow && _campaignsAvailable) {      
+      if (!_adsShow && _campaignsAvailable.Count > 0) {      
         if (SharedInstance) {              
           string optionsString = parseOptionsDictionary(options);
           
@@ -280,16 +282,15 @@ namespace UnityEngine.Advertisements {
       }
     }
     
-    public void onFetchCompleted () {
-      _campaignsAvailable = true;
+    public void onFetchCompleted (string network) {
+      _campaignsAvailable.Add(network);
       if (OnCampaignsAvailable != null)
         OnCampaignsAvailable();
         
-      Utils.LogDebug("onFetchCompleted");
+      Utils.LogDebug("onFetchCompleted - " + network);
     }
   
     public void onFetchFailed () {
-      _campaignsAvailable = false;
       if (OnCampaignsFetchFailed != null)
         OnCampaignsFetchFailed();
       

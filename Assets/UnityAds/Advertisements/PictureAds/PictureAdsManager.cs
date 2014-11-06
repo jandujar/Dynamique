@@ -1,11 +1,11 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine.Advertisements.Event;
-using UnityEngine.Advertisements.HTTPLayer;
-
 namespace UnityEngine.Advertisements {
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.IO;
+  using UnityEngine.Advertisements.Event;
+  using UnityEngine.Advertisements.HTTPLayer;
+
 	internal class PictureAdsManager {	
     PictureAdsFrameManager framesManager = null;
     PictureAdsRequestsManager requestManager = null;
@@ -82,14 +82,14 @@ namespace UnityEngine.Advertisements {
     
     public void pictureAdDidClosed() {
 			framesManager = null;
-			GameObject framesManagerHolder = GameObject.Find(@"FramesManagerHolder");
+			GameObject framesManagerHolder = GameObject.Find(@"UnityAdsFramesManagerHolder");
 			GameObject.Destroy(framesManagerHolder);
 			_pictureAdDidClosedDelegate();
     }
 
 		public void pictureAdFailed() {
 			framesManager = null;
-			GameObject framesManagerHolder = GameObject.Find(@"FramesManagerHolder");
+			GameObject framesManagerHolder = GameObject.Find(@"UnityAdsFramesManagerHolder");
 			GameObject.Destroy(framesManagerHolder);
 			_pictureAdFailedDelegate(); 
 		}
@@ -128,10 +128,16 @@ namespace UnityEngine.Advertisements {
 			return (framesManager != null ? framesManager.isShowingAd() : false);
     }
 
+    public string network {
+      get {
+        return _network;
+      }
+    }
+
     public void showAd() {
-			GameObject framesManagerHolder = GameObject.Find(@"FramesManagerHolder");
+			GameObject framesManagerHolder = GameObject.Find(@"UnityAdsFramesManagerHolder");
 			if (framesManagerHolder == null) {
-				framesManagerHolder = new GameObject(@"FramesManagerHolder");
+				framesManagerHolder = new GameObject(@"UnityAdsFramesManagerHolder");
 				framesManager = framesManagerHolder.AddComponent<PictureAdsFrameManager>();
 				framesManager.manager = this;
 			}

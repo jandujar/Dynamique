@@ -1,21 +1,20 @@
 ﻿#if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Advertisements.HTTPLayer;
-
 namespace UnityEngine.Advertisements {
-  
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+  using UnityEngine.Advertisements.HTTPLayer;
+
 	internal class UnityAdsEditor : UnityAdsPlatform {
   	private static bool initialized = false;
   	private static bool ready = false;
 		private UnityAdsEditorPlaceholder placeHolder = null;
-    public override void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {
+    public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
 	    if(initialized) return;
     	initialized = true;
 
-      Utils.LogDebug ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
+      Utils.LogDebug ("UnityEditor: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName);
 
     	string url = "https://impact.applifier.com/mobile/campaigns?platform=editor&gameId=" + WWW.EscapeURL(gameId) + "&unityVersion=" + WWW.EscapeURL(Application.unityVersion);
     	HTTPRequest req = new HTTPRequest(url);
@@ -60,7 +59,7 @@ namespace UnityEngine.Advertisements {
     }
     
     if(success) {
-      UnityAds.SharedInstance.onFetchCompleted();
+      UnityAds.SharedInstance.onFetchCompleted("editor");
 	    ready = true;
     } else {
       UnityAds.SharedInstance.onFetchFailed();
@@ -69,9 +68,9 @@ namespace UnityEngine.Advertisements {
 
     public override bool show (string zoneId, string rewardItemKey, string options) {
       Utils.LogDebug ("UnityEditor: show()");
-			GameObject placeHolderObject = GameObject.Find(@"PlaceHolderObject");
+			GameObject placeHolderObject = GameObject.Find(@"UnityAdsEditorPlaceHolderObject");
 			if (placeHolderObject == null) {
-				placeHolderObject = new GameObject(@"PlaceHolderObject");
+				placeHolderObject = new GameObject(@"UnityAdsEditorPlaceHolderObject");
 				placeHolder = placeHolderObject.AddComponent<UnityAdsEditorPlaceholder>();
 				placeHolder.init();
 			}
@@ -93,8 +92,7 @@ namespace UnityEngine.Advertisements {
       return "EDITOR";
     }
     
-    public override bool canShowAds () {
-      Utils.LogDebug ("UnityEditor: canShowAds()");
+    public override bool canShowAds (string network) {
       return ready;
     }
     
@@ -141,8 +139,16 @@ namespace UnityEngine.Advertisements {
       return "name;picture";
     }
 
+    public override void setNetworks(HashSet<string> networks) {
+      Utils.LogDebug("UnityEditor: setNetworks() networks=" + Utils.Join(networks, ","));
+    }
+
     public override void setNetwork(string network) {
       Utils.LogDebug("UnityEditor: setNetwork() network=" + network);
+    }
+
+    public override void setLogLevel(Advertisement.DebugLevel logLevel) {
+      Utils.LogDebug ("UnityEditor: setLogLevel() logLevel=" + logLevel);
     }
   }
 }

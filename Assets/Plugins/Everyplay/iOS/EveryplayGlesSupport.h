@@ -33,46 +33,6 @@
 #include "iPhone_GlesSupport.h"
 #endif
 
-#if UNITY_VERSION >= 450
-#define EVERYPLAY_UNITY_GLES_INTEGRATION 0
-#else
-#define EVERYPLAY_UNITY_GLES_INTEGRATION 1
-#endif
-
-// Original GLES methods
-
-#if EVERYPLAY_UNITY_GLES_INTEGRATION
-#if UNITY_VERSION >= 410
-void CreateUnityRenderBuffers_Unity(UnityRenderingSurface* surface);
-void DestroySystemRenderingSurface_Unity(UnityRenderingSurface* surface);
-void PreparePresentRenderingSurface_Unity(UnityRenderingSurface* surface, EAGLContext* mainContext);
-void SetupUnityDefaultFBO_Unity(UnityRenderingSurface* surface);
-extern "C" bool UnityResolveMSAA_Unity(GLuint destFBO, GLuint colorTex, GLuint colorBuf, GLuint depthTex, GLuint depthBuf);
-#else
-void CreateSurfaceGLES_Unity(EAGLSurfaceDesc* surface);
-void DestroySurfaceGLES_Unity(EAGLSurfaceDesc* surface);
-void PreparePresentSurfaceGLES_Unity(EAGLSurfaceDesc* surface);
-void AfterPresentSurfaceGLES_Unity(EAGLSurfaceDesc* surface);
-extern "C" bool UnityResolveMSAA_Unity(GLuint destFBO, GLuint colorTex, GLuint colorBuf, GLuint depthTex, GLuint depthBuf);
-#endif
-#endif
-
-#ifndef UNITY_DBG_LOG
-
-#define ENABLE_UNITY_DEBUG_LOG  0
-
-#if ENABLE_UNITY_DEBUG_LOG
-#define UNITY_DBG_LOG(...) \
-  do { \
-    printf_console(__VA_ARGS__); \
-  } while(0)
-#else
-#define UNITY_DBG_LOG(...) \
-  do { \
-  } while(0)
-#endif
-#endif
-
 #ifdef EVERYPLAY_GLES_WRAPPER
 
 #include "iPhone_Profiler.h"
@@ -81,6 +41,14 @@ extern "C" bool UnityResolveMSAA_Unity(GLuint destFBO, GLuint colorTex, GLuint c
 #else
 #import "AppController.h"
 #endif
+#if UNITY_VERSION >= 400
+#import "iPhone_OrientationSupport.h"
+#endif
+#if UNITY_VERSION >= 430
+#import "UnityInterface.h"
+#endif
+
+#if UNITY_VERSION < 450
 
 // iPhone_View.h
 extern UIViewController* UnityGetGLViewController();
@@ -136,7 +104,6 @@ enum ScreenOrientation
     kScreenOrientationCount
 };
 #else
-#import "iPhone_OrientationSupport.h"
 extern void UnityGLInvalidateState();
 #endif
 
@@ -148,22 +115,6 @@ extern ScreenOrientation ConvertToUnityScreenOrientation(int hwOrient, EnabledOr
 extern void UnitySetScreenOrientation(ScreenOrientation orientation);
 #endif
 
-#else
-
-#if EVERYPLAY_UNITY_GLES_INTEGRATION
-#if UNITY_VERSION >= 410
-#define CreateUnityRenderBuffers CreateUnityRenderBuffers_Unity
-#define DestroySystemRenderingSurface DestroySystemRenderingSurface_Unity
-#define PreparePresentRenderingSurface PreparePresentRenderingSurface_Unity
-#define SetupUnityDefaultFBO SetupUnityDefaultFBO_Unity
-#define UnityResolveMSAA UnityResolveMSAA_Unity
-#else
-#define CreateSurfaceGLES CreateSurfaceGLES_Unity
-#define DestroySurfaceGLES DestroySurfaceGLES_Unity
-#define PreparePresentSurfaceGLES PreparePresentSurfaceGLES_Unity
-#define AfterPresentSurfaceGLES AfterPresentSurfaceGLES_Unity
-#define UnityResolveMSAA UnityResolveMSAA_Unity
-#endif
-#endif
+#endif // UNITY_VERSION < 450
 
 #endif

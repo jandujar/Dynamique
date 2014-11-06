@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MiniJSON {  
+namespace UnityEngine.Advertisements.MiniJSON {  
   /// <summary>
   /// This class encodes and decodes JSON strings.
   /// Spec. details, see http://www.json.org/

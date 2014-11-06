@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
 
   internal class PictureAdAdapter : Adapter {
 		PictureAdsManager _manager;
@@ -77,7 +76,7 @@ namespace UnityEngine.Advertisements {
     public override void StartPrecaching() {}
     public override void StopPrecaching() {}
 
-    public override bool isReady() {
+    public override bool isReady(string zoneId, string adapterId) {
 			return _manager.isAdAvailable();
     }
 

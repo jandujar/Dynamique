@@ -1,6 +1,5 @@
-using System;
-
 namespace UnityEngine.Advertisements {
+  using System;
 
   public class ShowOptions {
 

@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
 
   internal class ZoneManager {
 
@@ -47,9 +46,9 @@ namespace UnityEngine.Advertisements {
     }
 
     public bool IsReady(string zoneId) {
-      if(zoneId == null) {
+      if(zoneId == null && defaultZone != null) {
         return defaultZone.IsReady();
-      } else if(_zones.ContainsKey(zoneId)) {
+			} else if(zoneId != null && _zones.ContainsKey(zoneId)) {
         return _zones[zoneId].IsReady();
       } else {
         return false;

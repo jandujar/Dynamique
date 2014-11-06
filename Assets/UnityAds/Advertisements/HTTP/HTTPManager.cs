@@ -7,7 +7,13 @@
     // callback: callback method to call with server response (or failure)
     // delays: table with retry delays in seconds, allows exponential retry strategy e.g. [10, 20, 40, 80, 160, 320] means six retries with increasing intervals
     // maxDelay: maximum amount of seconds until callback is sent and all pending retries are considered timed out
-    public static void sendRequest(HTTPRequest request, System.Action<HTTPResponse> callback, int[] delays, int maxDelay) {
+    
+		public static void sendFileRequest(HTTPRequest request, System.Action<HTTPResponse> callback, int[] delays, int maxDelay) {
+			RetryFileRequest req = new RetryFileRequest(delays, maxDelay, request);
+			req.execute(callback);
+		}
+
+		public static void sendRequest(HTTPRequest request, System.Action<HTTPResponse> callback, int[] delays, int maxDelay) {
       RetryRequest req = new RetryRequest(delays, maxDelay, request);
 
       req.execute(callback);

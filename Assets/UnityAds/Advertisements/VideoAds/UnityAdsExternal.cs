@@ -1,9 +1,8 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
 namespace UnityEngine.Advertisements {
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+  using System.Runtime.InteropServices;
 
   internal static class UnityAdsExternal {
   
@@ -19,14 +18,16 @@ namespace UnityEngine.Advertisements {
 			impl = new UnityAdsAndroid();
 #elif UNITY_IOS
 			impl = new UnityAdsIos();
+#else
+			impl = null;
 #endif
 		}
 
 		return impl;
 	}
 
-    public static void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {
-		getImpl().init(gameId, testModeEnabled, debugModeEnabled, gameObjectName);
+    public static void init (string gameId, bool testModeEnabled, string gameObjectName) {
+		getImpl().init(gameId, testModeEnabled, gameObjectName);
 	}
     
     public static bool show (string zoneId, string rewardItemKey, string options) {
@@ -45,8 +46,8 @@ namespace UnityEngine.Advertisements {
 		return getImpl().getSDKVersion();
     }
     
-    public static bool canShowAds () {
-		return getImpl().canShowAds();
+    public static bool canShowAds (string network) {
+		return getImpl().canShowAds(network);
     }
     
     public static bool canShow () {
@@ -85,8 +86,16 @@ namespace UnityEngine.Advertisements {
 		return getImpl().getRewardItemDetailsKeys();
     }  
 
+    public static void setNetworks(HashSet<string> networks) {
+      getImpl().setNetworks(networks);
+    }
+
     public static void setNetwork(string network) {
       getImpl().setNetwork(network);
+    }
+
+    public static void setLogLevel(Advertisement.DebugLevel logLevel) {
+      getImpl().setLogLevel(logLevel);
     }
   }
 }

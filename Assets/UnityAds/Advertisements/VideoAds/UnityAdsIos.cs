@@ -1,13 +1,17 @@
 ﻿#if UNITY_IPHONE
 
-using UnityEngine;
-using System.Collections;
-
 namespace UnityEngine.Advertisements {
-	
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+
   internal class UnityAdsIos : UnityAdsPlatform {
-	public override void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {
-		UnityAdsIosBridge.init(gameId, testModeEnabled, debugModeEnabled, gameObjectName);
+	public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
+		if(Advertisement.UnityDeveloperInternalTestMode) {
+			UnityAdsIosBridge.enableUnityDeveloperInternalTestMode();
+		}
+
+		UnityAdsIosBridge.init(gameId, testModeEnabled, (Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false, gameObjectName);
 	}
 		
 	public override bool show (string zoneId, string rewardItemKey, string options) {
@@ -26,8 +30,8 @@ namespace UnityEngine.Advertisements {
 		return UnityAdsIosBridge.getSDKVersion();
 	}
 		
-	public override bool canShowAds () {
-		return UnityAdsIosBridge.canShowAds();
+	public override bool canShowAds (string network) {
+		return UnityAdsIosBridge.canShowAds(network);
 	}
 		
 	public override bool canShow () {
@@ -66,9 +70,17 @@ namespace UnityEngine.Advertisements {
 		return UnityAdsIosBridge.getRewardItemDetailsKeys();
 	}
 
-  public override void setNetwork(string network) {
-      UnityAdsIosBridge.setNetwork(network);
+	public override void setNetworks (HashSet<string> networks) {
+		UnityAdsIosBridge.setNetworks(Utils.Join(networks, ","));
+	}
+
+	public override void setNetwork(string network) {
+    	UnityAdsIosBridge.setNetwork(network);
     }
+
+	public override void setLogLevel(Advertisement.DebugLevel logLevel) {
+		UnityAdsIosBridge.setDebugMode((Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false);
+	}
   }
 }
 

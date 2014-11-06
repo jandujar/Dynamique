@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
 
   internal class Engine {
 
@@ -23,9 +22,10 @@ namespace UnityEngine.Advertisements {
 
     private bool _initialized = false;
 
+    // Engine is considered to be successfully initialized when we have successfully received configuration from server
     public bool isInitialized {
       get {
-        return _initialized;
+        return ConfigManager.Instance.isInitialized;
       }
     }
 
@@ -45,40 +45,53 @@ namespace UnityEngine.Advertisements {
         return;
       }
 
-      if(Application.internetReachability == NetworkReachability.NotReachable) {
-        return;
-      }
+      // Prevent double inits in all situations
+      _initialized = true;
 
       _testMode = testMode;
 
-	    Event.EventManager.sendStartEvent(appId);
+      if(Advertisement.UnityDeveloperInternalTestMode) {
+        Settings.enableUnityDeveloperInternalTestMode();
+      }
+
+      Event.EventManager.sendStartEvent(appId);
 
       AppId = appId;
       ConfigManager.Instance.RequestConfig();
     
       Event.EventManager.sendMediationInitEvent(appId);
-
-      _initialized = true;
     }
 
     public void Show(string zoneId, ShowOptions options) {
       if(!_initialized) {
+        if(options.resultCallback != null) {
+          options.resultCallback(ShowResult.Failed);
+        }
         return;
       }
 
 			if(!ConfigManager.Instance.IsReady()) {
 				if (ConfigManager.Instance.globalIntervals != null)
 	      	Event.EventManager.sendMediationCappedEvent(Engine.Instance.AppId, null, "global", ConfigManager.Instance.globalIntervals.NextAvailable());
+          if(options.resultCallback != null) {
+            options.resultCallback(ShowResult.Failed);
+          }
 					return;
 			}
 
       Zone zone = ZoneManager.Instance.GetZone(zoneId);
       if(zone == null) {
+        if(options.resultCallback != null) {
+          options.resultCallback(ShowResult.Failed);
+        }
         return;
       }
 
       Adapter adapter = zone.SelectAdapter();
       if(adapter == null) {
+        if(options.resultCallback != null) {
+          options.resultCallback(ShowResult.Failed);
+        }
         return;
       }
 
@@ -113,7 +126,8 @@ namespace UnityEngine.Advertisements {
 
       if(options != null) {
         if(options.pause) {
-          EventHandler showHandler = (object sender, EventArgs e) => {
+          EventHandler showHandler = null;
+          showHandler = (object sender, EventArgs e) => {
             PauseGame();
             adapter.Unsubscribe(Adapter.EventType.adWillOpen, showHandler);
           };

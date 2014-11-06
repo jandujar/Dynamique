@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
-
+  using System;
+  using System.Collections;
+  using System.Collections.Generic;
   using DebugLevel = Advertisement.DebugLevel;
 
   internal static class Utils {
@@ -48,19 +46,19 @@ namespace UnityEngine.Advertisements {
     }
 
     public static void LogDebug(string message) {
-      Log (DebugLevel.DEBUG, message);
+      Log (DebugLevel.DEBUG,"Debug: " + message);
     }
-
+    
     public static void LogInfo(string message) {
-      Log (DebugLevel.INFO, message);
+      Log (DebugLevel.INFO, "Info:" + message);
     }
-
+    
     public static void LogWarning(string message) {
-      Log (DebugLevel.WARNING, message);
+      Log (DebugLevel.WARNING,"Warning:" + message);
     }
-
+    
     public static void LogError(string message) {
-      Log (DebugLevel.ERROR, message);
+      Log (DebugLevel.ERROR, "Error: " + message);
     }
 
   }

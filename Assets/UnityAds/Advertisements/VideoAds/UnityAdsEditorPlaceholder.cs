@@ -1,9 +1,9 @@
-using UnityEngine;
-using System.Collections;
-using System.IO;
-
 namespace UnityEngine.Advertisements
 {
+  using UnityEngine;
+  using System.Collections;
+  using System.IO;
+
 	internal class UnityAdsEditorPlaceholder : MonoBehaviour {
 		Texture2D placeHolderLandscape, placeHolderPortrait;
 		Texture2D blackTex = null;
@@ -12,8 +12,8 @@ namespace UnityEngine.Advertisements
 			blackTex = new Texture2D(1, 1, TextureFormat.ARGB32, false);
 			blackTex.SetPixel(0, 0, new Color(0.0f, 0.0f, 0.0f, 1f));
 			blackTex.Apply();
-			placeHolderLandscape = textureFromFile(Application.dataPath + "/UnityAds/Advertisements/VideoAds/test_unit_800.png");
-      placeHolderPortrait = textureFromFile(Application.dataPath + "/UnityAds/Advertisements/VideoAds/test_unit_600.png");
+			placeHolderLandscape = textureFromFile(Application.dataPath + "/Standard Assets/UnityAds/Textures/test_unit_800.png");
+      placeHolderPortrait = textureFromFile(Application.dataPath + "/Standard Assets/UnityAds/Textures/test_unit_600.png");
 		}
 
 		Texture2D textureFromFile(string filePath) {

@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
 
   internal class Zone {
 

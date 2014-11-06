@@ -62,7 +62,7 @@
       } else {
         System.Random rng = new System.Random();
         reqIdBase = "b-";
-        hashSrc = SystemInfo.deviceUniqueIdentifier + "-" + rng.Next();
+        hashSrc = (int)((System.DateTime.UtcNow - unixEpoch).TotalMilliseconds) + "-" + rng.Next();
       }
 
       byte[] srcBytes = System.Text.Encoding.UTF8.GetBytes(hashSrc);

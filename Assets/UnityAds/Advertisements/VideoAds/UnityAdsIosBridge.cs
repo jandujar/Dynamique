@@ -1,10 +1,10 @@
 ﻿#if UNITY_IPHONE
 
-using UnityEngine;
-using System.Collections;
-using System.Runtime.InteropServices;
-
 namespace UnityEngine.Advertisements {
+  using UnityEngine;
+  using System.Collections;
+  using System.Runtime.InteropServices;
+
 	internal static class UnityAdsIosBridge {
 		[DllImport ("__Internal")]
 		public static extern void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName);
@@ -22,7 +22,7 @@ namespace UnityEngine.Advertisements {
 		public static extern string getSDKVersion ();
 		
 		[DllImport ("__Internal")]
-		public static extern bool canShowAds ();
+		public static extern bool canShowAds (string network);
 		
 		[DllImport ("__Internal")]
 		public static extern bool canShow ();
@@ -51,8 +51,17 @@ namespace UnityEngine.Advertisements {
 		[DllImport ("__Internal")]
 		public static extern string getRewardItemDetailsKeys ();
 
+		[DllImport ("__Internal")]
+		public static extern void setNetworks(string networks);
+
     [DllImport ("__Internal")]
     public static extern void setNetwork(string network);
+
+		[DllImport ("__Internal")]
+		public static extern void setDebugMode(bool debugMode);
+
+		[DllImport ("__Internal")]
+		public static extern void enableUnityDeveloperInternalTestMode ();
 	}
  }
 

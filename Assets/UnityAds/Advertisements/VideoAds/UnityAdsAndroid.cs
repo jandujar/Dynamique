@@ -1,96 +1,121 @@
 ﻿#if UNITY_ANDROID
 
-using UnityEngine;
-using System.Collections;
-
 namespace UnityEngine.Advertisements {
+  using UnityEngine;
+  using System.Collections;
+  using System.Collections.Generic;
+  using UnityEngine.Advertisements;
 
   internal class UnityAdsAndroid : UnityAdsPlatform {
 	private static AndroidJavaObject unityAds;
 	private static AndroidJavaObject unityAdsUnity;
 	private static AndroidJavaObject currentActivity;
+	private static bool wrapperInitialized = false;
+
+	private AndroidJavaObject getAndroidWrapper() {
+		if(!wrapperInitialized) {
+			wrapperInitialized = true;
+			unityAdsUnity = new AndroidJavaObject("com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper");
+		}
+
+		return unityAdsUnity;
+	}
+
+	public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
+		Utils.LogDebug("UnityAndroid: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName);
 		
-	public override void init (string gameId, bool testModeEnabled, bool debugModeEnabled, string gameObjectName) {    
-		Utils.LogDebug("UnityAndroid: init(), gameId=" + gameId + ", testModeEnabled=" + testModeEnabled + ", gameObjectName=" + gameObjectName + ", debugModeEnabled=" + debugModeEnabled);
+		if(Advertisement.UnityDeveloperInternalTestMode) {
+			getAndroidWrapper().Call("enableUnityDeveloperInternalTestMode");
+		}
+
 		currentActivity = (new AndroidJavaClass("com.unity3d.player.UnityPlayer")).GetStatic<AndroidJavaObject>("currentActivity");
-		unityAdsUnity = new AndroidJavaObject("com.unity3d.ads.android.unity3d.UnityAdsUnityWrapper");
-		unityAdsUnity.Call("init", gameId, currentActivity, testModeEnabled, debugModeEnabled, gameObjectName);
+		getAndroidWrapper().Call("init", gameId, currentActivity, testModeEnabled, (int) Advertisement.debugLevel, gameObjectName);
 	}
 		
 	public override bool show (string zoneId, string rewardItemKey, string options) {
     Utils.LogDebug ("UnityAndroid: show()");
-		return unityAdsUnity.Call<bool>("show", zoneId, rewardItemKey, options);
+		return getAndroidWrapper().Call<bool>("show", zoneId, rewardItemKey, options);
 	}
 		
 	public override void hide () {
       Utils.LogDebug ("UnityAndroid: hide()");
-		unityAdsUnity.Call("hide");
+		getAndroidWrapper().Call("hide");
 	}
 		
 	public override bool isSupported () {
       Utils.LogDebug ("UnityAndroid: isSupported()");
-		return unityAdsUnity.Call<bool>("isSupported");
+		return getAndroidWrapper().Call<bool>("isSupported");
 	}
 		
 	public override string getSDKVersion () {
       Utils.LogDebug ("UnityAndroid: getSDKVersion()");
-		return unityAdsUnity.Call<string>("getSDKVersion");
+		return getAndroidWrapper().Call<string>("getSDKVersion");
 	}
 		
-	public override bool canShowAds () {
-      Utils.LogDebug ("UnityAndroid: canShowAds()");
-		return unityAdsUnity.Call<bool>("canShowAds");
+	public override bool canShowAds (string network) {
+      return getAndroidWrapper().Call<bool>("canShowAds", network);
 	}
 		
 	public override bool canShow () {
       Utils.LogDebug ("UnityAndroid: canShow()");
-		return unityAdsUnity.Call<bool>("canShow");
+		return getAndroidWrapper().Call<bool>("canShow");
 	}
 		
 	public override bool hasMultipleRewardItems () {
       Utils.LogDebug ("UnityAndroid: hasMultipleRewardItems()");
-		return unityAdsUnity.Call<bool>("hasMultipleRewardItems");
+		return getAndroidWrapper().Call<bool>("hasMultipleRewardItems");
 	}
 		
 	public override string getRewardItemKeys () {
       Utils.LogDebug ("UnityAndroid: getRewardItemKeys()");
-		return unityAdsUnity.Call<string>("getRewardItemKeys");
+		return getAndroidWrapper().Call<string>("getRewardItemKeys");
 	}
 		
 	public override string getDefaultRewardItemKey () {
       Utils.LogDebug ("UnityAndroid: getDefaultRewardItemKey()");
-		return unityAdsUnity.Call<string>("getDefaultRewardItemKey");
+		return getAndroidWrapper().Call<string>("getDefaultRewardItemKey");
 	}
 		
 	public override string getCurrentRewardItemKey () {
       Utils.LogDebug ("UnityAndroid: getCurrentRewardItemKey()");
-		return unityAdsUnity.Call<string>("getCurrentRewardItemKey");
+		return getAndroidWrapper().Call<string>("getCurrentRewardItemKey");
 	}
 		
 	public override bool setRewardItemKey (string rewardItemKey) {
       Utils.LogDebug("UnityAndroid: setRewardItemKey() rewardItemKey=" + rewardItemKey);
-		return unityAdsUnity.Call<bool>("setRewardItemKey", rewardItemKey);
+		return getAndroidWrapper().Call<bool>("setRewardItemKey", rewardItemKey);
 	}
 		
 	public override void setDefaultRewardItemAsRewardItem () {
       Utils.LogDebug ("UnityAndroid: setDefaultRewardItemAsRewardItem()");
-		unityAdsUnity.Call("setDefaultRewardItemAsRewardItem");
+		getAndroidWrapper().Call("setDefaultRewardItemAsRewardItem");
 	}
 		
 	public override string getRewardItemDetailsWithKey (string rewardItemKey) {
       Utils.LogDebug ("UnityAndroid: getRewardItemDetailsWithKey() rewardItemKey=" + rewardItemKey);
-		return unityAdsUnity.Call<string>("getRewardItemDetailsWithKey", rewardItemKey);
+		return getAndroidWrapper().Call<string>("getRewardItemDetailsWithKey", rewardItemKey);
 	}
 		
 	public override string getRewardItemDetailsKeys () {
       Utils.LogDebug ("UnityAndroid: getRewardItemDetailsKeys()");
-		return unityAdsUnity.Call<string>("getRewardItemDetailsKeys");
+		return getAndroidWrapper().Call<string>("getRewardItemDetailsKeys");
 	}
+
+  public override void setNetworks(HashSet<string> networks) {
+      string networksString = Utils.Join(networks, ",");
+      Utils.LogDebug("UnityAndroid: setNetworks: " + networksString);
+      getAndroidWrapper().CallStatic("setNetworks", networksString);
+  }
 
   public override void setNetwork(string network) {
       Utils.LogDebug("UnityAndroid: setNetwork()");
-      unityAdsUnity.Call("setNetwork", network);
+		getAndroidWrapper().Call("setNetwork", network);
   }
+
+	public override void setLogLevel(Advertisement.DebugLevel logLevel) {
+		Utils.LogDebug("UnityAndroid: setLogLevel()");
+		getAndroidWrapper().Call("setLogLevel", (int) logLevel);
+	}
   }
 }
 

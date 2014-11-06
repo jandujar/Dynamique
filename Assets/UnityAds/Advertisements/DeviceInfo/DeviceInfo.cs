@@ -81,6 +81,7 @@ namespace UnityEngine.Advertisements {
 			addDeviceInfo(dict, "did", deviceID());
 			addDeviceInfo(dict, "bundle", bundleID());
       addDeviceInfo(dict, "test", Engine.Instance.testMode);
+      addDeviceInfo(dict, "sdk", Settings.sdkVersion);
 			return dict;
 		}
 
@@ -95,7 +96,7 @@ namespace UnityEngine.Advertisements {
 			Dictionary<string, object> dict = new Dictionary<string, object>();
 			addDeviceInfo(dict, "network", network);
 			dict["info"] = mainInfoDict();
-			return json = MiniJSON.Json.Serialize(dict);
+			return MiniJSON.Json.Serialize(dict);
 		}
 
     private static void addDeviceInfo(Dictionary<string, object> dict, string key, object value) {

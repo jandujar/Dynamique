@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using MiniJSON;
-using UnityEngine;
-
 namespace UnityEngine.Advertisements {
+  using System;
+  using System.Collections.Generic;
+  using UnityEngine.Advertisements.MiniJSON;
+  using UnityEngine;
 
   internal class PictureAdsParser {
     static string game__KEY = @"game";
