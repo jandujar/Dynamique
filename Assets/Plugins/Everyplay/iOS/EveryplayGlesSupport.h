@@ -35,13 +35,14 @@
 
 #ifdef EVERYPLAY_GLES_WRAPPER
 
-#include "iPhone_Profiler.h"
 #if UNITY_VERSION >= 420
 #import "UnityAppController.h"
 #else
 #import "AppController.h"
 #endif
-#if UNITY_VERSION >= 400
+#if UNITY_VERSION >= 500
+#import "OrientationSupport.h"
+#elif UNITY_VERSION >= 400
 #import "iPhone_OrientationSupport.h"
 #endif
 #if UNITY_VERSION >= 430

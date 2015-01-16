@@ -72,7 +72,6 @@ public static class EveryplayPostprocessor
         bool osxEditor = (Application.platform == RuntimePlatform.OSXEditor);
         CreateModFile(path, !osxEditor || !EditorUserBuildSettings.symlinkLibraries);
         CreateEveryplayConfig(path);
-        ProcessGlesFiles(path);
         ProcessXCodeProject(path);
         ProcessInfoPList(path, clientId);
         SetEveryplayEnabledForTarget(BuildTargetGroup.iPhone, true);
@@ -101,21 +100,6 @@ public static class EveryplayPostprocessor
         }
         catch(Exception e) {
             Debug.Log("Creating EveryplayConfig.h failed: " + e);
-        }
-    }
-
-    private static void ProcessGlesFiles(string path)
-    {
-        string helperFile = System.IO.Path.Combine(path, PathWithPlatformDirSeparators("Classes/Unity/GlesHelper.mm"));
-        string supportFile = System.IO.Path.Combine(path, PathWithPlatformDirSeparators("Classes/iPhone_GlesSupport.cpp"));
-
-        if(File.Exists(helperFile)) {
-            UpdateStringInFile(helperFile, "\"#include \"EveryplayGlesSupport.h\"\n", "");
-            UpdateStringInFile(helperFile, "\"GlesHelper.h\"", "\"GlesHelper.h\"\n#include \"EveryplayGlesSupport.h\"");
-        }
-        else if(File.Exists(supportFile)) {
-            UpdateStringInFile(supportFile, "#include \"EveryplayGlesSupport.h\"", "");
-            UpdateStringInFile(supportFile, "\"iPhone_GlesSupport.h\"", "\"iPhone_GlesSupport.h\"\n#include \"EveryplayGlesSupport.h\"");
         }
     }
 

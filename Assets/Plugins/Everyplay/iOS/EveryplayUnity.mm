@@ -74,7 +74,7 @@ static EveryplayUnity * everyplayUnity = [EveryplayUnity sharedInstance];
 }
 
 - (void)setClientId:(NSString *)clientId andClientSecret:(NSString *)clientSecret andRedirectURI:(NSString *)redirectURI {
-    [Everyplay initWithDelegate: self andParentViewController: UnityGetGLViewController()];
+    [Everyplay initWithDelegate: self];
     [Everyplay setClientId: clientId clientSecret: clientSecret redirectURI: redirectURI];
 
     EveryplayLog(@"Everyplay init from Unity with client ID: %@ and client secret: %@ and redirect URI: %@", clientId, clientSecret, redirectURI);

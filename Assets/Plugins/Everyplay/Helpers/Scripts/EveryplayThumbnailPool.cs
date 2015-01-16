@@ -8,6 +8,8 @@ public class EveryplayThumbnailPool : MonoBehaviour
     public bool pixelPerfect = false;
     public bool takeRandomShots = true;
     public TextureFormat textureFormat = TextureFormat.RGBA32;
+    public bool dontDestroyOnLoad = true;
+    public bool allowOneInstanceOnly = true;
 
     public Texture2D[] thumbnailTextures { get; private set; }
 
@@ -23,13 +25,20 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if(allowOneInstanceOnly && FindObjectsOfType(GetType()).Length > 1) {
+            Destroy(gameObject);
+        }
+        else {
+            if(dontDestroyOnLoad) {
+                DontDestroyOnLoad(gameObject);
+            }
+
+            Everyplay.ReadyForRecording += OnReadyForRecording;
+        }
     }
 
     void Start()
     {
-        Everyplay.ReadyForRecording += OnReadyForRecording;
-
         if(enabled) {
             Initialize();
         }
@@ -146,7 +155,7 @@ public class EveryplayThumbnailPool : MonoBehaviour
         }
     }
 
-    void Destroy()
+    void OnDestroy()
     {
         Everyplay.ReadyForRecording -= OnReadyForRecording;
 
@@ -158,8 +167,12 @@ public class EveryplayThumbnailPool : MonoBehaviour
 
             // Destroy thumbnail textures
             foreach(Texture2D texture in thumbnailTextures) {
-                Destroy(texture);
+				if(texture != null) {
+					Destroy(texture);
+				}
             }
+
+            thumbnailTextures = null;
 
             initialized = false;
         }
