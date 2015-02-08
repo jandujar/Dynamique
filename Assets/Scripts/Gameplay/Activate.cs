@@ -41,9 +41,9 @@ public class Activate : MonoBehaviour
 		if (!gameController.GamePaused && !gameController.LevelComplete)
 		{
 			// Verification that the action is on the object 
-			if (!activated && gesture.pickObject == gameObject && objectToActivate != null)
+			if (!activated && gesture.pickedObject == gameObject && objectToActivate != null)
 				activated = true;
-			else if (activated && gesture.pickObject == gameObject && objectToActivate != null)
+			else if (activated && gesture.pickedObject == gameObject && objectToActivate != null)
 				activated = false;
 		}
 	}

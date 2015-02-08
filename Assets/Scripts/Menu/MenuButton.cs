@@ -37,7 +37,7 @@ public class MenuButton : MonoBehaviour
 
 	public void On_TouchStart(Gesture gesture)
 	{
-		if (gesture.pickObject == gameObject)
+		if (gesture.pickedObject == gameObject)
 			ButtonPress();
 	}
 

@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2014 Tasharen Entertainment
+// Copyright © 2011-2015 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -72,7 +72,7 @@ public class UIEventTrigger : MonoBehaviour
 		current = null;
 	}
 
-	void OnDragStart (GameObject go)
+	void OnDragStart ()
 	{
 		if (current != null) return;
 		current = this;
@@ -80,7 +80,7 @@ public class UIEventTrigger : MonoBehaviour
 		current = null;
 	}
 
-	void OnDragEnd (GameObject go)
+	void OnDragEnd ()
 	{
 		if (current != null) return;
 		current = this;
@@ -108,7 +108,7 @@ public class UIEventTrigger : MonoBehaviour
 	{
 		if (current != null) return;
 		current = this;
-		EventDelegate.Execute(onDragOut);
+		EventDelegate.Execute(onDrag);
 		current = null;
 	}
 }
