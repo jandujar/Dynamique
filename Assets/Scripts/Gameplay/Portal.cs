@@ -9,7 +9,13 @@ public class Portal : MonoBehaviour
 	[SerializeField] GameObject[] portalActiveEffects;
 	Vector3 direction;
 	bool effectsActive = false;
-	
+	GameObject audioListener;
+
+	void Start()
+	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
+	}
+
 	void FixedUpdate()
 	{
 		Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
@@ -19,7 +25,7 @@ public class Portal : MonoBehaviour
 			if (objectInRange.tag == "Object")
 			{
 				direction = objectInRange.transform.position - transform.position;
-				objectInRange.rigidbody.AddForceAtPosition(direction.normalized * -power, transform.position);
+				objectInRange.GetComponent<Rigidbody>().AddForceAtPosition(direction.normalized * -power, transform.position);
 
 				if (!effectsActive)
 					effectsActive = true;
@@ -32,14 +38,14 @@ public class Portal : MonoBehaviour
 		{
 			foreach (GameObject activeEffect in portalActiveEffects)
 			{
-				activeEffect.particleSystem.enableEmission = true;
+				activeEffect.GetComponent<ParticleSystem>().enableEmission = true;
 			}
 		}
 		else
 		{
 			foreach (GameObject activeEffect in portalActiveEffects)
 			{
-				activeEffect.particleSystem.enableEmission = false;
+				activeEffect.GetComponent<ParticleSystem>().enableEmission = false;
 			}
 		}
 	}
@@ -48,7 +54,7 @@ public class Portal : MonoBehaviour
 	{
 		if (portalEndObject != null)
 		{
-			Fabric.EventManager.Instance.PostEvent("SFX_Wormhole", Fabric.EventAction.PlaySound);
+			Fabric.EventManager.Instance.PostEvent("SFX_Wormhole", Fabric.EventAction.PlaySound, audioListener);
 			other.transform.position = portalEndObject.transform.position;
 		}
 		else

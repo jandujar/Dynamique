@@ -7,9 +7,11 @@ public class Collectible : MonoBehaviour
 	[SerializeField] GameObject[] livingEffects;
 	GameController gameController;
 	bool isTriggered = false;
+	GameObject audioListener;
 
 	void Start()
 	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
 		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 		
 		if (gameControllerObject != null)
@@ -21,7 +23,7 @@ public class Collectible : MonoBehaviour
 		if (other.tag == "Object" && !isTriggered)
 		{
 			isTriggered = true;
-			Fabric.EventManager.Instance.PostEvent("SFX_Star", Fabric.EventAction.PlaySound);
+			Fabric.EventManager.Instance.PostEvent("SFX_Star", Fabric.EventAction.PlaySound, audioListener);
 			gameController.CollectiblesCollected++;
 			DestroyStar();
 		}
@@ -29,9 +31,9 @@ public class Collectible : MonoBehaviour
 
 	public void DestroyStar()
 	{
-		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
+		gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
 		Instantiate(collectExplosion, transform.position, transform.rotation);
-		collider.enabled = false;
+		GetComponent<Collider>().enabled = false;
 		
 		foreach(GameObject livingEffect in livingEffects)
 			Destroy(livingEffect);

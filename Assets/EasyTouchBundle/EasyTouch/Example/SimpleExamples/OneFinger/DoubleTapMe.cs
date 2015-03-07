@@ -26,7 +26,7 @@ public class DoubleTapMe : MonoBehaviour {
 		// Verification that the action on the object
 		if (gesture.pickedObject == gameObject){
 			
-	 		gameObject.renderer.material.color = new Color( Random.Range(0.0f,1.0f),  Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f));
+	 		gameObject.GetComponent<Renderer>().material.color = new Color( Random.Range(0.0f,1.0f),  Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f));
 		}
 	}
 }

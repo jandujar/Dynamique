@@ -31,7 +31,7 @@ public class TwoLongTapMe : MonoBehaviour {
 	
 	void Start(){
 		textMesh =(TextMesh) GetComponentInChildren<TextMesh>();
-		startColor = gameObject.renderer.material.color;
+		startColor = gameObject.GetComponent<Renderer>().material.color;
 	}
 	
 	// At the long tap beginning
@@ -54,7 +54,7 @@ public class TwoLongTapMe : MonoBehaviour {
 	void On_LongTapEnd2Fingers( Gesture gesture){
 		// Verification that the action on the object
 		if (gesture.pickedObject == gameObject){
-			gameObject.renderer.material.color = startColor;
+			gameObject.GetComponent<Renderer>().material.color = startColor;
 			textMesh.text="Long tap me";
 		}
 	}
@@ -65,6 +65,6 @@ public class TwoLongTapMe : MonoBehaviour {
 	}
 
 	void  RandomColor(){
-		gameObject.renderer.material.color = new Color( Random.Range(0.0f,1.0f),  Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f));
+		gameObject.GetComponent<Renderer>().material.color = new Color( Random.Range(0.0f,1.0f),  Random.Range(0.0f,1.0f), Random.Range(0.0f,1.0f));
 	}
 }

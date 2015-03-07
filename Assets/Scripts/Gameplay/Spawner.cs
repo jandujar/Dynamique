@@ -6,6 +6,12 @@ public class Spawner : MonoBehaviour
 	[SerializeField] GameObject objectPrefab;
 	[SerializeField] GameObject spawnEffect;
 	bool canSpawn = true;
+	GameObject audioListener;
+
+	void Start()
+	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
+	}
 
 	public void TriggerSpawn(float spawnWaitTime)
 	{
@@ -17,7 +23,7 @@ public class Spawner : MonoBehaviour
 	{
 		canSpawn = false;
 		yield return new WaitForSeconds(spawnWaitTime);
-		Fabric.EventManager.Instance.PostEvent("SFX_Spawn", Fabric.EventAction.PlaySound);
+		Fabric.EventManager.Instance.PostEvent("SFX_Spawn", Fabric.EventAction.PlaySound, audioListener);
 		Instantiate(spawnEffect, transform.position, transform.rotation);
 		var clone = (GameObject)Instantiate(objectPrefab, transform.position, transform.rotation);
 		clone.name = "Object " + Random.Range(0, 1000).ToString();

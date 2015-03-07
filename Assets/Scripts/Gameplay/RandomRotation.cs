@@ -11,6 +11,6 @@ public class RandomRotation : MonoBehaviour
 		float xRot = Random.Range(minRandom, maxRandom);
 		float yRot = Random.Range(minRandom, maxRandom);
 		float zRot = Random.Range(minRandom, maxRandom);
-		rigidbody.angularVelocity = new Vector3(xRot, yRot, zRot);
+		GetComponent<Rigidbody>().angularVelocity = new Vector3(xRot, yRot, zRot);
 	}
 }

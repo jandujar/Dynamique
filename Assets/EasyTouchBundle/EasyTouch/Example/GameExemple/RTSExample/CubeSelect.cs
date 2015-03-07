@@ -22,14 +22,14 @@ public class CubeSelect : MonoBehaviour {
 		if (gesture.pickedObject !=null && gesture.pickedObject.name=="Cube"){
 			ResteColor();
 			cube = gesture.pickedObject;
-			cube.renderer.material.color = Color.red;
+			cube.GetComponent<Renderer>().material.color = Color.red;
 		}
 
 	}
 
 	void ResteColor(){
 		if (cube!=null){
-			cube.renderer.material.color = new Color(60f/255f,143f/255f,201f/255f);
+			cube.GetComponent<Renderer>().material.color = new Color(60f/255f,143f/255f,201f/255f);
 		}
 	}
 }

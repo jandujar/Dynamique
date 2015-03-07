@@ -7,7 +7,7 @@ public class AspectRatioReposition : MonoBehaviour
 
 	void Awake()
 	{
-		float aspectMultiplier = camera.aspect;
+		float aspectMultiplier = GetComponent<Camera>().aspect;
 
 		foreach (GameObject moveableObject in moveableObjects)
 		{

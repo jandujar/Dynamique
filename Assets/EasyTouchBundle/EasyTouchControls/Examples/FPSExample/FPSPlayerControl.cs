@@ -38,7 +38,7 @@ public class FPSPlayerControl : MonoBehaviour {
 		}
 
 		if (ETCInput.GetButtonDown("Fire") && armoCount==0 && !inReload){
-			audio.PlayOneShot(needReload);
+			GetComponent<AudioSource>().PlayOneShot(needReload);
 		}
 
 		if (ETCInput.GetButtonUp("Fire")){
@@ -51,7 +51,7 @@ public class FPSPlayerControl : MonoBehaviour {
 		// reload
 		if (ETCInput.GetButtonDown("Reload")){
 			inReload = true;
-			audio.PlayOneShot(reload);
+			GetComponent<AudioSource>().PlayOneShot(reload);
 			anim.SetBool( "Reload",true);
 			StartCoroutine( Reload() );
 		}
@@ -95,7 +95,7 @@ public class FPSPlayerControl : MonoBehaviour {
 
 			muzzleEffect.SetActive( true);
 			StartCoroutine( Flash ());
-			audio.PlayOneShot(gunSound);
+			GetComponent<AudioSource>().PlayOneShot(gunSound);
 
 			// shell
 			shellParticle.Emit(1);

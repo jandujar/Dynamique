@@ -33,9 +33,11 @@ public class GameController : MonoBehaviour
 	public bool LevelComplete { get { return levelComplete; } set { levelComplete = value; }}
 	public int CollectiblesCollected { get { return collectiblesCollected; } set { collectiblesCollected = value; }}
 	public bool Dead { get { return dead; } set { dead = value; }}
+	GameObject audioListener;
 
 	void Start()
 	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
 		GameObject gameStateManagerObject = GameObject.FindGameObjectWithTag("GameStateManager");
 		
 		if (gameStateManagerObject != null)
@@ -149,7 +151,7 @@ public class GameController : MonoBehaviour
 	{
 		Debug.Log("Final: " + CollectiblesCollected);
 
-		Fabric.EventManager.Instance.PostEvent("SFX_Vortex", Fabric.EventAction.PlaySound);
+		Fabric.EventManager.Instance.PostEvent("SFX_Vortex", Fabric.EventAction.PlaySound, audioListener);
 
 		if (elapsedTime < 60f)
 			timeScore = Mathf.RoundToInt(6000f - (100f * elapsedTime));

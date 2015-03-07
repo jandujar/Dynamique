@@ -6,9 +6,11 @@ public class Activate : MonoBehaviour
 	[SerializeField] GameObject objectToActivate;
 	GameController gameController;
 	bool activated = false;
+	GameObject audioListener;
 
 	void Start()
 	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
 		GameObject gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 
 		if (gameControllerObject != null)
@@ -60,7 +62,7 @@ public class Activate : MonoBehaviour
 		else if (!activated && objectToActivate.activeSelf)
 		{
 			objectToActivate.SetActive(false);
-			Fabric.EventManager.Instance.PostEvent("SFX_Deactivate", Fabric.EventAction.PlaySound);
+			Fabric.EventManager.Instance.PostEvent("SFX_Deactivate", Fabric.EventAction.PlaySound, audioListener);
 		}
 	}
 }

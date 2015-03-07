@@ -18,14 +18,14 @@ public class AsteroidPhysics : MonoBehaviour
 	void OnEnable()
 	{
 		StartCoroutine(WaitAndDisable());
-		rigidbody.velocity = new Vector3(0f, 0f, 0f);
-		rigidbody.angularVelocity = new Vector3(0f, 0f, 0f);
-		rigidbody.AddRelativeForce(Vector3.forward * Random.Range(initialForce * 0.8f, initialForce * 1.2f), ForceMode.Impulse);
+		GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+		GetComponent<Rigidbody>().angularVelocity = new Vector3(0f, 0f, 0f);
+		GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * Random.Range(initialForce * 0.8f, initialForce * 1.2f), ForceMode.Impulse);
 
 		float xRot = Random.Range(minRandom, maxRandom);
 		float yRot = Random.Range(minRandom, maxRandom);
 		float zRot = Random.Range(minRandom, maxRandom);
-		rigidbody.angularVelocity = new Vector3(xRot, yRot, zRot);
+		GetComponent<Rigidbody>().angularVelocity = new Vector3(xRot, yRot, zRot);
 	}
 
 	IEnumerator WaitAndDisable()

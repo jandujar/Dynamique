@@ -20,6 +20,6 @@ public class EndPoint : MonoBehaviour
 	public void StopEffects()
 	{
 		foreach(GameObject livingEffect in livingEffects)
-			livingEffect.gameObject.particleSystem.enableEmission = false;
+			livingEffect.gameObject.GetComponent<ParticleSystem>().enableEmission = false;
 	}
 }

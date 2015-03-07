@@ -15,21 +15,23 @@ public class SpawnedObject : MonoBehaviour
 	GameController gameController;
 	bool levelComplete = false;
 	Vector3 direction;
+	GameObject audioListener;
 
 	void Start()
 	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
 		var gameControllerObject = GameObject.FindGameObjectWithTag("GameController");
 	
 		if (gameControllerObject != null)
 			gameController = gameControllerObject.GetComponent<GameController>();
 
-		transform.rigidbody.AddRelativeForce(Vector3.forward * initialForce, ForceMode.Impulse);
+		transform.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * initialForce, ForceMode.Impulse);
 		StartCoroutine(SelfDestruct(lifetime));
 	}
 
 	void Update()
 	{
-		var velocity = rigidbody.velocity;
+		var velocity = GetComponent<Rigidbody>().velocity;
 
 		if (velocity == Vector3.zero)
 			return;
@@ -39,7 +41,7 @@ public class SpawnedObject : MonoBehaviour
 		if (magnitude > maxVelocity)
 		{
 			velocity *= (maxVelocity / magnitude);
-			rigidbody.velocity = velocity;
+			GetComponent<Rigidbody>().velocity = velocity;
 		}
 	}
 
@@ -54,7 +56,7 @@ public class SpawnedObject : MonoBehaviour
 				if (objectInRange.tag == "Collectible")
 				{
 					direction = objectInRange.transform.position - transform.position;
-					objectInRange.rigidbody.AddForceAtPosition(direction.normalized * -collectiblePower, transform.position);
+					objectInRange.GetComponent<Rigidbody>().AddForceAtPosition(direction.normalized * -collectiblePower, transform.position);
 				}
 			}
 		}
@@ -97,11 +99,11 @@ public class SpawnedObject : MonoBehaviour
 
 	public void Death()
 	{
-		gameObject.rigidbody.velocity = new Vector3(0f, 0f, 0f);
+		gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
 
 		if (!levelComplete)
 		{
-			Fabric.EventManager.Instance.PostEvent("SFX_Death", Fabric.EventAction.PlaySound);
+			Fabric.EventManager.Instance.PostEvent("SFX_Death", Fabric.EventAction.PlaySound, audioListener);
 			Instantiate(deathEffect, transform.position, transform.rotation);
 		}
 
@@ -111,7 +113,7 @@ public class SpawnedObject : MonoBehaviour
 			objectCollider.enabled = false;
 
 		foreach(GameObject livingEffect in livingEffects)
-			livingEffect.gameObject.particleSystem.enableEmission = false;
+			livingEffect.gameObject.GetComponent<ParticleSystem>().enableEmission = false;
 
 		foreach(GameObject trail in trailRenderers)
 			trail.SetActive(false);

@@ -7,6 +7,7 @@ public class MusicManager : MonoBehaviour
 	bool firstload = true;
 	bool menuMusicPlaying = false;
 	bool gameplayMusicPlaying = false;
+	GameObject audioListener;
 
 	void Awake()
 	{
@@ -24,6 +25,11 @@ public class MusicManager : MonoBehaviour
 		}
 	}
 
+	void Start()
+	{
+		audioListener = GameObject.FindGameObjectWithTag("Fabric");
+	}
+
 	void OnLevelWasLoaded()
 	{
 		ProcessMusic();
@@ -35,15 +41,15 @@ public class MusicManager : MonoBehaviour
 
 		if (Application.loadedLevel == 0 || (loadMenu == 1 && !menuMusicPlaying))
 		{
-			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PlaySound);
-			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.StopSound);
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PlaySound, audioListener);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.StopSound, audioListener);
 			menuMusicPlaying = true;
 			gameplayMusicPlaying = false;
 		}
 		else if (loadMenu == 0 && !gameplayMusicPlaying)
 		{
-			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.StopSound);
-			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PlaySound);
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.StopSound, audioListener);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PlaySound, audioListener);
 			menuMusicPlaying = false;
 			gameplayMusicPlaying = true;
 		}
@@ -53,13 +59,13 @@ public class MusicManager : MonoBehaviour
 	{
 		if (paused)
 		{
-			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PauseSound);
-			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PauseSound);
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.PauseSound, audioListener);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.PauseSound, audioListener);
 		}
 		else
 		{
-			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.UnpauseSound);
-			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.UnpauseSound);
+			Fabric.EventManager.Instance.PostEvent("Music_Menu", Fabric.EventAction.UnpauseSound, audioListener);
+			Fabric.EventManager.Instance.PostEvent("Music_Gameplay", Fabric.EventAction.UnpauseSound, audioListener);
 		}
 	}
 }
