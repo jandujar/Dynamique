@@ -28,11 +28,6 @@
     return self;
 }
 
--(void)dealloc {
-    [_iapHelper release];
-    [_identifierProductMapping release];
-    [super dealloc];
-}
 
 #pragma mark - Public methods
 -(void)requestProducts {
@@ -70,7 +65,6 @@
         formatter.locale = priceLocale;
         result.priceSymbol = [PKS_Utility CStringCopy:[formatter currencySymbol]];
         result.localPrice = [PKS_Utility CStringCopy:[product.price stringValue]];
-        [formatter release];
         result.identifier = [PKS_Utility CStringCopy:product.productIdentifier];
     }
     

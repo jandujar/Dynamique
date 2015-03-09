@@ -23,7 +23,6 @@ extern "C" {
             [identifierSet addObject:[PKS_Utility CreateNSString:identifier]];
         }
         if (_plugin) {
-            [_plugin release];
             _plugin = nil;
         }
         _plugin = [[PKS_IAPPlugin alloc] initWithProductIdentifiers:identifierSet];

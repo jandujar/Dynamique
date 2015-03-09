@@ -25,7 +25,6 @@
     self.products = nil;
     self.productIdentifiers = nil;
     self.delegate = nil;
-    [super dealloc];
 }
 
 +(BOOL) canMakePayments {
@@ -35,7 +34,6 @@
 - (void)requestProducts {
     SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:_productIdentifiers];
     self.request = request;
-    [request release];
     self.request.delegate = self;
     [self.request start];
     
