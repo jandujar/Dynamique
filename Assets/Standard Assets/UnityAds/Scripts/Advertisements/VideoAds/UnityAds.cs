@@ -18,6 +18,8 @@ namespace UnityEngine.Advertisements {
     private static string _rewardItemNameKey = "";
     private static string _rewardItemPictureKey = "";
 
+    private static bool _resultDelivered = false;
+
 	private static System.Action<ShowResult> resultCallback = null;
 
     public static UnityAds SharedInstance {
@@ -160,6 +162,8 @@ namespace UnityEngine.Advertisements {
 
 	public void Show(string zoneId = null, ShowOptions options = null) {
 		string gamerSid = null;
+		_resultDelivered = false;
+
 		if (options != null) {
 			if (options.resultCallback != null) {
 				resultCallback = options.resultCallback;
@@ -179,7 +183,7 @@ namespace UnityEngine.Advertisements {
 		if (gamerSid != null) {
 			if (!show (zoneId, "", new Dictionary<string,string> {{"sid", gamerSid}})) {
 				deliverCallback (ShowResult.Failed);
-			} 
+			}
 		} else {
 			if (!show (zoneId)) {
 				deliverCallback (ShowResult.Failed);
@@ -211,10 +215,12 @@ namespace UnityEngine.Advertisements {
     }
 
 	private static void deliverCallback(ShowResult result) {
-		if (resultCallback != null) {
+		isShowing = false;
+
+		if (resultCallback != null && !_resultDelivered) {
+		  _resultDelivered = true;
 			resultCallback(result);
 			resultCallback = null;
-			isShowing = false;
 		}
 	}
 
@@ -266,6 +272,7 @@ namespace UnityEngine.Advertisements {
 
     public void onHide () {
       isShowing = false;
+      deliverCallback(ShowResult.Skipped);
       Utils.LogDebug("onHide");
     }
 

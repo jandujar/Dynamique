@@ -102,19 +102,19 @@ extern "C" {
 
 
 extern "C" {
-  void init (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName) {
+  void UnityAdsInit (const char *gameId, bool testMode, bool debugMode, const char *gameObjectName) {
     if (unityAds == NULL) {
       unityAds = [[UnityAdsUnityWrapper alloc] initWithGameId:UnityAdsCreateNSString(gameId) testModeOn:testMode debugModeOn:debugMode withGameObjectName:UnityAdsCreateNSString(gameObjectName)];
     }
   }
 
- 	bool canShowZone (const char * rawZoneId) {
+ 	bool UnityAdsCanShowZone (const char * rawZoneId) {
     NSString * zoneId = UnityAdsCreateNSString(rawZoneId);
 
     return [[UnityAds sharedInstance] canShowZone:zoneId];
   }
  
-	bool show (const char * rawZoneId, const char * rawRewardItemKey, const char * rawOptionsString) {
+	bool UnityAdsShow (const char * rawZoneId, const char * rawRewardItemKey, const char * rawOptionsString) {
     NSString * zoneId = UnityAdsCreateNSString(rawZoneId);
     NSString * rewardItemKey = UnityAdsCreateNSString(rawRewardItemKey);
     NSString * optionsString = UnityAdsCreateNSString(rawOptionsString);
@@ -144,27 +144,27 @@ extern "C" {
     return false;
   }
 	
-	void hide () {
+	void UnityAdsHide () {
     [[UnityAds sharedInstance] hide];
   }
 	
-	bool isSupported () {
+	bool UnityAdsIsSupported () {
     return [UnityAds isSupported];
   }
 	
-	const char* getSDKVersion () {
+	const char* UnityAdsGetSDKVersion () {
     return UnityAdsMakeStringCopy([[UnityAds getSDKVersion] UTF8String]);
   }
   
-	bool canShow () {
+	bool UnityAdsCanShow () {
     return [[UnityAds sharedInstance] canShow];
   }
 
-	bool hasMultipleRewardItems () {
+	bool UnityAdsHasMultipleRewardItems () {
     return [[UnityAds sharedInstance] hasMultipleRewardItems];
   }
 	
-	const char* getRewardItemKeys () {
+	const char* UnityAdsGetRewardItemKeys () {
     NSArray *keys = [[UnityAds sharedInstance] getRewardItemKeys];
     NSString *keyString = @"";
     
@@ -180,23 +180,23 @@ extern "C" {
     return UnityAdsMakeStringCopy([keyString UTF8String]);
   }
   
-	const char* getDefaultRewardItemKey () {
+	const char* UnityAdsGetDefaultRewardItemKey () {
     return UnityAdsMakeStringCopy([[[UnityAds sharedInstance] getDefaultRewardItemKey] UTF8String]);
   }
   
-	const char* getCurrentRewardItemKey () {
+	const char* UnityAdsGetCurrentRewardItemKey () {
     return UnityAdsMakeStringCopy([[[UnityAds sharedInstance] getCurrentRewardItemKey] UTF8String]);
   }
   
-	bool setRewardItemKey (const char *rewardItemKey) {
+	bool UnityAdsSetRewardItemKey (const char *rewardItemKey) {
     return [[UnityAds sharedInstance] setRewardItemKey:UnityAdsCreateNSString(rewardItemKey)];
   }
 	
-	void setDefaultRewardItemAsRewardItem () {
+	void UnityAdsSetDefaultRewardItemAsRewardItem () {
     [[UnityAds sharedInstance] setDefaultRewardItemAsRewardItem];
   }
   
-	const char* getRewardItemDetailsWithKey (const char *rewardItemKey) {
+	const char* UnityAdsGetRewardItemDetailsWithKey (const char *rewardItemKey) {
     if (rewardItemKey != NULL) {
       NSDictionary *details = [[UnityAds sharedInstance] getRewardItemDetailsWithKey:UnityAdsCreateNSString(rewardItemKey)];
       return UnityAdsMakeStringCopy([[NSString stringWithFormat:@"%@;%@", [details objectForKey:kUnityAdsRewardItemNameKey], [details objectForKey:kUnityAdsRewardItemPictureKey]] UTF8String]);
@@ -204,19 +204,19 @@ extern "C" {
     return UnityAdsMakeStringCopy("");
   }
   
-  const char *getRewardItemDetailsKeys () {
+  const char *UnityAdsGetRewardItemDetailsKeys () {
     return UnityAdsMakeStringCopy([[NSString stringWithFormat:@"%@;%@", kUnityAdsRewardItemNameKey, kUnityAdsRewardItemPictureKey] UTF8String]);
   }
   
-  void setDebugMode(bool debugMode) {
+  void UnityAdsSetDebugMode(bool debugMode) {
     [[UnityAds sharedInstance] setDebugMode:debugMode];
   }
 
-  void enableUnityDeveloperInternalTestMode () {
+  void UnityAdsEnableUnityDeveloperInternalTestMode () {
   	[[UnityAds sharedInstance] enableUnityDeveloperInternalTestMode];
   }
 
-  void setCampaignDataURL (const char *campaignDataUrl) {
+  void UnityAdsSetCampaignDataURL (const char *campaignDataUrl) {
     [[UnityAds sharedInstance] setCampaignDataURL:UnityAdsCreateNSString(campaignDataUrl)];
   }
 

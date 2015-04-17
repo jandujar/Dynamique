@@ -15,7 +15,7 @@ public class FastSpawnManager : MonoBehaviour {
 		
 		if(mFastSpawn != null && mFastSpawn.Initialize(suppressDebugMessages)) {
 			if(Debug.isDebugBuild && !suppressDebugMessages) {
-				Debug.Log("Fast Spawn " + mFastSpawn.GetVersion().ToString("F2") + " instance initialized.");	
+				Debug.Log(mFastSpawn.GetProductName() + " " + mFastSpawn.GetVersion() + " instance initialized.");	
 			}	
 		}
 	}

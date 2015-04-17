@@ -55,7 +55,7 @@ namespace UnityEngine.Advertisements {
 #if UNITY_ANDROID || UNITY_IOS
       UnityAds.SharedInstance.Show(zoneId, options);
 #else
-      if(options.resultCallback != null) {
+      if(options != null && options.resultCallback != null) {
         options.resultCallback(ShowResult.Failed);
       }
 #endif

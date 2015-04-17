@@ -8,70 +8,70 @@ namespace UnityEngine.Advertisements {
   internal class UnityAdsIos : UnityAdsPlatform {
 	public override void init (string gameId, bool testModeEnabled, string gameObjectName) {
 		if(Advertisement.UnityDeveloperInternalTestMode) {
-			UnityAdsIosBridge.enableUnityDeveloperInternalTestMode();
+			UnityAdsIosBridge.UnityAdsEnableUnityDeveloperInternalTestMode();
 		}
 
-		UnityAdsIosBridge.init(gameId, testModeEnabled, (Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false, gameObjectName);
+		UnityAdsIosBridge.UnityAdsInit(gameId, testModeEnabled, (Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false, gameObjectName);
 	}
 		
 	public override bool show (string zoneId, string rewardItemKey, string options) {
-		return UnityAdsIosBridge.show(zoneId, rewardItemKey, options);
+		return UnityAdsIosBridge.UnityAdsShow(zoneId, rewardItemKey, options);
 	}
 		
 	public override void hide () {
-		UnityAdsIosBridge.hide();
+		UnityAdsIosBridge.UnityAdsHide();
 	}
 		
 	public override bool isSupported () {
-		return UnityAdsIosBridge.isSupported();
+		return UnityAdsIosBridge.UnityAdsIsSupported();
 	}
 		
 	public override string getSDKVersion () {
-		return UnityAdsIosBridge.getSDKVersion();
+		return UnityAdsIosBridge.UnityAdsGetSDKVersion();
 	}
 		
 	public override bool canShowZone (string zone) {
 		if(!string.IsNullOrEmpty(zone)) {
-			return UnityAdsIosBridge.canShowZone(zone);
+			return UnityAdsIosBridge.UnityAdsCanShowZone(zone);
 		} else {
-			return UnityAdsIosBridge.canShow();
+			return UnityAdsIosBridge.UnityAdsCanShow();
 		}
 	}
 		
 	public override bool hasMultipleRewardItems () {
-		return UnityAdsIosBridge.hasMultipleRewardItems();
+		return UnityAdsIosBridge.UnityAdsHasMultipleRewardItems();
 	}
 		
 	public override string getRewardItemKeys () {
-		return UnityAdsIosBridge.getRewardItemKeys();
+		return UnityAdsIosBridge.UnityAdsGetRewardItemKeys();
 	}
 		
 	public override string getDefaultRewardItemKey () {
-		return UnityAdsIosBridge.getDefaultRewardItemKey();
+		return UnityAdsIosBridge.UnityAdsGetDefaultRewardItemKey();
 	}
 		
 	public override string getCurrentRewardItemKey () {
-		return UnityAdsIosBridge.getCurrentRewardItemKey();
+		return UnityAdsIosBridge.UnityAdsGetCurrentRewardItemKey();
 	}
 		
 	public override bool setRewardItemKey (string rewardItemKey) {
-		return UnityAdsIosBridge.setRewardItemKey(rewardItemKey);
+		return UnityAdsIosBridge.UnityAdsSetRewardItemKey(rewardItemKey);
 	}
 		
 	public override void setDefaultRewardItemAsRewardItem () {
-		UnityAdsIosBridge.setDefaultRewardItemAsRewardItem();
+		UnityAdsIosBridge.UnityAdsSetDefaultRewardItemAsRewardItem();
 	}
 		
 	public override string getRewardItemDetailsWithKey (string rewardItemKey) {
-		return UnityAdsIosBridge.getRewardItemDetailsWithKey(rewardItemKey);
+		return UnityAdsIosBridge.UnityAdsGetRewardItemDetailsWithKey(rewardItemKey);
 	}
 		
 	public override string getRewardItemDetailsKeys () {
-		return UnityAdsIosBridge.getRewardItemDetailsKeys();
+		return UnityAdsIosBridge.UnityAdsGetRewardItemDetailsKeys();
 	}
 
 	public override void setLogLevel(Advertisement.DebugLevel logLevel) {
-		UnityAdsIosBridge.setDebugMode((Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false);
+		UnityAdsIosBridge.UnityAdsSetDebugMode((Advertisement.debugLevel & Advertisement.DebugLevel.DEBUG) != Advertisement.DebugLevel.NONE ? true : false);
 	}
   }
 }

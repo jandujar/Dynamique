@@ -10,22 +10,21 @@ labels:
 - codiwans
 - simpleiap
 - iap
-- inappbilling
+- in app billing
 - billing
 - iap
-- inapppurchase
+- in app purchase
 - coins
 - fraud
 - receipt
 - verification
 - monetization
 - OpenIAB
-- playmaker
 - photon
 - builder
-- inapppurchasebuilder
+- in app purchase builder
 - stan
-- stansassets
+- stans assets
 TrueTypeFontImporter:
   serializedVersion: 2
   fontSize: 16
